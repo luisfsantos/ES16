@@ -1,0 +1,47 @@
+package pt.tecnico.myDrive.domain;
+
+class FileSystem;
+
+class User{
+	String _username;
+	String _password;
+	String _name;
+}
+
+class Entry{
+	String _ownerUsername;
+	String _entryname;
+	String _permissions;
+	String _path;
+	Boolean _removable;
+}
+
+class File extends Entry{
+	String _conteudo;
+}
+
+class Directory extends Entry{}
+
+relation DomainRootHasFileSystem{
+	.pt.ist.fenixframework.DomainRoot playsRole root{multiplicity 0..1;}
+
+	FileSystem playsRole filesystem{
+	multiplicity 0..1;
+	}
+}
+
+relation FileSystemHasUsers{
+	FileSystem playsRole filesystem1;
+	User playsRole user{multiplicity 1..*;}
+}
+
+relation UserHasEntries{
+	User playsRole user1;
+	Entry playsRole entry{multiplicity 1..*;}
+}
+
+relation DirectoryHasEntries{
+	Directory playsRole directory;
+	Entry playsRole entry1{multiplicity 0..*;}
+}
+
