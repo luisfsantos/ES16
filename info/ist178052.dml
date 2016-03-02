@@ -1,11 +1,14 @@
-package pt.tecnico.myDrive.domain;
+package example;
 
-class FileSystem;
+class FileSystem{
+	int _id;
+}
 
 class User{
 	String _username;
 	String _password;
 	String _name;
+	String _mask;
 }
 
 class Entry{
@@ -13,14 +16,16 @@ class Entry{
 	String _entryname;
 	String _permissions;
 	String _path;
+	String _content;
+	String _lastChanged;
 	Boolean _removable;
+
 }
 
-class File extends Entry{
-	String _conteudo;
-}
-
+class Plainfile extends Entry{}
 class Directory extends Entry{}
+class Link extends Entry{}
+class App extends Entry{}
 
 relation DomainRootHasFileSystem{
 	.pt.ist.fenixframework.DomainRoot playsRole root{multiplicity 0..1;}
@@ -35,13 +40,17 @@ relation FileSystemHasUsers{
 	User playsRole user{multiplicity 1..*;}
 }
 
-relation UserHasEntries{
+relation UserHasEntries{ 
 	User playsRole user1;
 	Entry playsRole entry{multiplicity 1..*;}
+}
+
+relation UserHasAtleastHomeDir{
+	User playsRole user2;
+	Directory playsRole dir{multiplicity 1..*;}
 }
 
 relation DirectoryHasEntries{
 	Directory playsRole directory;
 	Entry playsRole entry1{multiplicity 0..*;}
 }
-
