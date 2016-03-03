@@ -49,13 +49,8 @@ relation ManagerHasUsers {
 relation UserHasFiles {
 	User playsRole owner;
 	File playsRole file {
-		multiplicity 0..*;
+		multiplicity 1..*;
 	}
-}
-
-relation HomeDirectory {
-	User playsRole home_owner;
-	Directory playsRole home;
 }
 
 relation DirectoryContainsFiles {
