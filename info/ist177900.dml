@@ -1,0 +1,66 @@
+package pt.tecnico.phonebook.domain;
+
+class Manager {
+	Integer uid;
+}
+
+class User {
+	String username;
+	String password;
+	String name;
+	String umask;
+}
+
+class Root extends User;
+
+class File {
+	DateTime modified;
+	String filename;
+	Integer uid;
+	String permissions;
+}
+
+class Directory extends File;
+
+class RootDirectory extends Directory;
+
+class PlainFile extends File {
+	String contents;
+}
+
+class Link extends PlainFile;
+
+class App extends PlainFile;
+
+relation DomainRootHasManagerApplication {
+	.pt.ist.fenixframework.DomainRoot playsRole root;
+	Manager playsRole manager;
+}
+
+relation ManagerHasUsers {
+	Manager playsRole manager {
+		multiplicity 0..*;
+	}
+	User playsRole user {
+		multiplicity 0..*;
+	}
+}
+
+relation UserHasFiles {
+	User playsRole owner;
+	File playsRole file {
+		multiplicity 0..*;
+	}
+}
+
+relation HomeDirectory {
+	User playsRole home_owner;
+	Directory playsRole home;
+}
+
+relation DirectoryContainsFiles {
+	Directory playsRole parent;
+	File playsRole file {
+		multiplicity 0..*;
+	}
+}
