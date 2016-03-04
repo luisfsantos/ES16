@@ -40,10 +40,10 @@ relation DomainRootHasManagerApplication {
 
 relation ManagerHasUsers {
 	Manager playsRole manager {
-	multiplicity 0..1;
+	multiplicity 1;
 	}
 	User playsRole user {
-	multiplicity *;
+	multiplicity 1..*;
 	}
 }
 
@@ -52,25 +52,25 @@ relation ManagerHasFiles {
 	multiplicity 1;
 	}
 	File playsRole file {
-	multiplicity *;
+	multiplicity 1..*;
 	}
 }
 
 relation UserHasFiles {
 	User playsRole user {
-	multiplicity 0..1;
+	multiplicity 1;
 	}
 	File playsRole file {
-	multiplicity *;
+	multiplicity 1..*;
 	}
 }
 
 relation DirectoryContainsFiles {
-	File playsRole file {
+	File playsRole files {
 	multiplicity *;
 	}
 	Directory playsRole parent {
-	multiplicity 0..1;
+	multiplicity 1;
 	}
 }
 
