@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 
 import pt.ist.fenixframework.FenixFramework;
+import pt.tecnico.myDrive.domain.Manager;
 
 public class Main {
 
@@ -11,6 +12,13 @@ public class Main {
 		System.out.println("Welcome to MyDrive!");
 		
 		try {
+			if (args.length == 0) {
+				Manager m = Manager.getInstance();
+			
+			}
+			else {
+				// import
+			}
 			
 		} finally { FenixFramework.shutdown(); }
 		
