@@ -5,7 +5,7 @@ import java.io.PrintStream;
 
 import pt.ist.fenixframework.FenixFramework;
 
-public class MyDriveApplication {
+public class Main {
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to MyDrive!");
