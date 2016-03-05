@@ -66,7 +66,7 @@ relation UserHasFiles {
 }
 
 relation DirectoryContainsFiles {
-	File playsRole files {
+	File playsRole file {
 	multiplicity *;
 	}
 	Directory playsRole parent {
