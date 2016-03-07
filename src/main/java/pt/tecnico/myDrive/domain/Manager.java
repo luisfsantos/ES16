@@ -1,5 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
+import org.jdom2.Element;
+import org.jdom2.Document;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.User;
@@ -98,6 +100,7 @@ public class Manager extends Manager_Base {
     	}
     }
 
+<<<<<<< HEAD
     public void xmlImport(Element rootDrive) {      
         
 
@@ -170,4 +173,20 @@ public class Manager extends Manager_Base {
         
 }
 
+=======
+    public Document xmlExport() {
+        Element element = new Element("myDrive");
+        Document doc = new Document(element);
+
+        for (User u: getUserSet())
+            element.addContent(u.xmlExport());
+
+        for (File f: getFileSet())
+            element.addContent(f.xmlExport());
+
+        return doc;
+    }
+
+    
+>>>>>>> 757291a18305a7bd4dcc39b8d9999ffb0b3163ac
 }
