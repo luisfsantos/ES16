@@ -1,5 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
+import org.jdom2.Element;
+import org.jdom2.Document;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.User;
@@ -100,7 +102,7 @@ public class Manager extends Manager_Base {
 
         for (File f: getFileSet())
             element.addContent(f.xmlExport());
-        
+
         return doc;
     }
 
