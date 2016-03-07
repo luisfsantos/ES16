@@ -20,6 +20,15 @@ public class User extends User_Base {
 		this.addFile(home);
 	}
 	*/
+	@Override
+	public void setUmask(String permission){
+		if(permission.length() != 8) return ;
+		String mask = "rwxdrwxd";
+		for(int i = 0; i < 8; i++)
+			if(permission.charAt(i) != mask.charAt(i) && permission.charAt(i) != '-')
+				return ;
+		super.setUmask(permission);
+	}
 
 	public boolean hasPermission(File file, Mask mask){
 		if(this.equals(file.getUser())) return ownerHasPermission(file, mask);
