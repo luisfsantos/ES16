@@ -5,6 +5,7 @@ import org.jdom2.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
@@ -14,7 +15,7 @@ import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 
 
 public class Manager extends Manager_Base {
-    private User superUser;
+	
 	
 	// manager use Singleton design pattern
     public static Manager getInstance() {
@@ -30,13 +31,6 @@ public class Manager extends Manager_Base {
         this.setIdCounter(0);
     }
     
-	public User getSuperUser() {
-		return superUser;
-	}
-
-	public void setSuperUser(User superUser) {
-		this.superUser = superUser;
-	}
 	
         
     public User getUserByUsername(String username) {
@@ -52,12 +46,20 @@ public class Manager extends Manager_Base {
     }
     
    
-    @Override 
-    public void addUser(User newUser) throws UserAlreadyExistsException {
-    	if (this.hasUser(newUser.getUsername())) {
-    		throw new UserAlreadyExistsException(newUser.getUsername());
-    	}
+    @Override
+    public void addUser(User newUser) {
     	super.addUser(newUser);
+    	newUser.setManager(this);
+    }
+    
+
+    public void createNewUser(String username) throws UserAlreadyExistsException{
+    	if (this.hasUser(username)) {
+    		throw new UserAlreadyExistsException(username);
+    	}
+    	User newUser = new User(username);
+    	this.addUser(newUser);
+    	newUser.setManager(this);
     }
     
     
@@ -90,15 +92,6 @@ public class Manager extends Manager_Base {
     }
     
 
-    public void initManager() {
-    	if (!this.hasUser("root")) {
-    		this.setSuperUser(SuperUser.getSuperUser());
-    		this.addUser(superUser);
-    	}
-    	else {
-    		this.setSuperUser(this.getUserByUsername("root"));
-    	}
-    }
 
     public void xmlImport(Element rootDrive) {      
         
@@ -131,6 +124,9 @@ public class Manager extends Manager_Base {
 
         }
 }
+
+    
+    
         /*
         for(Element plainNode: rootDrive.getChildren("plain")){
 
@@ -183,6 +179,8 @@ public class Manager extends Manager_Base {
         }
         */
 
+    
+
     public Document xmlExport() {
         Element element = new Element("myDrive");
         Document doc = new Document(element);
@@ -195,4 +193,6 @@ public class Manager extends Manager_Base {
 
         return doc;
     }
+    
+
 }

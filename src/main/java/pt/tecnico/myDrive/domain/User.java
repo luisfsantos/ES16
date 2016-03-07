@@ -5,20 +5,24 @@ import org.jdom2.DataConversionException;
 
 public class User extends User_Base {
 
-    public User() {
-        super();
-    }
-
-	/*
-	public User(String username, String password, String name, String umask, Manager manager, Directory home ) {
-		super();
-		this.setUsername(username);
+    
+    public User(String username, String password, String name, String umask) {
+    	super();
+        this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
 		this.setUmask(umask);
-		this.setManager(manager);
-		this.addFile(home);
-	}*/
+    }
+    
+    public User(String username) {
+        this(username, username, username, "rwxd----");
+    }
+    
+    public User() {
+    	this("root", "***", "Super User", "rwxdr-x-");
+    }
+
+
 	public void xmlImport(Element userNode){
 			//manager nao preciso, certo??
     try {
@@ -104,4 +108,5 @@ public class User extends User_Base {
 
         return element;
     }
+    
 }

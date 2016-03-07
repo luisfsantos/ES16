@@ -32,14 +32,32 @@ public class Main {
 			}
 			else {
 				// import
+				
 				for (String s: args){
 	    			xmlScan(new java.io.File(s));
 	    		}
+	    		
 			}
 			
 		} finally { FenixFramework.shutdown(); }
 		
 	}
+	
+    @Atomic
+    public static void setup() {
+        Manager m = Manager.getInstance();
+        File home = new File();
+        User superUser = new User();
+
+        home.setManager(m);
+        home.setUser(superUser);
+        superUser.setManager(m);
+
+    }
+    
+    
+	
+    
 	@Atomic
     public static void xmlScan(java.io.File file) {
         log.trace("xmlScan: " + FenixFramework.getDomainRoot());  
@@ -53,16 +71,6 @@ public class Main {
 		}
 	}
 
-    @Atomic
-    public static void setup() {
-        Manager m = Manager.getInstance();
-        File file = new File();
-        User user = new User();
-
-        file.setManager(m);
-        file.setUser(user);
-        user.setManager(m);
-    }
 
     @Atomic
     public static void xmlPrint() {
@@ -72,4 +80,5 @@ public class Main {
 		try { xmlOutput.output(doc, new PrintStream(System.out));
 		} catch (IOException e) { System.out.println(e); }
     }
+    
 }
