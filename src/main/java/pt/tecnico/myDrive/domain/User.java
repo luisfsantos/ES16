@@ -23,9 +23,11 @@ public class User extends User_Base {
 	@Override
 	public void setUmask(String permission){
 		if(permission.length() != 8) return ;
-		String mask = "rwxdrwxd";
+		Mask mask[] = Mask.values();
+		//String mask = "rwxdrwxd";
 		for(int i = 0; i < 8; i++)
-			if(permission.charAt(i) != mask.charAt(i) && permission.charAt(i) != '-')
+			//if(permission.charAt(i) != mask.charAt(i) && permission.charAt(i) != '-')
+			if(permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
 				return ;
 		super.setUmask(permission);
 	}

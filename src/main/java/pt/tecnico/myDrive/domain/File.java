@@ -30,7 +30,7 @@ public class File extends File_Base {
 		//String mask = "rwxdrwxd";
 		for(int i = 0; i < 8; i++)
 			//if(permission.charAt(i) != mask.charAt(i) && permission.charAt(i) != '-')
-			if(permission.charAt(i) != mask[8 % i].getValue() && permission.charAt(i) != '-')
+			if(permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
 				return ;
 
 		super.setPermissions(permission);
