@@ -91,5 +91,18 @@ public class Manager extends Manager_Base {
     	}
     }
 
+    public Document xmlExport() {
+        Element element = new Element("myDrive");
+        Document doc = new Document(element);
+
+        for (User u: getUserSet())
+            element.addContent(u.xmlExport());
+
+        for (File f: getFileSet())
+            element.addContent(f.xmlExport());
+        
+        return doc;
+    }
+
     
 }
