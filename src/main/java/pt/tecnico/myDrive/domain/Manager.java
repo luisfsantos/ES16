@@ -5,6 +5,8 @@ import org.jdom2.Document;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 
 public class Manager extends Manager_Base {
     private User superUser;
@@ -44,11 +46,11 @@ public class Manager extends Manager_Base {
     	return this.getUserByUsername(username) != null;
     }
     
-    // will be replaced with exception
+   
     @Override 
-    public void addUser(User newUser) {
+    public void addUser(User newUser) throws UserAlreadyExistsException {
     	if (this.hasUser(newUser.getUsername())) {
-    		return;
+    		throw new UserAlreadyExistsException(newUser.getUsername());
     	}
     	super.addUser(newUser);
     }
@@ -67,11 +69,11 @@ public class Manager extends Manager_Base {
     }
  
     
-    // will be replaced with exception
+
     @Override 
-    public void addFile(File newFile) {
+    public void addFile(File newFile) throws FileAlreadyExistsException {
     	if (this.hasFile(newFile.getId())) {
-    		return;
+    		throw new FileAlreadyExistsException(newFile.getId());
     	}
     	super.addFile(newFile);
     }

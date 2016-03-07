@@ -4,7 +4,6 @@ package pt.tecnico.myDrive;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.File;
 
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
@@ -21,7 +20,8 @@ import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.domain.File;
 
 public class Main {
-
+	static final Logger log = LogManager.getRootLogger();
+	
 	public static void main(String[] args) {
 		System.out.println("Welcome to MyDrive!");
 		
