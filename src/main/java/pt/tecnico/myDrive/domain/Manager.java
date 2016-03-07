@@ -6,7 +6,7 @@ import org.jdom2.Document;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.User;
 
-//MeusIports
+//MeusImports
 import java.io.File;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -100,35 +100,47 @@ public class Manager extends Manager_Base {
     	}
     }
 
-<<<<<<< HEAD
     public void xmlImport(Element rootDrive) {      
         
 
         for (Element userNode: rootDrive.getChildren("user")){
-            String username = userNode.getAttribute("username").getValue();   //Posso ter de definir os default values, ou isso é no constructor?
+            String username = userNode.getAttribute("username").getValue();  
             String password = userNode.getChild("password").getValue();
             String name = userNode.getChild("name").getValue();
-            Directory home = new Directory(userNode.getChild("home").getValue());  //Preciso de criar o caminho todo caso necessario
+            Directory home = lookUpDir(userNode.getChild("home").getValue());  
             String mask = userNode.getChild("mask").getValue();
             User user = getUserByUsername(username);
             
             if (user == null){
-                user = new User(username,password,name,mask,this,home);          //Posso fazer new User segundo PhoneBook
-                //vou criar um construtor que, caso existam argumentos a null, os preenche com valor default?
+                if (password == null){
+                    password = username;
+                }
+                else if (name == null){
+                    name = username;
+                }
+                else if(home == null){
+                    String dirs_to_create = userNode.getChild("home").getValue();
+                    home = createMissingDirectories(dirs_to_create);  //devolve o objecto
+                }
+                else if(mask == null){
+                    mask = "rwxd----";
+                }
+                user = new User(username,password,name,mask,this,home);          
             }
             user.xmlImport(userNode);
 
         }
-
+}
+        /*
         for(Element plainNode: rootDrive.getChildren("plain")){
-              //cagar no id
 
             String path = plainNode.getChild("path").getValue(); 
             String name = plainNode.getChild("name").getValue();
             String owner = plainNode.getChild("owner").getValue();
-            String perm = plainNode.getChild("perm").getValue();  //Preciso de criar o caminho todo caso necessario
+            String perm = plainNode.getChild("perm").getValue(); 
             String contents = plainNode.getChild("contents").getValue();
             int id = getNextIdCounter();
+
 
             plain = new PlainFile();
             plain.xmlImport(plainNode);
@@ -139,7 +151,7 @@ public class Manager extends Manager_Base {
             String path = dirNode.getChild("path").getValue(); 
             String name = dirNode.getChild("name").getValue();
             String owner = dirNode.getChild("owner").getValue();
-            String perm = dirNode.getChild("perm").getValue();  //Preciso de criar o caminho todo caso necessario
+            String perm = dirNode.getChild("perm").getValue(); 
             int id = getNextIdCounter();
 
                 dir = new Directory();
@@ -150,7 +162,7 @@ public class Manager extends Manager_Base {
             String path =linkNode.getChild("path").getValue(); 
             String name = linkNode.getChild("name").getValue();
             String owner = linkNode.getChild("owner").getValue();
-            String perm = linkNode.getChild("perm").getValue();  //Preciso de criar o caminho todo caso necessario
+            String perm = linkNode.getChild("perm").getValue();
             String value = linkNode.getChild("value").getValue();
             int id = getNextIdCounter();
 
@@ -162,18 +174,15 @@ public class Manager extends Manager_Base {
             String path = appNode.getChild("path").getValue(); 
             String name = appNode.getChild("name").getValue();
             String owner = appNode.getChild("owner").getValue();
-            String perm = appNode.getChild("perm").getValue();  //Preciso de criar o caminho todo caso necessario
+            String perm = appNode.getChild("perm").getValue(); 
             String method = appNode.getChild("method").getValue();
             int id = getNextIdCounter();
 
                 app = new App();
                 app.xmlImport(appNode);
         }
-            
-        
-}
+        */
 
-=======
     public Document xmlExport() {
         Element element = new Element("myDrive");
         Document doc = new Document(element);
@@ -186,7 +195,4 @@ public class Manager extends Manager_Base {
 
         return doc;
     }
-
-    
->>>>>>> 757291a18305a7bd4dcc39b8d9999ffb0b3163ac
 }
