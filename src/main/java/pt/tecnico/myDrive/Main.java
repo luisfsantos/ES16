@@ -1,10 +1,10 @@
 package pt.tecnico.myDrive;
 
-import java.io.File;
-import java.io.PrintStream;
-
+import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
+import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.domain.File;
 
 public class Main {
 
@@ -13,8 +13,7 @@ public class Main {
 		
 		try {
 			if (args.length == 0) {
-				Manager m = Manager.getInstance();
-			
+				setup();
 			}
 			else {
 				// import
@@ -23,5 +22,16 @@ public class Main {
 		} finally { FenixFramework.shutdown(); }
 		
 	}
+
+    @Atomic
+    public static void setup() {
+        Manager m = Manager.getInstance();
+        File file = new File();
+        User user = new User();
+
+        file.setManager(m);
+        file.setUser(user);
+        user.setManager(m);
+    }
 
 }
