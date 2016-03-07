@@ -18,8 +18,69 @@ public class User extends User_Base {
 		this.setUmask(umask);
 		this.setManager(manager);
 		this.addFile(home);
+	}*/
+	public void xmlImport(Element userNode){
+			//manager nao preciso, certo??
+    try {
+            setUsername(new String(userNode.getAttribute("username").getValue().getBytes("UTF-8")));
+	} catch (UnsupportedEncodingException e){}//DO SOMETHING
+
+	try {
+            setPassword(new String(userNode.getChild("password").getValue().getBytes("UTF-8")));
+	} catch (UnsupportedEncodingException e){}
+
+	try {
+            setName(new String(userNode.getChild("name").getValue().getBytes("UTF-8")));
+	} catch (UnsupportedEncodingException e){}
+
+	try {
+            addFile(new Directory(userNode.getChild("home").getValue().getBytes("UTF-8")));  //ASSUMO QUE DIRECTORY RECEBE STRING
+	} catch (UnsupportedEncodingException e){}
+
+	try {
+            setUmask(new String(userNode.getChild("mask").getValue().getBytes("UTF-8")));
+	} catch (UnsupportedEncodingException e){}
+	
 	}
-	*/
+
+	public boolean hasPermission(File file, Mask mask){
+		if(this.equals(file.getUser())) return ownerHasPermission(file, mask);
+		else { return allHasPermission(file, mask);}
+	}
+
+	public boolean ownerHasPermission(File file, Mask mask){
+		switch(mask){
+			case READ:
+				return mask.getValue() == file.getPermissions().charAt(0);
+			case WRITE:
+				return mask.getValue() == file.getPermissions().charAt(1);
+			case EXEC:
+				return mask.getValue() == file.getPermissions().charAt(2);
+			case DELETE:
+				return mask.getValue() == file.getPermissions().charAt(3);
+			default:
+				return false;
+		}
+	}
+
+	public boolean allHasPermission(File file, Mask mask){
+		switch(mask){
+			case READ:
+				return mask.getValue() == file.getPermissions().charAt(4);
+			case WRITE:
+				return mask.getValue() == file.getPermissions().charAt(5);
+			case EXEC:
+				return mask.getValue() == file.getPermissions().charAt(6);
+			case DELETE:
+				return mask.getValue() == file.getPermissions().charAt(7);
+			default:
+				return false;
+		}
+	}
+
+	public boolean equals(User user){
+		return this.getUsername() == user.getUsername();
+	}
 
 	public Element xmlExport() {
         Element element = new Element("user");
@@ -43,5 +104,4 @@ public class User extends User_Base {
 
         return element;
     }
-	
 }
