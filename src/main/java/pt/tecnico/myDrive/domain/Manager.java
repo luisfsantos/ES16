@@ -4,6 +4,13 @@ package pt.tecnico.myDrive.domain;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.User;
 
+//MeusIports
+import java.io.File;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom2.Element;
+import org.jdom2.Document;
+
 public class Manager extends Manager_Base {
     private User superUser;
 	
@@ -91,5 +98,76 @@ public class Manager extends Manager_Base {
     	}
     }
 
-    
+    public void xmlImport(Element rootDrive) {      
+        
+
+        for (Element userNode: rootDrive.getChildren("user")){
+            String username = userNode.getAttribute("username").getValue();   //Posso ter de definir os default values, ou isso é no constructor?
+            String password = userNode.getChild("password").getValue();
+            String name = userNode.getChild("name").getValue();
+            Directory home = new Directory(userNode.getChild("home").getValue());  //Preciso de criar o caminho todo caso necessario
+            String mask = userNode.getChild("mask").getValue();
+            User user = getUserByUsername(username);
+            
+            if (user == null){
+                user = new User(username,password,name,mask,this,home);          //Posso fazer new User segundo PhoneBook
+                //vou criar um construtor que, caso existam argumentos a null, os preenche com valor default?
+            }
+            user.xmlImport(userNode);
+
+        }
+
+        for(Element plainNode: rootDrive.getChildren("plain")){
+              //cagar no id
+
+            String path = plainNode.getChild("path").getValue(); 
+            String name = plainNode.getChild("name").getValue();
+            String owner = plainNode.getChild("owner").getValue();
+            String perm = plainNode.getChild("perm").getValue();  //Preciso de criar o caminho todo caso necessario
+            String contents = plainNode.getChild("contents").getValue();
+            int id = getNextIdCounter();
+
+            plain = new PlainFile();
+            plain.xmlImport(plainNode);
+        }
+
+        for(Element dirNode: rootDrive.getChildren("dir")){
+           
+            String path = dirNode.getChild("path").getValue(); 
+            String name = dirNode.getChild("name").getValue();
+            String owner = dirNode.getChild("owner").getValue();
+            String perm = dirNode.getChild("perm").getValue();  //Preciso de criar o caminho todo caso necessario
+            int id = getNextIdCounter();
+
+                dir = new Directory();
+                dir.xmlImport(dirNode);
+        }
+            
+        for(Element linkNode: rootDrive.getChildren("link")){
+            String path =linkNode.getChild("path").getValue(); 
+            String name = linkNode.getChild("name").getValue();
+            String owner = linkNode.getChild("owner").getValue();
+            String perm = linkNode.getChild("perm").getValue();  //Preciso de criar o caminho todo caso necessario
+            String value = linkNode.getChild("value").getValue();
+            int id = getNextIdCounter();
+
+                link = new Link();
+                link.xmlImport(linkNode);   
+        }
+            
+        for(Element appNode: rootDrive.getChildren("app")){
+            String path = appNode.getChild("path").getValue(); 
+            String name = appNode.getChild("name").getValue();
+            String owner = appNode.getChild("owner").getValue();
+            String perm = appNode.getChild("perm").getValue();  //Preciso de criar o caminho todo caso necessario
+            String method = appNode.getChild("method").getValue();
+            int id = getNextIdCounter();
+
+                app = new App();
+                app.xmlImport(appNode);
+        }
+            
+        
+}
+
 }
