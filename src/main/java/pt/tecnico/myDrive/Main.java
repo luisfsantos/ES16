@@ -33,7 +33,7 @@ public class Main {
 			else {
 				// import
 				for (String s: args){
-	    			xmlScan(new File(s));
+	    			xmlScan(new java.io.File(s));
 	    		}
 			}
 			
@@ -41,16 +41,16 @@ public class Main {
 		
 	}
 	@Atomic
-    public static void xmlScan(File file) {
-        log.trace("xmlScan: " + FenixFramework.getDomainRoot());    //falta logger
-	Manager manager = Manager.getInstance();
-	SAXBuilder builder = new SAXBuilder();
-	try {
-	    Document document = (Document)builder.build(file);
-	    manager.xmlImport(document.getRootElement());
-	} catch (JDOMException | IOException e) {
-	    e.printStackTrace();
-	}
+    public static void xmlScan(java.io.File file) {
+        log.trace("xmlScan: " + FenixFramework.getDomainRoot());  
+		Manager manager = Manager.getInstance();
+		SAXBuilder builder = new SAXBuilder();
+		try {
+		    Document document = (Document)builder.build(file);
+		    manager.xmlImport(document.getRootElement());
+		} catch (JDOMException | IOException e) {
+		    e.printStackTrace();
+		}
 	}
 
     @Atomic

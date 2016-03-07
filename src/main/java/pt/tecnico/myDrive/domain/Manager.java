@@ -2,18 +2,16 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 import org.jdom2.Document;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 
-//MeusImports
-import java.io.File;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom2.Element;
-import org.jdom2.Document;
+
+
 
 public class Manager extends Manager_Base {
     private User superUser;
