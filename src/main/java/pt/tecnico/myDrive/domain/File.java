@@ -23,4 +23,8 @@ public class File extends File_Base {
     	
     }
     */
+
+    public void setPermissions(){
+        this.setPermissions(this.getUser().getUmask());
+    }
 }
