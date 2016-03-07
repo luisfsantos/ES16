@@ -17,5 +17,44 @@ public class User extends User_Base {
 		this.addFile(home);
 	}
 	*/
+
+	public boolean hasPermission(File file, Mask mask){
+		if(this.equals(file.getUser())) return ownerHasPermission(file, mask);
+		else { return allHasPermission(file, mask);}
+	}
+
+	public boolean ownerHasPermission(File file, Mask mask){
+		switch(mask){
+			case READ:
+				return mask.getValue() == file.getPermissions().charAt(0);
+			case WRITE:
+				return mask.getValue() == file.getPermissions().charAt(1);
+			case EXEC:
+				return mask.getValue() == file.getPermissions().charAt(2);
+			case DELETE:
+				return mask.getValue() == file.getPermissions().charAt(3);
+			default:
+				return false;
+		}
+	}
+
+	public boolean allHasPermission(File file, Mask mask){
+		switch(mask){
+			case READ:
+				return mask.getValue() == file.getPermissions().charAt(4);
+			case WRITE:
+				return mask.getValue() == file.getPermissions().charAt(5);
+			case EXEC:
+				return mask.getValue() == file.getPermissions().charAt(6);
+			case DELETE:
+				return mask.getValue() == file.getPermissions().charAt(7);
+			default:
+				return false;
+		}
+	}
+
+	public boolean equals(User user){
+		return this.getUsername() == user.getUsername();
+	}
 	
 }

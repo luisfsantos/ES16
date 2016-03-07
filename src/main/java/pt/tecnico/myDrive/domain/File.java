@@ -23,8 +23,14 @@ public class File extends File_Base {
     	
     }
     */
+    @Override
+    public void setPermissions(String perm){
+
+
+        super.setPermissions(perm);
+    }
 
     public void setPermissions(){
-        this.setPermissions(this.getUser().getUmask());
+        super.setPermissions(this.getUser().getUmask());
     }
 }
