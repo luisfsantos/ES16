@@ -1,5 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
+import org.jdom2.Element;
+import org.jdom2.DataConversionException;
+
 public class User extends User_Base {
 
     public User() {
@@ -56,5 +59,28 @@ public class User extends User_Base {
 	public boolean equals(User user){
 		return this.getUsername() == user.getUsername();
 	}
+
+	public Element xmlExport() {
+        Element element = new Element("user");
+        element.setAttribute("username", getUsername());
+        
+        Element passwordElement = new Element("password");
+        passwordElement.setText(getPassword()); // metodo getPassword() (ou semelhante) tem de ser acessivel ao User
+        element.addContent(passwordElement);
+
+        Element nameElement = new Element("name");
+        nameElement.setText(getName());
+        element.addContent(nameElement);
+
+        Element homeElement = new Element("home");
+        homeElement.setText(getHome().getAbsolutePath()); // absolute path necessario para conhecer localizacao dum directorio
+        element.addContent(homeElement);
+
+        Element maskElement = new Element("mask");
+        maskElement.setText(getMask());
+        element.addContent(maskElement);
+
+        return element;
+    }
 	
 }
