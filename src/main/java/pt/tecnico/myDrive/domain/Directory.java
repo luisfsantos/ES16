@@ -24,14 +24,21 @@ public class Directory extends Directory_Base {
 		return false;
 	}
 
-	public File lookup(String path){
+	public File lookup(String path) throws ExpectedSlashPathStartException, NoSuchFileInThisDirectoryException{
 		String name;
-		int i;
-		if(!path.contains('/'))
+
+		if(path.charAt(0) != '/') 
+			throw new ExpectedSlashPathStartException();
+		if(path.charAt(1) == '/' || path.charAt(1) == '.'){
+			path = path.subString(path.indexOf("/", 1));
+			return this.lookup(path);
+		}
+		if(!path.subString(1).contains('/'))
 			return getFile(path);
+
 		name = path.subString(1, path.indexOf("/", 1));
-		path = path.subString(path.indexOf("/", 1) + 1);
-		return lookup(path).getFile(name);
+		path = path.subString(path.indexOf("/", 1));
+		return getFile(name).lookup(path);
 	}
 	
 }
