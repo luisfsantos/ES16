@@ -32,8 +32,10 @@ public class File extends File_Base {
 		}
 	}
 	
-
 	public void setPermissions(){
 		super.setPermissions(this.getUser().getUmask());
 	}
+
+	public File lookup(String path) {}
+	
 }
