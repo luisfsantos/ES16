@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.domain;
 
+import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 public class File extends File_Base {
@@ -37,8 +38,14 @@ public class File extends File_Base {
 	}
 
 	public File lookup(String path) {}
+	
+	public String getAbsolutePath() {
+		if (this == getParent())
+				return "";
+		else return getParent().getAbsolutePath() + "/" + getName();
+	}
 
-	public String xmlExport() {
+	public Element xmlExport() {
 		// TODO Auto-generated method stub
 		return null;
 	}
