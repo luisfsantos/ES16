@@ -103,7 +103,7 @@ public class User extends User_Base {
 		element.setAttribute("username", getUsername());
 		
 		Element passwordElement = new Element("password");
-		passwordElement.setText(getPassword()); // metodo getPassword() (ou semelhante) tem de ser acessivel ao User
+		passwordElement.setText(getPassword());
 		element.addContent(passwordElement);
 
 		Element nameElement = new Element("name");
@@ -111,11 +111,11 @@ public class User extends User_Base {
 		element.addContent(nameElement);
 
 		Element homeElement = new Element("home");
-		homeElement.setText(getHome().getAbsolutePath()); // absolute path necessario para conhecer localizacao dum directorio
+		homeElement.setText(getHome().getAbsolutePath());
 		element.addContent(homeElement);
 
 		Element maskElement = new Element("mask");
-		maskElement.setText(getMask());
+		maskElement.setText(getUmask());
 		element.addContent(maskElement);
 
 		return element;

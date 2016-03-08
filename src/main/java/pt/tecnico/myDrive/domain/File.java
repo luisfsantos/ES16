@@ -37,5 +37,10 @@ public class File extends File_Base {
 	}
 
 	public File lookup(String path) {}
+
+	public String xmlExport() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
