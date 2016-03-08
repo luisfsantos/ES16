@@ -23,14 +23,14 @@ public class User extends User_Base {
 	}
 
 	@Override
-	public void setUmask(String permission) throws WrongSizeMaskStringException, InvalidCharMaskStringException{
-		if(permission.length() != 8) throw new WrongSizeMaskStringException(permisson.length());
+	public void setUmask(String permission) throws WrongSizePermissionException, InvalidCharPermissionException{
+		if(permission.length() != 8) throw new WrongSizePermissionException(permisson.length());
 		Mask mask[] = Mask.values();
 		//String mask = "rwxdrwxd";
 		for(int i = 0; i < 8; i++)
 			//if(permission.charAt(i) != mask.charAt(i) && permission.charAt(i) != '-')
 			if(permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
-				throw new InvalidCharMaskStringException(permission.charAt(i), i);
+				throw new InvalidCharPermissionException(permission.charAt(i), i);
 		super.setUmask(permission);
 	}
 
