@@ -21,14 +21,14 @@ public class File extends File_Base {
 	//protected void initFile (String name) { }
 
 	@Override
-	public void setPermissions(String permission) throws WrongSizePermissionStringException, InvalidCharPermissionStringException {
-		if(permission.length() != 8) throw new WrongSizePermissionStringException(permisson.length());
+	public void setPermissions(String permission) throws WrongSizePermissionException, InvalidCharPermissionException {
+		if(permission.length() != 8) throw new WrongSizePermissionException(permisson.length());
 		Mask mask[] = Mask.values();
 		//String mask = "rwxdrwxd";
 		for(int i = 0; i < 8; i++){
 			//if(permission.charAt(i) != mask.charAt(i) && permission.charAt(i) != '-')
 			if(permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
-				throw new InvalidCharPermissionStringException(permission.charAt(i), i);
+				throw new InvalidCharPermissionException(permission.charAt(i), i);
 		}
 	}
 	
