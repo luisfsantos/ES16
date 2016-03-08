@@ -18,9 +18,7 @@ public class File extends File_Base {
 		this.setLastModified(new DateTime());
 	}
 	
-	//protected void initFile (String name) {
-		
-	}
+	//protected void initFile (String name) { }
 
 	@Override
 	public void setPermissions(String permission) throws WrongSizePermissionStringException, InvalidCharPermissionStringException {
