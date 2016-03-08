@@ -23,5 +23,15 @@ public class Directory extends Directory_Base {
 		}
 		return false;
 	}
+
+	public File lookup(String path){
+		String name;
+		int i;
+		if(!path.contains('/'))
+			return getFile(path);
+		name = path.subString(1, path.indexOf("/", 1));
+		path = path.subString(path.indexOf("/", 1) + 1);
+		return lookup(path).getFile(name);
+	}
 	
 }
