@@ -1,20 +1,17 @@
 package pt.tecnico.myDrive.domain;
 
-import org.jdom2.Element;
 import org.jdom2.Document;
+import org.jdom2.Element;
 
 import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
-//MeusImports
-import java.io.File;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom2.Element;
-import org.jdom2.Document;
+
+
 
 public class Manager extends Manager_Base {
-    private User superUser;
+	
 	
 	// manager use Singleton design pattern
     public static Manager getInstance() {
@@ -30,13 +27,6 @@ public class Manager extends Manager_Base {
         this.setIdCounter(0);
     }
     
-	public User getSuperUser() {
-		return superUser;
-	}
-
-	public void setSuperUser(User superUser) {
-		this.superUser = superUser;
-	}
 	
         
     public User getUserByUsername(String username) {
@@ -51,13 +41,21 @@ public class Manager extends Manager_Base {
     	return this.getUserByUsername(username) != null;
     }
     
-    // will be replaced with exception
-    @Override 
+   
+    @Override
     public void addUser(User newUser) {
-    	if (this.hasUser(newUser.getUsername())) {
-    		return;
-    	}
     	super.addUser(newUser);
+    	newUser.setManager(this);
+    }
+    
+
+    public void createNewUser(String username) throws UserAlreadyExistsException{
+    	if (this.hasUser(username)) {
+    		throw new UserAlreadyExistsException(username);
+    	}
+    	User newUser = new User(username);
+    	this.addUser(newUser);
+    	newUser.setManager(this);
     }
     
     
@@ -74,11 +72,11 @@ public class Manager extends Manager_Base {
     }
  
     
-    // will be replaced with exception
+
     @Override 
-    public void addFile(File newFile) {
+    public void addFile(File newFile) throws FileAlreadyExistsException {
     	if (this.hasFile(newFile.getId())) {
-    		return;
+    		throw new FileAlreadyExistsException(newFile.getId());
     	}
     	super.addFile(newFile);
     }
@@ -90,15 +88,6 @@ public class Manager extends Manager_Base {
     }
     
 
-    public void initManager() {
-    	if (!this.hasUser("root")) {
-    		this.setSuperUser(SuperUser.getSuperUser());
-    		this.addUser(superUser);
-    	}
-    	else {
-    		this.setSuperUser(this.getUserByUsername("root"));
-    	}
-    }
 
     public Directory createMissingDirectories(String directoriesToCreate){   }
 
@@ -125,6 +114,9 @@ public class Manager extends Manager_Base {
 
         }
 }
+
+    
+    
         /*
         for(Element plainNode: rootDrive.getChildren("plain")){
             
@@ -213,7 +205,6 @@ public class Manager extends Manager_Base {
         }
         */
 
-    
     public Document xmlExport() {
         Element element = new Element("myDrive");
         Document doc = new Document(element);
@@ -226,4 +217,6 @@ public class Manager extends Manager_Base {
 
         return doc;
     }
+    
+
 }

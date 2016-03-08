@@ -4,7 +4,6 @@ package pt.tecnico.myDrive;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.File;
 
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
@@ -22,7 +21,8 @@ import pt.tecnico.myDrive.domain.File;
 
 
 public class Main {
-
+	static final Logger log = LogManager.getRootLogger();
+	
 	public static void main(String[] args) {
 		System.out.println("Welcome to MyDrive!");
 		
@@ -32,37 +32,45 @@ public class Main {
 			}
 			else {
 				// import
+				
 				for (String s: args){
-	    			xmlScan(new File(s));
+	    			xmlScan(new java.io.File(s));
 	    		}
+	    		
 			}
 			
 		} finally { FenixFramework.shutdown(); }
 		
 	}
-	@Atomic
-    public static void xmlScan(File file) {
-        log.trace("xmlScan: " + FenixFramework.getDomainRoot());    //falta logger
-	Manager manager = Manager.getInstance();
-	SAXBuilder builder = new SAXBuilder();
-	try {
-	    Document document = (Document)builder.build(file);
-	    manager.xmlImport(document.getRootElement());
-	} catch (JDOMException | IOException e) {
-	    e.printStackTrace();
-	}
-	}
-
+	
     @Atomic
     public static void setup() {
         Manager m = Manager.getInstance();
-        File file = new File();
-        User user = new User();
+        File home = new File();
+        User superUser = new User();
 
-        file.setManager(m);
-        file.setUser(user);
-        user.setManager(m);
+        home.setManager(m);
+        home.setUser(superUser);
+        superUser.setManager(m);
+
     }
+    
+    
+	
+    
+	@Atomic
+    public static void xmlScan(java.io.File file) {
+        log.trace("xmlScan: " + FenixFramework.getDomainRoot());  
+		Manager manager = Manager.getInstance();
+		SAXBuilder builder = new SAXBuilder();
+		try {
+		    Document document = (Document)builder.build(file);
+		    manager.xmlImport(document.getRootElement());
+		} catch (JDOMException | IOException e) {
+		    e.printStackTrace();
+		}
+	}
+
 
     @Atomic
     public static void xmlPrint() {
@@ -72,4 +80,5 @@ public class Main {
 		try { xmlOutput.output(doc, new PrintStream(System.out));
 		} catch (IOException e) { System.out.println(e); }
     }
+    
 }
