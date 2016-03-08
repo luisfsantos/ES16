@@ -5,5 +5,14 @@ public class Directory extends Directory_Base {
     public Directory() {
         super();
     }
+
+    public File getFile(String name) throws NoSuchFileInThisDirectoryException{
+    	Iterator iterator = getFileSet().iterator();
+    	while(iterator.hasNext()){
+    		File file = iterator.next();
+    		if(file.getName() == name) return file;
+    	}
+    	throw new NoSuchFileInThisDirectoryException(name);
+    }
     
 }
