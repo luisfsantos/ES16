@@ -9,22 +9,39 @@ public class User extends User_Base {
         super();
     }
 
+    public User(String username, Manager manager, Directory home){} //constructor minimo para o xmlImport
 	/*
 	public User(String username, String password, String name, String umask, Manager manager, Directory home ) {
 		super();
+		
+		if (username == null){
+			RAISE EXCEPTION
+		}
+		else if (password == null){
+            password = username;
+        }
+        else if (name == null){
+       	    name = username;
+        }
+        else if(mask == null){
+            mask = "rwxd----";
+        }
 		this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
 		this.setUmask(umask);
 		this.setManager(manager);
 		this.addFile(home);
+
+		
 	}*/
+
 	public void xmlImport(Element userNode){
 			//manager nao preciso, certo??
-    try {
+    /*try {
             setUsername(new String(userNode.getAttribute("username").getValue().getBytes("UTF-8")));
 	} catch (UnsupportedEncodingException e){}//DO SOMETHING
-
+	*/
 	try {
             setPassword(new String(userNode.getChild("password").getValue().getBytes("UTF-8")));
 	} catch (UnsupportedEncodingException e){}
@@ -33,10 +50,10 @@ public class User extends User_Base {
             setName(new String(userNode.getChild("name").getValue().getBytes("UTF-8")));
 	} catch (UnsupportedEncodingException e){}
 
-	try {
+	/*try {
             addFile(new Directory(userNode.getChild("home").getValue().getBytes("UTF-8")));  //ASSUMO QUE DIRECTORY RECEBE STRING
 	} catch (UnsupportedEncodingException e){}
-
+	*/
 	try {
             setUmask(new String(userNode.getChild("mask").getValue().getBytes("UTF-8")));
 	} catch (UnsupportedEncodingException e){}
