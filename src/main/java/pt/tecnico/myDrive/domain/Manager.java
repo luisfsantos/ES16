@@ -7,6 +7,7 @@ import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
+import java.util.regex.Pattern;
 
 
 
@@ -49,15 +50,27 @@ public class Manager extends Manager_Base {
     }
     
 
-    public void createNewUser(String username) throws UserAlreadyExistsException{
-    	if (this.hasUser(username)) {
-    		throw new UserAlreadyExistsException(username);
-    	}
+    public void createNewUser(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException{      
+    	
+        this.validateUsername(username);
+
     	User newUser = new User(username);
     	this.addUser(newUser);
     	newUser.setManager(this);
     }
-    
+
+    public boolean validateUsername(String username) throws UserAlreadyExistsException,EmptyUsernameException, InvalidUsernameException{
+        
+        if (this.hasUser(username)) {
+            throw new UserAlreadyExistsException(username);
+        }
+        
+        boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);    
+
+        if (username.isEmpty()) throw new EmptyUsernameException();
+        else if (!isAlphanumeric) throw new InvalidUsernameException();
+    }
+
     
     public File getFileById(int id) {
     	for (File file: this.getFileSet()) {

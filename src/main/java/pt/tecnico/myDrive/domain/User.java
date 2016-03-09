@@ -3,7 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.jdom2.DataConversionException;
 
-import java.util.regex.Pattern;
+
 
 
 public class User extends User_Base {
@@ -15,8 +15,6 @@ public class User extends User_Base {
     public User(String username, Manager manager, Directory home){} //constructor minimo necessario para o xmlImport
 	
 	public User(String username, String password, String name, String umask) {
-
-		validateUsername();   // ADICIONAR THROWS!!!
 
 		super();
 		this.setUsername(username);
@@ -46,15 +44,6 @@ public class User extends User_Base {
 	public User() {
 		this("root", "***", "Super User", "rwxdr-x-");
 	}
-
-	public void validateUsername(String username) throws EmptyUsernameException, InvalidUsernameException{
-				
-			boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);
-
-			if (username.isEmpty()) throw new EmptyUsernameException();
-			else if (!isAlphanumeric) throw new InvalidUsernameException();
-	}
-
 
 	@Override
 	public void setUmask(String permission) throws WrongSizePermissionException, InvalidCharPermissionException{
