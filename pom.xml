@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pt.tecnico</groupId>
-    <artifactId>myDrive</artifactId> <!-- FIXME -->
+    <artifactId>myDrive</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -62,7 +62,7 @@
                 <role>Integrator</role>
             </roles>
             <properties>
-                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist177961</picUrl> <!-- FIXME -->
+                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist177961</picUrl>
             </properties>
         </developer>
 
@@ -185,7 +185,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>pt.tecnico.myDrive.Main</mainClass> <!-- FIXME -->
+                    <mainClass>pt.tecnico.myDrive.Main</mainClass>
                     <killAfter>-1</killAfter>
                 </configuration>
             </plugin>
