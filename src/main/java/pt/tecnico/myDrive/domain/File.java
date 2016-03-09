@@ -19,6 +19,7 @@ public class File extends File_Base {
 		this.setLastModified(new DateTime());
 	}
 	
+	
 	//protected void initFile (String name) { }
 
 	@Override
@@ -37,17 +38,29 @@ public class File extends File_Base {
 		super.setPermissions(this.getUser().getUmask());
 	}
 
+	
 	public File lookup(String path) {}
+	
 	
 	public String getAbsolutePath() {
 		if (this == getParent())
 				return "";
 		else return getParent().getAbsolutePath() + "/" + getName();
 	}
+	
+	public void remove(){
+		setParent(null);
+		setUser(null);
+		setManager(null);
+		deleteDomainObject();
+	}
 
+	
 	public Element xmlExport() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+
 	
 }
