@@ -40,5 +40,22 @@ public class Directory extends Directory_Base {
 		path = path.subString(path.indexOf("/", 1));
 		return getFile(name).lookup(path);
 	}
+
+    public void lsDir() {
+        for(File file : super.getFileSet()) {
+            System.out.println(file.toString());
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "app " +
+                super.getPermissions() +
+                super.getFileSet().size() + // TODO need to add + 2 ???
+                " " + super.getUser().getUsername() +
+                " " + super.getId() +
+                " " + super.getLastModified() +
+                " " + super.getName();
+    }
 	
 }

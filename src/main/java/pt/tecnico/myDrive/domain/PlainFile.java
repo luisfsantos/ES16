@@ -28,4 +28,15 @@ public class PlainFile extends PlainFile_Base {
         else
             System.out.println(super.getContent());
     }
+
+    @Override
+    public String toString() {
+        return "plain file " +
+                super.getPermissions() +
+                super.getContent().length() +
+                " " + super.getUser().getUsername() +
+                " " + super.getId() +
+                " " + super.getLastModified() +
+                " " + super.getName();
+    }
 }

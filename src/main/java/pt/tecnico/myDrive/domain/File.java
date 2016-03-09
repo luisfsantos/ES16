@@ -3,7 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-public class File extends File_Base {
+public class File extends File_Base { //TODO Change class to abstract ???
 
 	public File() {
 		super();
