@@ -3,7 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-public class File extends File_Base { //TODO Change class to abstract ???
+public class File extends File_Base {
 
 	public File() {
 		super();
@@ -18,7 +18,6 @@ public class File extends File_Base { //TODO Change class to abstract ???
 		this.setParent(parent);
 		this.setLastModified(new DateTime());
 	}
-	
 	
 	//protected void initFile (String name) { }
 
@@ -38,23 +37,24 @@ public class File extends File_Base { //TODO Change class to abstract ???
 		super.setPermissions(this.getUser().getUmask());
 	}
 
-	
-	public File lookup(String path) {}
-	
+	public File lookup(String path) {
+		
+		
+		
+	}
 	
 	public String getAbsolutePath() {
 		if (this == getParent())
 				return "";
 		else return getParent().getAbsolutePath() + "/" + getName();
 	}
-	
-	public void remove(){
+
+	public void removeFile(){
 		setParent(null);
 		setUser(null);
 		setManager(null);
 		deleteDomainObject();
 	}
-
 	
 	public Element xmlExport() {
 		// TODO Auto-generated method stub
@@ -62,5 +62,4 @@ public class File extends File_Base { //TODO Change class to abstract ???
 	}
 	
 
-	
 }

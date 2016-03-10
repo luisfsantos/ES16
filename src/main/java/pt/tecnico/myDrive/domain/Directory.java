@@ -1,11 +1,14 @@
 package pt.tecnico.myDrive.domain;
 
+import java.util.*;
+
 public class Directory extends Directory_Base {
 	
 	public Directory() {
 		super();
 	}
-
+	
+	
 	public File getFile(String name) throws NoSuchFileInThisDirectoryException{
 		Iterator iterator = getFileSet().iterator();
 		while(iterator.hasNext()){
@@ -24,6 +27,7 @@ public class Directory extends Directory_Base {
 		return false;
 	}
 
+	
 	public File lookup(String path) throws ExpectedSlashPathStartException, NoSuchFileInThisDirectoryException{
 		String name;
 
@@ -41,12 +45,32 @@ public class Directory extends Directory_Base {
 		return getFile(name).lookup(path);
 	}
 
+	public void remove() throws notEmptyDirectoryException{                  //TO REVIEW!!!
+		
+		if (this.getFileSet().size()==0){
+			
+			this.rmv();                                                  
+		}
+		else 
+			throw new notEmptyDirectoryException();
+	}
+	
+	public void rmv(){                       //TO REVIEW
+		
+		setParent(null);
+		setUser(null);
+		setManager(null);
+		deleteDomainObject();	
+		
+	}
+	
     public void lsDir() {
         for(File file : super.getFileSet()) {
             System.out.println(file.toString());
         }
     }
 
+    
     @Override
     public String toString() {
         return "app " +
