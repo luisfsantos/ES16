@@ -20,6 +20,11 @@ public class User extends User_Base {
 	
 	public User(String username, String password, String name, String umask, Manager manager, Directory home) {
 		super();
+		this.initUser(username, password, name, umask, manager, home);
+	}
+	
+	
+	private void initUser(String username, String password, String name, String umask, Manager manager, Directory home) {
 		this.setManager(manager);
 		this.setHome(home);
 		this.setUsername(username);
@@ -27,7 +32,6 @@ public class User extends User_Base {
 		this.setName(name);
 		this.setUmask(umask);
 	}
-	
 	
 	/*
 			if (username == null){
