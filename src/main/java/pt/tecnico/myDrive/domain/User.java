@@ -1,6 +1,12 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+
+import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
+import pt.tecnico.myDrive.exception.WrongSizePermissionException;
+
+import java.io.UnsupportedEncodingException;
+
 import org.jdom2.DataConversionException;
 
 
@@ -47,7 +53,7 @@ public class User extends User_Base {
 
 	@Override
 	public void setUmask(String permission) throws WrongSizePermissionException, InvalidCharPermissionException{
-		if(permission.length() != 8) throw new WrongSizePermissionException(permisson.length());
+		if(permission.length() != 8) throw new WrongSizePermissionException(permission.length());
 		Mask mask[] = Mask.values();
 		//String mask = "rwxdrwxd";
 		for(int i = 0; i < 8; i++)
