@@ -57,11 +57,18 @@ relation ManagerHasFiles {
 }
 
 relation UserHasFiles {
-	User playsRole user {
+	User playsRole owner {
 	multiplicity 1;
 	}
 	File playsRole file {
-	multiplicity 1..*;
+	multiplicity *;
+	}
+}
+
+relation UserHasHome {
+	User playsRole;
+	Directory playsRole home {
+	multiplicity 1;
 	}
 }
 
