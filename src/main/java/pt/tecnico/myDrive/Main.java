@@ -32,10 +32,11 @@ public class Main {
 			}
 			else {
 				// import
-				
+				/* C
 				for (String s: args){
 	    			xmlScan(new java.io.File(s));
 	    		}
+	    		C */
 	    		
 			}
 			
@@ -45,19 +46,15 @@ public class Main {
 	
     @Atomic
     public static void setup() {
-        Manager m = Manager.getInstance();
-        File home = new File();
-        User superUser = new User();
-
-        home.setManager(m);
-        home.setUser(superUser);
-        superUser.setManager(m);
-
+    //	Manager.getInstance().createNewUser("ES");
+    	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
+    	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
+    	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
     }
     
     
 	
-    
+    /* C
 	@Atomic
     public static void xmlScan(java.io.File file) {
         log.trace("xmlScan: " + FenixFramework.getDomainRoot());  
@@ -80,5 +77,5 @@ public class Main {
 		try { xmlOutput.output(doc, new PrintStream(System.out));
 		} catch (IOException e) { System.out.println(e); }
     }
-    
+    C */
 }

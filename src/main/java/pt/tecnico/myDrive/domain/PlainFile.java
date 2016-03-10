@@ -6,11 +6,12 @@ public class PlainFile extends PlainFile_Base {
         super();
     }
 
-    public  PlainFile(String content) {
+    public PlainFile(String content) {
         super();
         setContent(content);
     }
-
+    
+    /* C
     @Override
     public void setContent(String newContent) {
         String content = super.getContent();
@@ -39,4 +40,5 @@ public class PlainFile extends PlainFile_Base {
                 " " + super.getLastModified() +
                 " " + super.getName();
     }
+    C */
 }

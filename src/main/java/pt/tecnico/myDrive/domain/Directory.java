@@ -4,11 +4,33 @@ import java.util.*;
 
 public class Directory extends Directory_Base {
 	
-	public Directory() {
-		super();
+	public Directory(String name, String permission, Manager manager, User owner, Directory parent) {
+		this.initFile(name, permission, manager, owner, parent);
 	}
 	
 	
+	@Override
+	public Directory createDirectory(String name, Manager manager, User owner) {
+		Directory dir = new Directory(name, owner.getUmask(), manager, owner, this);
+		this.addFile(dir);
+		return dir;
+	}
+	
+	@Override
+	public App createApp(String name, Manager manager, User owner, String content) {
+		App app = new App(name, owner.getUmask(), manager, owner, this, content);
+		this.addFile(app);
+		return app;
+	}
+	
+	@Override
+	public Link createLink(String name, Manager manager, User owner, String content) {
+		Link link = new Link(name, owner.getUmask(), manager, owner, this, content);
+		this.addFile(link);
+		return link;
+	}
+	
+	/* C
 	public File getFile(String name) throws NoSuchFileInThisDirectoryException{
 		Iterator iterator = getFileSet().iterator();
 		while(iterator.hasNext()){
@@ -81,5 +103,5 @@ public class Directory extends Directory_Base {
                 " " + super.getLastModified() +
                 " " + super.getName();
     }
-	
+	C */ 
 }

@@ -2,10 +2,12 @@ package pt.tecnico.myDrive.domain;
 
 public class Link extends Link_Base {
     
-    public Link() {
-        super();
+    public Link(String name, String permission, Manager manager, User owner, Directory parent, String content) {
+        this.initFile(name, permission, manager, owner, parent);
+        this.setContent(content);
     }
 
+    /* C
     @Override
     public String toString() {
         return "link " +
@@ -16,5 +18,5 @@ public class Link extends Link_Base {
                 " " + super.getLastModified() +
                 " " + super.getName();
     }
-
+	C */
 }

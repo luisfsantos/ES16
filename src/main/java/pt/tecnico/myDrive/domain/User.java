@@ -17,18 +17,18 @@ public class User extends User_Base {
     public User() {
         super();
     }
-
-    public User(String username, Manager manager, Directory home){} //constructor minimo necessario para o xmlImport
 	
-	public User(String username, String password, String name, String umask) {
-
+	public User(String username, String password, String name, String umask, Manager manager, Directory home) {
 		super();
+		this.setManager(manager);
+		this.setHome(home);
 		this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
 		this.setUmask(umask);
-		
 	}
+	
+	
 	/*
 			if (username == null){
 			RAISE EXCEPTION
@@ -43,13 +43,9 @@ public class User extends User_Base {
             mask = "rwxd----";
         }
 	*/
-	public User(String username) {
-		this(username, username, username, "rwxd----");
-	}
 	
-	public User() {
-		this("root", "***", "Super User", "rwxdr-x-");
-	}
+	/* C
+
 
 	@Override
 	public void setUmask(String permission) throws WrongSizePermissionException, InvalidCharPermissionException{
@@ -150,5 +146,5 @@ public class User extends User_Base {
 
 		return element;
 	}
-	
+	C */
 }

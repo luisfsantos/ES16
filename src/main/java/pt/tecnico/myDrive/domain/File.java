@@ -9,18 +9,31 @@ public class File extends File_Base {
 		super();
 	}
 
-	public File(int id, String name, User username, String permissions, Directory parent) {
-		super();
-		this.setId(id);
-		this.setName(name);
-		this.setUser(username);
-		this.setPermissions(permissions);
+	
+	protected void initFile (String name, String permission, Manager manager, User owner, Directory parent) { 
+		this.setManager(manager);
+		this.setOwner(owner);
 		this.setParent(parent);
+		this.setName(name);
+		this.setPermissions(permission);
+		this.setId(manager.getNextIdCounter());
 		this.setLastModified(new DateTime());
 	}
-	
-	//protected void initFile (String name) { }
 
+	
+	public Directory createDirectory(String name, Manager manager, User owner) {
+		return null; // create exception
+	}
+	
+	public App createApp(String name, Manager manager, User owner, String content) {
+		return null; // create exception
+	}
+	
+	public Link createLink(String name, Manager manager, User owner, String content) {
+		return null; // create exception
+	}
+	
+	/* C
 	@Override
 	public void setPermissions(String permission) throws WrongSizePermissionException, InvalidCharPermissionException {
 		if(permission.length() != 8) throw new WrongSizePermissionException(permisson.length());
@@ -61,5 +74,5 @@ public class File extends File_Base {
 		return null;
 	}
 	
-
+	C */
 }

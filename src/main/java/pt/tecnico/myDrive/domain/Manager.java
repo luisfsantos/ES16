@@ -24,8 +24,17 @@ public class Manager extends Manager_Base {
     } 
     
     private Manager() {
-        this.setRoot(FenixFramework.getDomainRoot());
+    	this.setRoot(FenixFramework.getDomainRoot());
         this.setIdCounter(0);
+        
+        User superUser = new User("root", "***", "Super User", "rwxdr-x-", this, null);
+        		
+        File startHome = new Directory("/", "rwxdr-x-", this, superUser, null);
+        startHome.setParent((Directory)startHome);
+        
+        Directory home = startHome.createDirectory("home", this, superUser);
+        Directory rootHome = home.createDirectory("root", this, superUser);
+        superUser.setHome(rootHome);
     }
     
 	
@@ -46,10 +55,24 @@ public class Manager extends Manager_Base {
     @Override
     public void addUser(User newUser) {
     	super.addUser(newUser);
-    	newUser.setManager(this);
     }
     
-
+    
+    public void createNewUser(String username){   
+    	this.createNewUser(username, username, username, "rwxd----");
+    }
+    
+    
+    // miss exceptions
+    public void createNewUser(String username, String password, String name, String umask){
+    	User newUser = new User(username, password, name, umask, this, null);
+    	Directory userHome = this.getHomeDirectory().createDirectory(username, this, newUser);
+    	newUser.setHome(userHome);
+    	this.addUser(newUser);
+    }
+    
+    
+    /* C
     public void createNewUser(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException{      
     	
         this.validateUsername(username);
@@ -58,7 +81,7 @@ public class Manager extends Manager_Base {
     	this.addUser(newUser);
     	newUser.setManager(this);
     }
-
+    
     public boolean validateUsername(String username) throws UserAlreadyExistsException,EmptyUsernameException, InvalidUsernameException{
         
         if (this.hasUser(username)) {
@@ -70,7 +93,8 @@ public class Manager extends Manager_Base {
         if (username.isEmpty()) throw new EmptyUsernameException();
         else if (!isAlphanumeric) throw new InvalidUsernameException();
     }
-
+	C */ 
+    
     
     public File getFileById(int id) {
     	for (File file: this.getFileSet()) {
@@ -100,13 +124,30 @@ public class Manager extends Manager_Base {
     	return currCounter;
     }
     
+    
+    public Directory getHomeDirectory() {
+    	for (File f: this.getFileSet()) {
+    		if (f.getName().equals("/")) {
+    			Directory pathStart = (Directory) f;
+    			for (File h: pathStart.getFileSet()) {
+    				if (h.getName().equals("home")) {
+    					return (Directory) h;
+    				}
+    			}
+    			return null;
+    		}
+    	}
+    	return null;
+    }
+    
 
-
+    /* C
     public Directory createMissingDirectories(String directoriesToCreate){   }
 
     public Directory lookUpDir(String pathname){};
     
-    public void xmlImport(Element rootDrive) {      //throws UserDoesNotExistException
+    
+    public void xmlImport(Element rootDrive) {      
         
 
         for (Element userNode: rootDrive.getChildren("user")){
@@ -126,9 +167,9 @@ public class Manager extends Manager_Base {
             user.xmlImport(userNode);
 
         }
-}
-
-    
+    }
+	
+    C */
     
         /*
         for(Element plainNode: rootDrive.getChildren("plain")){
@@ -218,6 +259,8 @@ public class Manager extends Manager_Base {
         }
         */
 
+    
+    /* C
     public Document xmlExport() {
         Element element = new Element("myDrive");
         Document doc = new Document(element);
@@ -229,7 +272,10 @@ public class Manager extends Manager_Base {
             element.addContent(f.xmlExport());
 
         return doc;
+        
+        
+        
     }
-    
+    C */
 
 }
