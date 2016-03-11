@@ -2,6 +2,8 @@ package pt.tecnico.myDrive.domain;
 
 import java.util.*;
 
+import org.jdom2.Element;
+
 public class Directory extends Directory_Base {
 	
 	public Directory(String name, String permission, Manager manager, User owner, Directory parent) {
@@ -104,4 +106,27 @@ public class Directory extends Directory_Base {
                 " " + super.getName();
     }
 	C */ 
+	
+	public Element xmlExport() {
+		Element element = new Element("dir");
+		element.setAttribute("id", getId().toString());
+		
+		Element pathElement = new Element("path");
+		pathElement.setText(getAbsolutePath());
+		element.addContent(pathElement);
+
+		Element nameElement = new Element("name");
+		nameElement.setText(getName());
+		element.addContent(nameElement);
+
+		Element ownerElement = new Element("owner");
+		ownerElement.setText(getOwner().getName());
+		element.addContent(ownerElement);
+
+		Element permissionElement = new Element("perm");
+		permissionElement.setText(getPermissions());
+		element.addContent(permissionElement);
+
+		return element;
+	}
 }

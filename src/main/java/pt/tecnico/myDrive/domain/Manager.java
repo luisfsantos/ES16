@@ -7,6 +7,10 @@ import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 
@@ -261,16 +265,26 @@ public class Manager extends Manager_Base {
 
     
     public Document xmlExport() {
+    	final int defaultNoFiles= 3;
         Element element = new Element("myDrive");
         Document doc = new Document(element);
-
-        for (User u: getUserSet()) {
+        List<File> files = new ArrayList<File>(getFileSet());
+        
+        for (User u: getUserSet())
         	if (!u.getUsername().equals("root"))
         		element.addContent(u.xmlExport());
-        }
+        
+        if (files.size() > defaultNoFiles)  {
+            Collections.sort(files, new Comparator<File>() {
+            	public int compare(File f1, File f2) {
+            		return (f1.getId() < f2.getId() ? -1 : (f1.getId() == f2.getId() ? 0 : 1));
+            	}
+            });
             
-        /*for (File f: getFileSet())
-            element.addContent(f.xmlExport());*/
+            for (File f: files)
+                element.addContent(f.xmlExport());
+        }
+        
 
         return doc;
         
