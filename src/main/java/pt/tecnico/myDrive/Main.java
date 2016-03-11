@@ -46,7 +46,7 @@ public class Main {
 	
     @Atomic
     public static void setup() {
-    	//Manager.getInstance().createNewUser("ES");
+    	Manager.getInstance().createNewUser("user3");
     	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
     	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
     	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());

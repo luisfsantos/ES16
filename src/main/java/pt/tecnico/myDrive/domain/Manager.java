@@ -1,5 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
@@ -16,7 +18,7 @@ import java.util.regex.Pattern;
 
 
 public class Manager extends Manager_Base {
-	
+	static final Logger log = LogManager.getRootLogger();
 	
 	// manager use Singleton design pattern
     public static Manager getInstance() {
@@ -31,7 +33,8 @@ public class Manager extends Manager_Base {
     	this.setRoot(FenixFramework.getDomainRoot());
         this.setIdCounter(0);
         
-        User superUser = new User("root", "***", "Super User", "rwxdr-x-", this, null);
+        User superUser = new User("root", "***", "Super User", "rwxdr-x-", null);
+        this.addUser(superUser);
         		
         File startHome = new Directory("/", "rwxdr-x-", this, superUser, null);
         startHome.setParent((Directory)startHome);
@@ -39,6 +42,8 @@ public class Manager extends Manager_Base {
         Directory home = startHome.createDirectory("home", this, superUser);
         Directory rootHome = home.createDirectory("root", this, superUser);
         superUser.setHome(rootHome);
+        
+        log.trace("[Manager:getInstance] new Manager created");
     }
     
 	
@@ -69,7 +74,7 @@ public class Manager extends Manager_Base {
     
     // miss exceptions
     public void createNewUser(String username, String password, String name, String umask){
-    	User newUser = new User(username, password, name, umask, this, null);
+    	User newUser = new User(username, password, name, umask, null);
     	Directory userHome = this.getHomeDirectory().createDirectory(username, this, newUser);
     	newUser.setHome(userHome);
     	this.addUser(newUser);

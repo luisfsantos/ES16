@@ -18,19 +18,29 @@ public class User extends User_Base {
         super();
     }
 	
-	public User(String username, String password, String name, String umask, Manager manager, Directory home) {
+	public User(String username, String password, String name, String umask, Directory home) {
 		super();
-		this.initUser(username, password, name, umask, manager, home);
+		this.initUser(username, password, name, umask, home);
 	}
 	
 	
-	private void initUser(String username, String password, String name, String umask, Manager manager, Directory home) {
-		this.setManager(manager);
+	private void initUser(String username, String password, String name, String umask, Directory home) {
+		
 		this.setHome(home);
 		this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
 		this.setUmask(umask);
+	}
+	
+	
+	@Override
+	public void setManager(Manager manager) {
+		if (manager == null) {	// to remove user
+			super.setManager(manager);
+			return;
+		}
+		manager.addUser(this);
 	}
 	
 	/*
