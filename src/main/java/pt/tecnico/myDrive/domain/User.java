@@ -127,7 +127,8 @@ public class User extends User_Base {
 	public boolean equals(User user){
 		return this.getUsername() == user.getUsername();
 	}
-
+	C */
+	
 	public Element xmlExport() {
 		Element element = new Element("user");
 		element.setAttribute("username", getUsername());
@@ -150,5 +151,4 @@ public class User extends User_Base {
 
 		return element;
 	}
-	C */
 }

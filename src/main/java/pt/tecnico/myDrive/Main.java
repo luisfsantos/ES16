@@ -46,10 +46,11 @@ public class Main {
 	
     @Atomic
     public static void setup() {
-    //	Manager.getInstance().createNewUser("ES");
+    	//Manager.getInstance().createNewUser("ES");
     	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
     	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
     	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
+    	xmlPrint();
     }
     
     
@@ -67,7 +68,7 @@ public class Main {
 		    e.printStackTrace();
 		}
 	}
-
+	C */
 
     @Atomic
     public static void xmlPrint() {
@@ -77,5 +78,5 @@ public class Main {
 		try { xmlOutput.output(doc, new PrintStream(System.out));
 		} catch (IOException e) { System.out.println(e); }
     }
-    C */
+    
 }

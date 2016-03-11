@@ -56,11 +56,6 @@ public class File extends File_Base {
 		
 	}
 	
-	public String getAbsolutePath() {
-		if (this == getParent())
-				return "";
-		else return getParent().getAbsolutePath() + "/" + getName();
-	}
 
 	public void removeFile(){
 		setParent(null);
@@ -68,11 +63,17 @@ public class File extends File_Base {
 		setManager(null);
 		deleteDomainObject();
 	}
+	C */
+	
+	public String getAbsolutePath() {
+		if (this == getParent())
+				return "";
+		else return getParent().getAbsolutePath() + "/" + getName();
+	}
 	
 	public Element xmlExport() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	C */
 }
