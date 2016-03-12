@@ -93,5 +93,6 @@ public abstract class File extends File_Base {
 
 	public abstract String getFileType();
 	public abstract int getSize();
-	
+
+	public abstract File lookup(String path);
 }

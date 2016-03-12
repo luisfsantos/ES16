@@ -23,6 +23,10 @@ public class PlainFile extends PlainFile_Base {
         }
     }
 
+    public File lookup(String path){
+        return this;
+    }
+
     public void showContent() {
         if(super.getContent() == null)
             System.out.println("");
@@ -40,3 +44,5 @@ public class PlainFile extends PlainFile_Base {
         return "plain-file";
     }
 }
+
+
