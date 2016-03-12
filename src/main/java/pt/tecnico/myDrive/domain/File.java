@@ -87,7 +87,7 @@ public abstract class File extends File_Base {
 				" " + getSize() +
 				" " + getOwner().getUsername() +
 				" " + getId() +
-				" " + getLastModified().toString("dd-MM-YYYY-HH:mm:ss") +
+				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
 				" " + getName();
 	}
 

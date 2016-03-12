@@ -97,12 +97,19 @@ public class Directory extends Directory_Base {
 	C */
 
 	public void lsDir() {
+		List<File> files = new ArrayList<File>(getFileSet());
+
+		Collections.sort(files, new Comparator<File>() {
+			public int compare(File f1, File f2) {
+				return f1.getName().compareTo(f2.getName());
+			}
+		});
+
 		System.out.println(this.toString("."));
 		System.out.println(getParent().toString(".."));
 
-        for(File file : super.getFileSet()) {
-            System.out.println(file.toString());
-        }
+		for (File f: files)
+			System.out.println(f.toString());
     }
 
 	public Element xmlExport() {
@@ -144,7 +151,7 @@ public class Directory extends Directory_Base {
 				" " + getSize() +
 				" " + getOwner().getUsername() +
 				" " + getId() +
-				" " + getLastModified().toString("dd-MM-YYYY-HH:mm:ss") +
+				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
 				" " + name;
 	}
 }
