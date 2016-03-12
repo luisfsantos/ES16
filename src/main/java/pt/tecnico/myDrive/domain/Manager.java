@@ -19,11 +19,16 @@ import java.util.regex.Pattern;
 
 public class Manager extends Manager_Base {
 	static final Logger log = LogManager.getRootLogger();
+	private Directory rootDirectory;
 	
 	// manager use Singleton design pattern
     public static Manager getInstance() {
     	Manager manager = FenixFramework.getDomainRoot().getManager();
     	if (manager != null) {
+    		for (File file: manager.getFileSet()) {
+        		if (file.getName().equals("/"))
+        			manager.rootDirectory = (Directory)file;
+        	}
     		return manager;
     	}
     	return new Manager();
@@ -38,6 +43,7 @@ public class Manager extends Manager_Base {
         		
         File startHome = new Directory("/", "rwxdr-x-", this, superUser, null);
         startHome.setParent((Directory)startHome);
+        this.rootDirectory = (Directory)startHome;
         
         Directory home = startHome.createDirectory("home", this, superUser);
         Directory rootHome = home.createDirectory("root", this, superUser);
@@ -48,7 +54,12 @@ public class Manager extends Manager_Base {
     
 	
         
-    public User getUserByUsername(String username) {
+    public Directory getRootDirectory() {
+		return rootDirectory;
+	}
+
+
+	public User getUserByUsername(String username) {
     	for (User user: this.getUserSet()) {
     		if (user.getUsername().equals(username))
     			return user;
@@ -135,18 +146,12 @@ public class Manager extends Manager_Base {
     
     
     public Directory getHomeDirectory() {
-    	for (File f: this.getFileSet()) {
-    		if (f.getName().equals("/")) {
-    			Directory pathStart = (Directory) f;
-    			for (File h: pathStart.getFileSet()) {
-    				if (h.getName().equals("home")) {
-    					return (Directory) h;
-    				}
-    			}
-    			return null;
-    		}
-    	}
-    	return null;
+		for (File h: rootDirectory.getFileSet()) {
+			if (h.getName().equals("home")) {
+				return (Directory) h;
+			}
+		}
+		return null;
     }
     
 
