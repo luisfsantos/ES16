@@ -37,7 +37,7 @@ public class User extends User_Base {
 	@Override
 	public void setManager(Manager manager) {
 		if (manager == null) {	// to remove user
-			super.setManager(manager);
+			super.setManager(null);
 			return;
 		}
 		manager.addUser(this);
@@ -160,5 +160,19 @@ public class User extends User_Base {
 		element.addContent(maskElement);
 
 		return element;
+	}
+
+	public void xmlImport(Element userElement) {
+		String password = userElement.getChildText("password");
+		String name = userElement.getChildText("name");
+		String mask = userElement.getChildText("mask");
+		String home = userElement.getChildText("home");
+
+		if (password != null) setPassword(password);
+		if (name != null) setName(name);
+		if (mask != null) setUmask(mask);
+		if (home == null || !home.equals("/home/" + getUsername())) {
+			//TODO create Missing Files
+		}
 	}
 }

@@ -1,7 +1,5 @@
 package pt.tecnico.myDrive;
 
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -16,28 +14,22 @@ import org.apache.logging.log4j.Logger;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
-import pt.tecnico.myDrive.domain.User;
-import pt.tecnico.myDrive.domain.File;
 
 
 public class Main {
 	static final Logger log = LogManager.getRootLogger();
 	
-	public static void main(String[] args) {
-		System.out.println("Welcome to MyDrive!");
+	public static void main(String[] args){
+		System.out.println("*** Welcome to MyDrive! ***");
 		
 		try {
 			if (args.length == 0) {
 				setup();
 			}
 			else {
-				// import
-				/* C
-				for (String s: args){
+				for (String s: args) {
 	    			xmlScan(new java.io.File(s));
 	    		}
-	    		C */
-	    		
 			}
 			
 		} finally { FenixFramework.shutdown(); }
@@ -52,10 +44,7 @@ public class Main {
     	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
     	xmlPrint();
     }
-    
-    
-	
-    /* C
+
 	@Atomic
     public static void xmlScan(java.io.File file) {
         log.trace("xmlScan: " + FenixFramework.getDomainRoot());  
@@ -68,11 +57,10 @@ public class Main {
 		    e.printStackTrace();
 		}
 	}
-	C */
 
     @Atomic
     public static void xmlPrint() {
-        log.trace("xmlPrint: " + FenixFramework.getDomainRoot());
+        log.trace("[Main:xmlPrint] " + FenixFramework.getDomainRoot());
 		Document doc = Manager.getInstance().xmlExport();
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		try { xmlOutput.output(doc, new PrintStream(System.out));
