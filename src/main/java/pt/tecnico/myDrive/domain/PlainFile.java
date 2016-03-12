@@ -6,12 +6,12 @@ public class PlainFile extends PlainFile_Base {
         super();
     }
 
-    public PlainFile(String content) {
-        super();
-        setContent(content);
+    public PlainFile(String name, String permission, Manager manager, User owner, Directory parent, String content) {
+        this.initFile(name, permission, manager, owner, parent);
+        this.setContent(content);
     }
-    
-    /* C
+
+
     @Override
     public void setContent(String newContent) {
         String content = super.getContent();
@@ -31,14 +31,12 @@ public class PlainFile extends PlainFile_Base {
     }
 
     @Override
-    public String toString() {
-        return "plain file " +
-                super.getPermissions() +
-                super.getContent().length() +
-                " " + super.getUser().getUsername() +
-                " " + super.getId() +
-                " " + super.getLastModified() +
-                " " + super.getName();
+    public int getSize() {
+        return getContent().length();
     }
-    C */
+
+    @Override
+    public String getFileType() {
+        return "plain-file";
+    }
 }

@@ -3,7 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-public class File extends File_Base {
+public abstract class File extends File_Base {
 
 	public File() {
 		super();
@@ -22,17 +22,21 @@ public class File extends File_Base {
 
 	
 	public Directory createDirectory(String name, Manager manager, User owner) {
-		return null; // create exception
+		return null; //TODO - create exception
 	}
 	
 	public App createApp(String name, Manager manager, User owner, String content) {
-		return null; // create exception
+		return null; //TODO - create exception
 	}
 	
 	public Link createLink(String name, Manager manager, User owner, String content) {
-		return null; // create exception
+		return null; //TODO - create exception
 	}
-	
+
+	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
+		return null; //TODO - create exception
+	}
+
 	/* C
 	@Override
 	public void setPermissions(String permission) throws WrongSizePermissionException, InvalidCharPermissionException {
@@ -75,5 +79,19 @@ public class File extends File_Base {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return getFileType() +
+				" " + getPermissions() +
+				" " + getSize() +
+				" " + getOwner().getUsername() +
+				" " + getId() +
+				" " + getLastModified().toString("dd-MM-YYYY-HH:mm:ss") +
+				" " + getName();
+	}
+
+	public abstract String getFileType();
+	public abstract int getSize();
 	
 }

@@ -7,16 +7,8 @@ public class Link extends Link_Base {
         this.setContent(content);
     }
 
-    /* C
     @Override
-    public String toString() {
-        return "link " +
-                super.getPermissions() +
-                super.getContent().length() +
-                " " + super.getUser().getUsername() +
-                " " + super.getId() +
-                " " + super.getLastModified() +
-                " " + super.getName();
+    public String getFileType() {
+        return "link";
     }
-	C */
 }

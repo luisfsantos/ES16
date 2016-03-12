@@ -31,6 +31,13 @@ public class Directory extends Directory_Base {
 		this.addFile(link);
 		return link;
 	}
+
+	@Override
+	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
+		PlainFile plainFile = new PlainFile(name, owner.getUmask(), manager, owner, this, content);
+		this.addFile(plainFile);
+		return plainFile;
+	}
 	
 	/* C
 	public File getFile(String name) throws NoSuchFileInThisDirectoryException{
@@ -87,26 +94,17 @@ public class Directory extends Directory_Base {
 		deleteDomainObject();	
 		
 	}
-	
-    public void lsDir() {
+	C */
+
+	public void lsDir() {
+		System.out.println(this.toString("."));
+		System.out.println(getParent().toString(".."));
+
         for(File file : super.getFileSet()) {
             System.out.println(file.toString());
         }
     }
 
-    
-    @Override
-    public String toString() {
-        return "app " +
-                super.getPermissions() +
-                super.getFileSet().size() + // TODO need to add + 2 ???
-                " " + super.getUser().getUsername() +
-                " " + super.getId() +
-                " " + super.getLastModified() +
-                " " + super.getName();
-    }
-	C */ 
-	
 	public Element xmlExport() {
 		Element element = new Element("dir");
 		element.setAttribute("id", getId().toString());
@@ -128,5 +126,25 @@ public class Directory extends Directory_Base {
 		element.addContent(permissionElement);
 
 		return element;
+	}
+
+	@Override
+	public String getFileType() {
+		return "dir";
+	}
+
+	@Override
+	public int getSize() {
+		return getFileSet().size() + 2;
+	}
+
+	public String toString(String name) {
+		return getFileType() +
+				" " + getPermissions() +
+				" " + getSize() +
+				" " + getOwner().getUsername() +
+				" " + getId() +
+				" " + getLastModified().toString("dd-MM-YYYY-HH:mm:ss") +
+				" " + name;
 	}
 }
