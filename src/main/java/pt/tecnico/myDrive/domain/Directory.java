@@ -38,16 +38,15 @@ public class Directory extends Directory_Base {
 		this.addFile(plainFile);
 		return plainFile;
 	}
-	
-	/* C
-	public File getFile(String name) throws NoSuchFileInThisDirectoryException{
-		Iterator iterator = getFileSet().iterator();
-		while(iterator.hasNext()){
-			File file = iterator.next();
-			if(file.getName() == name) return file;
-		}
-		throw new NoSuchFileInThisDirectoryException(name);
+
+
+	public File getFile(String name) {
+		for (File file : getFileSet())
+			if (file.getName().equals(name))
+				return file;
+		return null;
 	}
+	/*
 
 	public boolean hasFile(String name){
 		Iterator iterator = getFileSet().iterator();
@@ -56,26 +55,48 @@ public class Directory extends Directory_Base {
 			if(file.getName() == name) return true;
 		}
 		return false;
-	}
+	}*/
 
-	
-	public File lookup(String path) throws ExpectedSlashPathStartException, NoSuchFileInThisDirectoryException{
+	public File lookup(String path) {
 		String name;
 
-		if(path.charAt(0) != '/') 
-			throw new ExpectedSlashPathStartException();
-		if(path.charAt(1) == '/' || path.charAt(1) == '.'){
-			path = path.subString(path.indexOf("/", 1));
+		while(path.endsWith("/"))
+			path = path.substring(0, path.lastIndexOf('/'));
+
+		if(path.startsWith("/")) {
+			if(this != getParent()) {
+				return getParent().lookup(path);
+			} else {
+				while(path.startsWith("/"))
+					path = path.substring(1);
+			}
+		}
+		if(path.startsWith("..")){
+			if(path.indexOf('/') == -1) return getParent();
+			path = path.substring(path.indexOf("/", 1) + 1);
+			while(path.startsWith("/"))
+				path = path.substring(1);
+			return getParent().lookup(path);
+		}
+		if(path.startsWith(".")){
+			if(path.indexOf('/') == -1) return this;
+			path = path.substring(path.indexOf("/", 1) + 1);
+			while(path.startsWith("/"))
+				path = path.substring(1);
 			return this.lookup(path);
 		}
-		if(!path.subString(1).contains('/'))
-			return getFile(path);
+		if(path.indexOf('/') == -1) {
+			name = path;
+			return getFile(name);
+		}
 
-		name = path.subString(1, path.indexOf("/", 1));
-		path = path.subString(path.indexOf("/", 1));
-		return getFile(name).lookup(path);
+		name = path.substring(0, path.indexOf("/", 1));
+		path = path.substring(path.indexOf("/", 1) + 1);
+		while(path.startsWith("/"))
+			path = path.substring(1);
+		return this.getFile(name).lookup(path);
 	}
-
+	/*
 	public void remove() throws notEmptyDirectoryException{                  //TO REVIEW!!!
 		
 		if (this.getFileSet().size()==0){
