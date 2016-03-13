@@ -6,49 +6,33 @@ import pt.tecnico.myDrive.exception.*;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-
 public class Directory extends Directory_Base {
 	
 	public Directory(String name, String permission, Manager manager, User owner, Directory parent) {
 		this.initFile(name, permission, manager, owner, parent);
 	}
 
-	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException{ //throws UserDoesNotExistException{
+	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
+		String path = new String(dirNode.getChild("path").getValue().getBytes("UTF-8"));
+		String ownerName = new String(dirNode.getChild("owner").getValue().getBytes("UTF-8"));
+		String name = new String(dirNode.getChild("name").getValue().getBytes("UTF-8"));
 
-		String path = dirNode.getChild("path").getValue();
-		String ownerName = dirNode.getChild("owner").getValue();
-		String name = dirNode.getChild("name").getValue();
-
-		User user = manager.getUserByUsername(ownerName);
-
-		Directory barra = manager.getHomeDirectory().getParent();
-
-		if (user == null){
+		User owner = manager.getUserByUsername(ownerName);
+		if (owner == null){
 			throw new UserDoesNotExistException(ownerName);
 		}
 
-		try {
-			barra.lookup(path);
-		} catch (NullPointerException a) {
-			manager.createMissingDirectories(path);
-			setManager(manager);
-			super.xmlImport(dirNode);
-			return;
-		} finally {
-			Directory parent = (Directory) barra.lookup(path);
-			if (!parent.hasFile(name)) {
-				setManager(manager);
-				super.xmlImport(dirNode);
-			} else {
-				throw new FileAlreadyExistsException(1111); //random
-			}
+		Directory parentDir = manager.createAbsolutePath(path);
+		if (parentDir.hasFile(name)) {
+			throw new FileAlreadyExistsInDirectoryException(name, parentDir.getName());
 		}
+		parentDir.createDirectory(name, manager, owner);
+		
+		setManager(manager);
+		super.xmlImport(dirNode);
 	}
 
 
-	
-	
 	@Override
 	public Directory createDirectory(String name, Manager manager, User owner) {
 		this.verifyFileNameDir(name);
@@ -151,8 +135,6 @@ public class Directory extends Directory_Base {
 		return null;
 	}
 
-	
-	
 	public void lsDir() {
 		List<File> files = new ArrayList<File>(getFileSet());
 
