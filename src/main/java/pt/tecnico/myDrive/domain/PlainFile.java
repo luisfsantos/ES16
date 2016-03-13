@@ -75,8 +75,15 @@ public class PlainFile extends PlainFile_Base {
         }
     }
 
+
     public File lookup(String path){
-        return this;
+    	
+    	if (path.indexOf('/') == -1){
+    		return this;
+    	}
+    	else {
+    		throw new FileAlreadyExistsException(20000); // CHANGE EXCEPTION
+    	}
     }
 
     public void showContent() {
@@ -103,6 +110,7 @@ public class PlainFile extends PlainFile_Base {
 		deleteDomainObject();
 	}
     
+	
 }
 
 
