@@ -6,7 +6,6 @@ import pt.tecnico.myDrive.exception.*;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
-import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 
 public class Directory extends Directory_Base {
@@ -105,10 +104,9 @@ public class Directory extends Directory_Base {
 	}
 
 	public boolean hasFile(String name){
-		Iterator iterator = getFileSet().iterator();
-		while(iterator.hasNext()){
-			File file = (File)iterator.next();
-			if(file.getName() == name) return true;
+		for (File file : getFileSet()){
+			if (file.getName().equals(name))
+				return true;
 		}
 		return false;
 	}
@@ -150,7 +148,10 @@ public class Directory extends Directory_Base {
 		path = path.substring(path.indexOf("/", 1) + 1);
 		while(path.startsWith("/"))
 			path = path.substring(1);
-		return this.getFileByName(name).lookup(path);
+		if(hasFile(name))
+			return this.getFileByName(name).lookup(path);
+
+		return null;
 	}
 
 	
