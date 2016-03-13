@@ -59,7 +59,7 @@ public class Directory extends Directory_Base {
 	}
 	
 
-	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
+	public File getFileByName(String name){
 		for (File file : getFileSet()){
 			if (file.getName().equals(name))
 				return file;

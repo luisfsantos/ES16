@@ -53,7 +53,6 @@ public class Main {
     	//Manager.getInstance().getHomeDirectory().createDirectory("DA\0", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"));
     	//DAVID
     	
- 
 
     	log.trace("[Main:setup] Root directory = " + Manager.getInstance().getRootDirectory().getName());
     	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());

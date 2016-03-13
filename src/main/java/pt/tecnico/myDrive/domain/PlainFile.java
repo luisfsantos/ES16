@@ -4,6 +4,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -28,13 +29,13 @@ public class PlainFile extends PlainFile_Base {
         }
     }
 
-    public File lookup(String path){
+    public File lookup(String path) throws IsNotDirOrLinkException{
     	
     	if (path.indexOf('/') == -1){
     		return this;
     	}
     	else {
-    		throw new FileAlreadyExistsException(20000); // CHANGE EXCEPTION
+    		throw new IsNotDirOrLinkException(this.getName());
     	}
     }
 

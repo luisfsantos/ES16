@@ -2,10 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 import org.joda.time.DateTime;
-import pt.tecnico.myDrive.exception.CannotCreateNewFileException;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.UserDoesNotExistException;
+import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
 
@@ -42,29 +39,20 @@ public abstract class File extends File_Base {
 		throw new CannotCreateNewFileException(getFileType());
 	}
 
-	/* C
 	@Override
 	public void setPermissions(String permission) throws WrongSizePermissionException, InvalidCharPermissionException {
-		if(permission.length() != 8) throw new WrongSizePermissionException(permisson.length());
+		if(permission.length() != 8) throw new WrongSizePermissionException(permission.length());
 		Mask mask[] = Mask.values();
-		//String mask = "rwxdrwxd";
 		for(int i = 0; i < 8; i++){
-			//if(permission.charAt(i) != mask.charAt(i) && permission.charAt(i) != '-')
 			if(permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
 				throw new InvalidCharPermissionException(permission.charAt(i), i);
 		}
 	}
-	
+	/* P
 	public void setPermissions(){
-		super.setPermissions(this.getUser().getUmask());
+		setPermissions(getOwner().getUmask());
 	}
-
-	public File lookup(String path) {
-		
-		
-		
-	}
-	C */
+	*/
 
 	public String getAbsolutePath() {
 		if (this == getParent())
