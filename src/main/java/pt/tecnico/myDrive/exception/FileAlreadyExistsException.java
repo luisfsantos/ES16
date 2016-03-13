@@ -15,6 +15,6 @@ public class FileAlreadyExistsException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "File " + fileID + " already exists";
+        return "File " + getFileID() + " already exists";
     }
 }

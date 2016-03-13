@@ -1,12 +1,12 @@
 package pt.tecnico.myDrive.exception;
 
-public class UserAlreadyExistsException extends MyDriveException {
+public class UserDoesNotExistException extends MyDriveException {
 
     private static final long serialVersionUID = 1L;
 
     private String username;
 
-    public UserAlreadyExistsException(String username) {
+    public UserDoesNotExistException(String username) {
         this.username = username;
     }
 
@@ -16,6 +16,6 @@ public class UserAlreadyExistsException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "User " + getUsername() + " already exists";
+        return "The user " + getUsername() + " doesn't exists";
     }
 }
