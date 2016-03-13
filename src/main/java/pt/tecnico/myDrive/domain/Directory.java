@@ -97,9 +97,6 @@ public class Directory extends Directory_Base {
 		for (File file : getFileSet()){
 			if (file.getName().equals(name))
 				return file;
-			else{
-				throw new FileDoesntExistsInDirectoryException(name,this.getName());
-			}
 		}
 		return null;
 	}

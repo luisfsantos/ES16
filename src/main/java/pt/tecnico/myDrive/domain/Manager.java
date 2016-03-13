@@ -242,13 +242,13 @@ public class Manager extends Manager_Base {
 		User root = getUserByUsername("root");
 
 		if(first == -1) {
-			Directory finalDir = (Directory) dir.getFile(path);
+			Directory finalDir = (Directory) dir.getFileByName(path);
 			if(finalDir == null) return dir.createDirectory(path, getInstance(), root);
 			else return finalDir;
 		}
 
 		String dirName = path.substring(0, first);
-		Directory nextDir = (Directory) dir.getFile(dirName);
+		Directory nextDir = (Directory) dir.getFileByName(dirName);
 		String nextPath =  path.substring(first + 1);
 
 		if(nextDir != null) {
