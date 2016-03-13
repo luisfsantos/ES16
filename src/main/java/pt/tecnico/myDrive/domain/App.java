@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -23,10 +24,9 @@ public class App extends App_Base {
         User user = manager.getUserByUsername(ownerName);
 
         Directory barra = manager.getHomeDirectory().getParent();
-        //Directory parent = (Directory) barra.lookup(path);
 
         if (user == null){
-            //throw new UserDoesNotExistException(ownerName);
+            throw new UserDoesNotExistException(ownerName);
         }
 
         try {

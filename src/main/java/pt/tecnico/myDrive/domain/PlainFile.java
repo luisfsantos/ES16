@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.apache.commons.lang.ObjectUtils;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -27,10 +28,9 @@ public class PlainFile extends PlainFile_Base {
         User user = manager.getUserByUsername(ownerName);
 
         Directory barra = manager.getRootDirectory();
-        //Directory parent = (Directory) barra.lookup(path);
 
         if (user == null) {
-            //throw new UserDoesNotExistException(ownerName);
+            throw new UserDoesNotExistException(ownerName);
         }
 
         try {

@@ -1,17 +1,13 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-import pt.tecnico.myDrive.exception.NotEmptyDirectoryException;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
-import pt.tecnico.myDrive.exception.InvalidFileNameException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 
 public class Directory extends Directory_Base {
 	
@@ -28,11 +24,9 @@ public class Directory extends Directory_Base {
 		User user = manager.getUserByUsername(ownerName);
 
 		Directory barra = manager.getHomeDirectory().getParent();
-		//Directory parent = (Directory)barra.lookup(path);
-
 
 		if (user == null){
-			//throw new UserDoesNotExistException;
+			throw new UserDoesNotExistException(ownerName);
 		}
 
 		try {
