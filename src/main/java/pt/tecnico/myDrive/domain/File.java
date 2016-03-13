@@ -1,10 +1,10 @@
 package pt.tecnico.myDrive.domain;
 
-import org.jdom2.DataConversionException;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -63,9 +63,6 @@ public abstract class File extends File_Base {
 		
 		
 	}
-	
-
-
 	C */
 
 	public String getAbsolutePath() {
@@ -79,17 +76,32 @@ public abstract class File extends File_Base {
 		return null;
 	}
 
-	public void xmlImport(Element fileNode) throws UnsupportedEncodingException {
-		DateTime dt = new DateTime();
+	public void xmlImport(Manager manager, Element fileNode) {
 		try {
-			setId(getManager().getNextIdCounter());
-			setLastModified(dt.minusMillis(0));
-			setParent((Directory) getManager().getRootDirectory().lookup(new String(fileNode.getChild("path").getValue().getBytes("UTF-8"))));
+			String path = new String(fileNode.getChild("path").getValue().getBytes("UTF-8"));
+			String ownerName = new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"));
+			String name = new String(fileNode.getChild("name").getValue().getBytes("UTF-8"));
+
+			User owner = manager.getUserByUsername(ownerName);
+			if (owner == null){
+				throw new UserDoesNotExistException(ownerName);
+			}
+
+			Directory parentDir = manager.createAbsolutePath(path);
+			if (parentDir.hasFile(name)) {
+				throw new FileAlreadyExistsInDirectoryException(name, parentDir.getName());
+			}
+			parentDir.addFile(this);
+
+			setLastModified(new DateTime());
+			setId(manager.getNextIdCounter());
+			setManager(manager);
+
 			setName(new String(fileNode.getChild("name").getValue().getBytes("UTF-8")));
 			setOwner(getManager().getUserByUsername(new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"))));
 			setPermissions(new String(fileNode.getChild("perm").getValue().getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
-			throw new UnsupportedEncodingException();
+			throw new ImportDocumentException();
 		}
 	}
 

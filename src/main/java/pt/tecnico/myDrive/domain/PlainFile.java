@@ -1,9 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-import pt.tecnico.myDrive.exception.UserDoesNotExistException;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -18,59 +17,15 @@ public class PlainFile extends PlainFile_Base {
         this.setContent(content);
     }
 
-    public PlainFile(Manager manager, Element plainNode) throws UnsupportedEncodingException { //throws UserDoesNotExistException{
-
-
-        String path = plainNode.getChild("path").getValue();
-        String ownerName = plainNode.getChild("owner").getValue();
-        String name = plainNode.getChild("name").getValue();
-
-        User user = manager.getUserByUsername(ownerName);
-
-        Directory barra = manager.getRootDirectory();
-
-        if (user == null) {
-            throw new UserDoesNotExistException(ownerName);
-        }
-
+    public PlainFile(Manager manager, Element plainNode) throws UnsupportedEncodingException {
         try {
-            barra.lookup(path);
-        } catch (NullPointerException a) {
-            manager.createMissingDirectories(path);
-            setManager(manager);
-            xmlImport(plainNode);
-            return;
-        } finally {
-            Directory parent = (Directory) barra.lookup(path);
-            if (!parent.hasFile(name)) {
-                setManager(manager);
-                xmlImport(plainNode);
-            } else {
-                throw new FileAlreadyExistsException(1111); //random
-            }
+            String contents = new String(plainNode.getChildText("contents").getBytes("UTF-8"));
+            setContent(contents);
+            this.xmlImport(manager, plainNode);
+        } catch (UnsupportedEncodingException e) {
+            throw new ImportDocumentException();
         }
     }
-
-
-
-    public void xmlImport(Element plainNode) throws UnsupportedEncodingException {
-        super.xmlImport(plainNode);
-        setContent(plainNode.getChild("contents").getValue());
-        }
-
-
-
-    @Override
-    public void setContent(String newContent) {
-        String content = super.getContent();
-        if(content == null)
-            super.setContent(newContent);
-        else {
-            content += newContent;
-            super.setContent(content);
-        }
-    }
-
 
     public File lookup(String path){
     	
@@ -105,8 +60,6 @@ public class PlainFile extends PlainFile_Base {
 		setManager(null);
 		deleteDomainObject();
 	}
-    
-	
 }
 
 

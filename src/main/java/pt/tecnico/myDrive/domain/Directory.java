@@ -13,23 +13,7 @@ public class Directory extends Directory_Base {
 	}
 
 	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
-		String path = new String(dirNode.getChild("path").getValue().getBytes("UTF-8"));
-		String ownerName = new String(dirNode.getChild("owner").getValue().getBytes("UTF-8"));
-		String name = new String(dirNode.getChild("name").getValue().getBytes("UTF-8"));
-
-		User owner = manager.getUserByUsername(ownerName);
-		if (owner == null){
-			throw new UserDoesNotExistException(ownerName);
-		}
-
-		Directory parentDir = manager.createAbsolutePath(path);
-		if (parentDir.hasFile(name)) {
-			throw new FileAlreadyExistsInDirectoryException(name, parentDir.getName());
-		}
-		parentDir.createDirectory(name, manager, owner);
-		
-		setManager(manager);
-		super.xmlImport(dirNode);
+		this.xmlImport(manager, dirNode);
 	}
 
 

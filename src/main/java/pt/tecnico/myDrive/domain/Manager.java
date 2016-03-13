@@ -159,27 +159,6 @@ public class Manager extends Manager_Base {
 		return null;
 	}
 
-    
-
-
-    public Directory createMissingDirectories(String dirs){
-		String[] tokens = dirs.split("/");
-		String building="";
-		User sudo = getUserByUsername("root");
-		Directory barra = getRootDirectory();
-
-		for(int i=1;i<tokens.length;i++){
-			if (barra.lookup(building+'/'+tokens[i])!=null){ //dir exists
-				building+='/'+tokens[i];
-			}
-			else{
-				barra.lookup(building).createDirectory(tokens[i],this,sudo);
-				building+='/'+tokens[i]; //to add new dir to building
-			}
-		}
-		return (Directory) barra.lookup(dirs);
-	}
-
     //public Directory lookUpDir(String pathname){};
 
 
@@ -192,6 +171,8 @@ public class Manager extends Manager_Base {
 		for (Element dirNode: myDriveElement.getChildren("dir")){
 			new Directory(this,dirNode);
 		}
+
+
 		for (Element plainNode : myDriveElement.getChildren("plain")) {
 			new PlainFile(this,plainNode);
 		}
@@ -199,10 +180,10 @@ public class Manager extends Manager_Base {
 		for (Element linkNode: myDriveElement.getChildren("link")){
 			new Link(this,linkNode);
 		}
+
 		for (Element appNode: myDriveElement.getChildren("app")){
 			new App(this,appNode);
 		}
-
 	}
 
     public Document xmlExport() {
@@ -243,7 +224,7 @@ public class Manager extends Manager_Base {
 
 		if(first == -1) {
 			Directory finalDir = (Directory) dir.getFileByName(path);
-			if(finalDir == null) return dir.createDirectory(path, getInstance(), root);
+			if(finalDir == null) return dir.createDirectory(path, this, root);
 			else return finalDir;
 		}
 
@@ -254,7 +235,7 @@ public class Manager extends Manager_Base {
 		if(nextDir != null) {
 			return createAbsolutePath(nextDir, nextPath);
 		} else {
-			nextDir = dir.createDirectory(dirName, getInstance(), root);
+			nextDir = dir.createDirectory(dirName, this, root);
 			return createAbsolutePath(nextDir, nextPath);
 		}
 	}

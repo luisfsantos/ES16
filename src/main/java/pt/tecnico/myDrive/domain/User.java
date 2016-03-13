@@ -3,17 +3,12 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 
 import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-import pt.tecnico.myDrive.exception.InvalidPathException;
-import pt.tecnico.myDrive.exception.WrongSizePermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 import pt.tecnico.myDrive.exception.EmptyUsernameException;
 import pt.tecnico.myDrive.exception.InvalidUsernameException;
+
 import java.util.regex.Pattern;
-
 import java.io.UnsupportedEncodingException;
-
 
 public class User extends User_Base {
 
@@ -22,7 +17,12 @@ public class User extends User_Base {
     }
 
 	public User(Manager manager, Element userNode) {
-		String username = userNode.getAttributeValue("username"); // TODO Validate username
+		String username; // TODO Validate username
+		try {
+			username = new String(userNode.getAttributeValue("username").getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new ImportDocumentException();
+		}
 
 		if (manager.getUserByUsername(username) != null) {
 			throw new UserAlreadyExistsException(username);
