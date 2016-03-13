@@ -165,15 +165,6 @@ public class Manager extends Manager_Base {
     	return null;
     }
     
-   /* public Directory createMissingDirectories(String directoriesToCreate){   
-		for (File h: rootDirectory.getFileSet()) {
-			if (h.getName().equals("home")) {
-				return (Directory) h;
-			}
-		}
-		return null;
-	}
-
 
     public Directory createMissingDirectories(String dirs){
 		String[] tokens = dirs.split("/");
@@ -191,12 +182,12 @@ public class Manager extends Manager_Base {
 			}
 		}
 		return (Directory) barra.lookup(dirs);
-	}*/
+	}
 
     //public Directory lookUpDir(String pathname){};
 
 
-/*
+
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
 		for(Element node : myDriveElement.getChildren("user")) {
 			String username = node.getAttributeValue("username"); // TODO Validate username
@@ -230,7 +221,7 @@ public class Manager extends Manager_Base {
 		}
 
 	}
-*/
+
     public Document xmlExport() {
     	final int defaultNoFiles= 3;
         Element element = new Element("myDrive");

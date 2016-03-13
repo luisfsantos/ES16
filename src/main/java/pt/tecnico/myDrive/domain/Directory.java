@@ -18,7 +18,7 @@ public class Directory extends Directory_Base {
 	public Directory(String name, String permission, Manager manager, User owner, Directory parent) {
 		this.initFile(name, permission, manager, owner, parent);
 	}
-/*
+
 	public Directory(Manager manager, Element dirNode) { //throws UserDoesNotExistException{
 
 		String path = dirNode.getChild("path").getValue();
@@ -53,7 +53,7 @@ public class Directory extends Directory_Base {
 		}
 	}
 
-*/
+
 	
 	
 	@Override
@@ -80,12 +80,6 @@ public class Directory extends Directory_Base {
 		return link;
 	}
 	
-/*
-	public Directory lookup(String path){
-		String[] names = path.split("/");
-		System.out.println("lookup:filename:"+this.getName()+this.getFile(names[1]).getName());
-		return (Directory) this.getFile(names[1]);
-*/
 
 	@Override
 	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
@@ -106,14 +100,16 @@ public class Directory extends Directory_Base {
 	
 
 	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
-		for (File file : getFileSet())
-			if (file.getName().equals(name)){
+		for (File file : getFileSet()){
+			if (file.getName().equals(name))
 				return file;
+			else{
+				throw new FileDoesntExistsInDirectoryException(name,this.getName());
 			}
-		throw new FileDoesntExistsInDirectoryException(name,this.getName());
+		}
+		return null;
 	}
-	
-	/* C
+
 	public File getFile(String name) {
 		for (File file : getFileSet())
 			if (file.getName().equals(name))
@@ -172,59 +168,6 @@ public class Directory extends Directory_Base {
 		return this.getFile(name).lookup(path);
 	}
 
-	C */
-
-	/* 
-DAVID 
-	 public File getFileByName(String name) throws FileAlreadyExistsException {
-	 
-		for (File f : getFileSet()){
-			if (f.getName().equals(name))
-				return f;
-		}
-		throw new FileAlreadyExistsException(9999);
-DAVID		
-	}*/
-	
-	public File lookup(String path) {
-		String name;
-
-		while(path.endsWith("/"))
-			path = path.substring(0, path.lastIndexOf('/'));
-
-		if(path.startsWith("/")) {
-			if(this != getParent()) {
-				return getParent().lookup(path);
-			} else {
-				while(path.startsWith("/"))
-					path = path.substring(1);
-			}
-		}
-		if(path.startsWith("..")){
-			if(path.indexOf('/') == -1) return getParent();
-			path = path.substring(path.indexOf("/", 1) + 1);
-			while(path.startsWith("/"))
-				path = path.substring(1);
-			return getParent().lookup(path);
-		}
-		if(path.startsWith(".")){
-			if(path.indexOf('/') == -1) return this;
-			path = path.substring(path.indexOf("/", 1) + 1);
-			while(path.startsWith("/"))
-				path = path.substring(1);
-			return this.lookup(path);
-		}
-		if(path.indexOf('/') == -1) {
-			name = path;
-			return getFileByName(name);
-		}
-
-		name = path.substring(0, path.indexOf("/", 1));
-		path = path.substring(path.indexOf("/", 1) + 1);
-		while(path.startsWith("/"))
-			path = path.substring(1);
-		return this.getFileByName(name).lookup(path);
-	}
 	
 	
 	public void lsDir() {

@@ -30,10 +30,10 @@ public class Main {
 				setup();
 			}
 			else {
-				/*for (String s: args) {
+				for (String s: args) {
 	    			xmlScan(new java.io.File(s));
 	    		}
-				print();*/
+				print();
 			}
 			
 		} finally { FenixFramework.shutdown(); }
@@ -53,22 +53,14 @@ public class Main {
     	//Manager.getInstance().getHomeDirectory().createDirectory("DA\0", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"));
     	//DAVID
     	
-    	
-    	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
-    	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
-    	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());   
-    	
-    }
-}
-    /* C
-=======
-    	Manager.getInstance().createNewUser("user2");
+ 
+
     	log.trace("[Main:setup] Root directory = " + Manager.getInstance().getRootDirectory().getName());
     	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
     	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
     	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
 
-    	xmlPrint();
+    	//xmlPrint();
     }
 
 
@@ -86,7 +78,7 @@ public class Main {
 		}
 	}
 
->>>>>>> 33ce48f36d91905f5933429da453bf3106af889e
+
 	@Atomic
     public static void xmlScan(java.io.File file) {
         log.trace("xmlScan: " + FenixFramework.getDomainRoot());  
@@ -109,4 +101,4 @@ public class Main {
 		} catch (IOException e) { System.out.println(e); }
     }
     
-}*/
+}

@@ -17,7 +17,7 @@ public class PlainFile extends PlainFile_Base {
         this.setContent(content);
     }
 
-    /*
+
     public PlainFile(Manager manager, Element plainNode) { //throws UserDoesNotExistException{
 
         String path = plainNode.getChild("path").getValue();
@@ -51,7 +51,7 @@ public class PlainFile extends PlainFile_Base {
         }
     }
 
-*/
+
 
     public void xmlImport(Element plainNode) {
         super.xmlImport(plainNode);

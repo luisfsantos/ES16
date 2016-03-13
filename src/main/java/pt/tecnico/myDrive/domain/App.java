@@ -12,7 +12,7 @@ public class App extends App_Base {
     	this.setContent(content);
     }
 
- /*
+
     public App(Manager manager, Element appNode){ //throws UserDoesNotExistException{
 
         String path = appNode.getChild("path").getValue();
@@ -46,7 +46,7 @@ public class App extends App_Base {
         }
 
     }
-*/
+
 
     @Override
     public void xmlImport(Element appNode) { //throws ImportDocumentException {

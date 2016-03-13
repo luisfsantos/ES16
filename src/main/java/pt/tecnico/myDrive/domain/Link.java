@@ -11,7 +11,7 @@ public class Link extends Link_Base {
         this.initFile(name, permission, manager, owner, parent);
         this.setContent(content);
     }
-/*
+
     public Link(Manager manager, Element linkNode) throws UnsupportedEncodingException {
         String path = linkNode.getChild("path").getValue();
         String ownerName = linkNode.getChild("owner").getValue();
@@ -43,7 +43,7 @@ public class Link extends Link_Base {
             }
         }
     }
-*/
+
     
     @Override
     public void xmlImport(Element dirNode) {
