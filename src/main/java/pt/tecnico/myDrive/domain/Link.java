@@ -26,4 +26,32 @@ public class Link extends Link_Base {
     public String getFileType() {
         return "link";
     }
+    
+    @Override
+	public Element xmlExport() {
+		Element element = new Element("link");
+		element.setAttribute("id", getId().toString());
+		
+		Element pathElement = new Element("path");
+		pathElement.setText(getAbsolutePath());
+		element.addContent(pathElement);
+
+		Element nameElement = new Element("name");
+		nameElement.setText(getName());
+		element.addContent(nameElement);
+
+		Element ownerElement = new Element("owner");
+		ownerElement.setText(getOwner().getName());
+		element.addContent(ownerElement);
+
+		Element permissionElement = new Element("perm");
+		permissionElement.setText(getPermissions());
+		element.addContent(permissionElement);
+		
+		Element valueElement = new Element("value");
+		valueElement.setText(getContent());
+		element.addContent(valueElement);
+		
+		return element;
+	}
 }

@@ -67,8 +67,11 @@ public abstract class File extends File_Base {
 
 	public String getAbsolutePath() {
 		if (this == getParent())
-			return "";
-		else return getParent().getAbsolutePath() + "/" + getName();
+			return getName();
+		else if (getParent() == getParent().getParent())
+			return getParent().getAbsolutePath() + getName();
+		else
+			return getParent().getAbsolutePath() + "/" + getName();
 	}
 
 	public Element xmlExport() {

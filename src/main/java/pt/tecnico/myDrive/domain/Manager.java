@@ -187,7 +187,6 @@ public class Manager extends Manager_Base {
 	}
 
     public Document xmlExport() {
-    	final int defaultNoFiles= 3;
         Element element = new Element("myDrive");
         Document doc = new Document(element);
         List<File> files = new ArrayList<File>(getFileSet());
@@ -195,17 +194,19 @@ public class Manager extends Manager_Base {
         for (User u: getUserSet())
         	if (!u.getUsername().equals("root"))
         		element.addContent(u.xmlExport());
+
+        Collections.sort(files, new Comparator<File>() {
+        	public int compare(File f1, File f2) {
+        		return (f1.getId() < f2.getId() ? -1 : (f1.getId() == f2.getId() ? 0 : 1));
+        	}
+        });
         
-        if (files.size() > defaultNoFiles)  {
-            Collections.sort(files, new Comparator<File>() {
-            	public int compare(File f1, File f2) {
-            		return (f1.getId() < f2.getId() ? -1 : (f1.getId() == f2.getId() ? 0 : 1));
-            	}
-            });
-            
-            for (File f: files)
-                element.addContent(f.xmlExport());
-        }
+        for (File f: files)
+        	if (!(f.getAbsolutePath().equals("/") ||
+        		f.getAbsolutePath().equals("/home") ||
+        		f.getAbsolutePath().equals("/home/root")))
+        		element.addContent(f.xmlExport());
+        
         return doc;
     }
 
