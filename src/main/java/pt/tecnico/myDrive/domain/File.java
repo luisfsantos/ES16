@@ -43,6 +43,8 @@ public abstract class File extends File_Base {
 	public void setPermissions(String permission) throws WrongSizePermissionException, InvalidCharPermissionException {
 		if(permission.length() != 8) throw new WrongSizePermissionException(permission.length());
 		Mask mask[] = Mask.values();
+		if (permission.charAt(0) != mask[0].getValue() && permission.charAt(0) != '-')
+			throw new InvalidCharPermissionException(permission.charAt(0), 0);
 		for(int i = 0; i < 8; i++){
 			if(permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
 				throw new InvalidCharPermissionException(permission.charAt(i), i);
