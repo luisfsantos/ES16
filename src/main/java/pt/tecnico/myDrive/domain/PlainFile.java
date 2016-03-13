@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.domain;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 
@@ -10,12 +11,11 @@ public class PlainFile extends PlainFile_Base {
     public PlainFile() {
         super();
     }
-    /*
-    public PlainFile(String content) {
-        super();
-        setContent(content);
+
+    public PlainFile(String name, String permission, Manager manager, User owner, Directory parent, String content) {
+        this.initFile(name, permission, manager, owner, parent);
+        this.setContent(content);
     }
-    */
 
     public PlainFile(Manager manager, Element plainNode) { //throws UserDoesNotExistException{
 
@@ -25,37 +25,44 @@ public class PlainFile extends PlainFile_Base {
 
         User user = manager.getUserByUsername(ownerName);
 
-        Directory barra = manager.getHomeDirectory().getParent();
-        Directory parent = (Directory) barra.lookup(path);
+        Directory barra = manager.getRootDirectory();
+        //Directory parent = (Directory) barra.lookup(path);
 
-        if (user == null){
+        if (user == null) {
             //throw new UserDoesNotExistException(ownerName);
         }
 
-        else if(parent == null){
+        try {
+            barra.lookup(path);
+        } catch (NullPointerException a) {
             manager.createMissingDirectories(path);
             setManager(manager);
             xmlImport(plainNode);
+            return;
+        } finally {
+            Directory parent = (Directory) barra.lookup(path);
+            if (!parent.hasFile(name)) {
+                setManager(manager);
+                xmlImport(plainNode);
+            } else {
+                throw new FileAlreadyExistsException(1111); //random
+            }
         }
-        else if (!parent.hasFile(name)){
-            setManager(manager);
-            xmlImport(plainNode);
-        }
-        else {
-            throw new FileAlreadyExistsException(1111); //random
-        }
-
     }
+
+
 
     public void xmlImport(Element plainNode) {
         super.xmlImport(plainNode);
+        /*String a= plainNode.getChild("contents").getValue();
+        System.out.println(a);
         try {
-            setContent(new String(plainNode.getChild("contents").getValue().getBytes("UTF-8")));
+            setContent(a);
         } catch (UnsupportedEncodingException e) {
-
-        }
+*/
     }
-    /* C
+
+
     @Override
     public void setContent(String newContent) {
         String content = super.getContent();
@@ -67,6 +74,10 @@ public class PlainFile extends PlainFile_Base {
         }
     }
 
+    public File lookup(String path){
+        return this;
+    }
+
     public void showContent() {
         if(super.getContent() == null)
             System.out.println("");
@@ -75,14 +86,14 @@ public class PlainFile extends PlainFile_Base {
     }
 
     @Override
-    public String toString() {
-        return "plain file " +
-                super.getPermissions() +
-                super.getContent().length() +
-                " " + super.getUser().getUsername() +
-                " " + super.getId() +
-                " " + super.getLastModified() +
-                " " + super.getName();
+    public int getSize() {
+        return getContent().length();
     }
-    C */
+
+    @Override
+    public String getFileType() {
+        return "plain-file";
+    }
 }
+
+

@@ -21,23 +21,27 @@ public class App extends App_Base {
         User user = manager.getUserByUsername(ownerName);
 
         Directory barra = manager.getHomeDirectory().getParent();
-        Directory parent = (Directory) barra.lookup(path);
+        //Directory parent = (Directory) barra.lookup(path);
 
         if (user == null){
             //throw new UserDoesNotExistException(ownerName);
         }
 
-        else if(parent == null){
+        try {
+            barra.lookup(path);
+        } catch (NullPointerException a) {
             manager.createMissingDirectories(path);
             setManager(manager);
             xmlImport(appNode);
-        }
-        else if (!parent.hasFile(name)){
-            setManager(manager);
-            xmlImport(appNode);
-        }
-        else {
-            throw new FileAlreadyExistsException(1111); //random
+            return;
+        } finally {
+            Directory parent = (Directory) barra.lookup(path);
+            if (!parent.hasFile(name)) {
+                setManager(manager);
+                xmlImport(appNode);
+            } else {
+                throw new FileAlreadyExistsException(1111); //random
+            }
         }
 
     }
@@ -45,23 +49,15 @@ public class App extends App_Base {
     @Override
     public void xmlImport(Element appNode) { //throws ImportDocumentException {
         super.xmlImport(appNode);
-        try {
+        /*try {
             setContent(new String(appNode.getChild("method").getValue().getBytes("UTF-8")));
         } catch (UnsupportedEncodingException e) {
             //throw new ImportDocumentException();
-        }
+        }*/
     }
 
-    /* C
     @Override
-    public String toString() {
-        return "app " +
-                super.getPermissions() +
-                super.getContent().length() +
-                " " + super.getUser().getUsername() +
-                " " + super.getId() +
-                " " + super.getLastModified() +
-                " " + super.getName();
+    public String getFileType() {
+        return "app";
     }
-    C */
 }

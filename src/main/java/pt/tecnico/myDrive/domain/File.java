@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 
 import java.io.UnsupportedEncodingException;
 
-public class File extends File_Base {
+public abstract class File extends File_Base {
 
 	public File() {
 		super();
@@ -24,17 +24,21 @@ public class File extends File_Base {
 
 
 	public Directory createDirectory(String name, Manager manager, User owner) {
-		return null; // create exception
+		return null; //TODO - create exception
 	}
 
 	public App createApp(String name, Manager manager, User owner, String content) {
-		return null; // create exception
+		return null; //TODO - create exception
 	}
 
 	public Link createLink(String name, Manager manager, User owner, String content) {
-		return null; // create exception
+		return null; //TODO - create exception
 	}
-	
+
+	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
+		return null; //TODO - create exception
+	}
+
 	/* C
 	@Override
 	public void setPermissions(String permission) throws WrongSizePermissionException, InvalidCharPermissionException {
@@ -80,7 +84,7 @@ public class File extends File_Base {
 
 	public void xmlImport(Element fileNode) { //throws ImportDocumentException {
 		try {
-			setParent((Directory) getManager().getHomeDirectory().getParent().lookup(new String(fileNode.getChild("path").getValue().getBytes("UTF-8"))));
+			setParent((Directory) getManager().getRootDirectory().lookup(new String(fileNode.getChild("path").getValue().getBytes("UTF-8"))));
 			setName(new String(fileNode.getChild("name").getValue().getBytes("UTF-8")));
 			setOwner(getManager().getUserByUsername(new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"))));
 			setPermissions(new String(fileNode.getChild("perm").getValue().getBytes("UTF-8")));
@@ -88,5 +92,21 @@ public class File extends File_Base {
 			//throw new ImportDocumentException();
 		}
 	}
+
+	@Override
+	public String toString() {
+		return getFileType() +
+				" " + getPermissions() +
+				" " + getSize() +
+				" " + getOwner().getUsername() +
+				" " + getId() +
+				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
+				" " + getName();
+	}
+
+	public abstract String getFileType();
+	public abstract int getSize();
+
+	public abstract File lookup(String path);
 }
 

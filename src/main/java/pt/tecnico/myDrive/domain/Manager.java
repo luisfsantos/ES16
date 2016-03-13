@@ -1,46 +1,67 @@
 package pt.tecnico.myDrive.domain;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 
 
 public class Manager extends Manager_Base {
-	
+	static final Logger log = LogManager.getRootLogger();
+	private Directory rootDirectory;
 	
 	// manager use Singleton design pattern
     public static Manager getInstance() {
     	Manager manager = FenixFramework.getDomainRoot().getManager();
     	if (manager != null) {
+    		for (File file: manager.getFileSet()) {
+        		if (file.getName().equals("/"))
+        			manager.rootDirectory = (Directory)file;
+        	}
     		return manager;
     	}
     	return new Manager();
     } 
     
     private Manager() {
-		this.setRoot(FenixFramework.getDomainRoot());
-		this.setIdCounter(0);
 
-		User superUser = new User("root", "***", "Super User", "rwxdr-x-", this, null);
-
-		File startHome = new Directory("/", "rwxdr-x-", this, superUser, null);
-		startHome.setParent((Directory) startHome);
-
-		Directory home = startHome.createDirectory("home", this, superUser);
-		Directory rootHome = home.createDirectory("root", this, superUser);
-		superUser.setHome(rootHome);
-	}
-    
+    	this.setRoot(FenixFramework.getDomainRoot());
+        this.setIdCounter(0);
+        
+        User superUser = new User("root", "***", "Super User", "rwxdr-x-", null);
+        this.addUser(superUser);
+        		
+        File startHome = new Directory("/", "rwxdr-x-", this, superUser, null);
+        startHome.setParent((Directory)startHome);
+        this.rootDirectory = (Directory)startHome;
+        
+        Directory home = startHome.createDirectory("home", this, superUser);
+        Directory rootHome = home.createDirectory("root", this, superUser);
+        superUser.setHome(rootHome);
+        
+        log.trace("[Manager:getInstance] new Manager created");
+    }
 	
         
-    public User getUserByUsername(String username) {
+    public Directory getRootDirectory() {
+		return rootDirectory;
+	}
+
+
+	public User getUserByUsername(String username) {
     	for (User user: this.getUserSet()) {
     		if (user.getUsername().equals(username))
     			return user;
@@ -66,7 +87,7 @@ public class Manager extends Manager_Base {
     
     // miss exceptions
     public void createNewUser(String username, String password, String name, String umask){
-    	User newUser = new User(username, password, name, umask, this, null);
+    	User newUser = new User(username, password, name, umask, null);
     	Directory userHome = this.getHomeDirectory().createDirectory(username, this, newUser);
     	newUser.setHome(userHome);
     	this.addUser(newUser);
@@ -127,19 +148,14 @@ public class Manager extends Manager_Base {
     
     
     public Directory getHomeDirectory() {
-    	for (File f: this.getFileSet()) {
-    		if (f.getName().equals("/")) {
-    			Directory pathStart = (Directory) f;
-    			for (File h: pathStart.getFileSet()) {
-    				if (h.getName().equals("home")) {
-    					return (Directory) h;
-    				}
-    			}
-
-    		}
-    	}
+		for (File h: rootDirectory.getFileSet()) {
+			if (h.getName().equals("home")) {
+				return (Directory) h;
+			}
+		}
 		return null;
-    }
+	}
+
     
 
 
@@ -147,7 +163,7 @@ public class Manager extends Manager_Base {
 		String[] tokens = dirs.split("/");
 		String building="";
 		User sudo = getUserByUsername("root");
-		Directory barra = getHomeDirectory().getParent();
+		Directory barra = getRootDirectory();
 
 		for(int i=1;i<tokens.length;i++){
 			if (barra.lookup(building+'/'+tokens[i])!=null){ //dir exists
@@ -164,44 +180,62 @@ public class Manager extends Manager_Base {
     public Directory lookUpDir(String pathname){};
 */
 
-    public void xmlImport(Element rootDrive) throws UnsupportedEncodingException {
-		/*
-		for (Element userNode: rootDrive.getChildren("user")){
-			new User(this,userNode);
-		}
-		*/
-		for (Element dirNode: rootDrive.getChildren("dir")){
-			new Directory(this,dirNode);
-		}
-		for (Element plainNode : rootDrive.getChildren("plain")) {
-			new PlainFile(this	, plainNode);
+
+	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
+		for(Element node : myDriveElement.getChildren("user")) {
+			String username = node.getAttributeValue("username"); // TODO Validate username
+			User user;
+
+			try {
+				if (getUserByUsername(username) != null) {
+					throw new UserAlreadyExistsException(username);
+				}
+			} catch (UserAlreadyExistsException e) {
+				throw new ImportDocumentException();
+			}
+
+			createNewUser(username);
+			user = getUserByUsername(username);
+			user.xmlImport(node);
 		}
 
-		for (Element linkNode: rootDrive.getChildren("link")){
+		for (Element dirNode: myDriveElement.getChildren("dir")){
+			new Directory(this,dirNode);
+		}
+		for (Element plainNode : myDriveElement.getChildren("plain")) {
+			new PlainFile(this,plainNode);
+		}
+
+		for (Element linkNode: myDriveElement.getChildren("link")){
 			new Link(this,linkNode);
 		}
-		for (Element appNode: rootDrive.getChildren("app")){
+		for (Element appNode: myDriveElement.getChildren("app")){
 			new App(this,appNode);
 		}
 
-    }
-
+	}
     public Document xmlExport() {
+    	final int defaultNoFiles= 3;
         Element element = new Element("myDrive");
         Document doc = new Document(element);
-
-        for (User u: getUserSet()) {
+        List<File> files = new ArrayList<File>(getFileSet());
+        
+        for (User u: getUserSet())
         	if (!u.getUsername().equals("root"))
         		element.addContent(u.xmlExport());
-        }
+        
+        if (files.size() > defaultNoFiles)  {
+            Collections.sort(files, new Comparator<File>() {
+            	public int compare(File f1, File f2) {
+            		return (f1.getId() < f2.getId() ? -1 : (f1.getId() == f2.getId() ? 0 : 1));
+            	}
+            });
             
-        /*for (File f: getFileSet())
-            element.addContent(f.xmlExport());*/
+            for (File f: files)
+                element.addContent(f.xmlExport());
+        }
 
         return doc;
-        
-        
-        
     }
 
 }

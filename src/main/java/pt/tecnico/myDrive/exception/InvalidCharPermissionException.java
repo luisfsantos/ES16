@@ -21,6 +21,6 @@ public class InvalidCharPermissionException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "Invalid character: " + c + "in position: " + position;
+        return "Invalid character: " + getChar() + "in position: " + getPosition();
     }
 }

@@ -12,7 +12,6 @@ public class Link extends Link_Base {
         this.setContent(content);
     }
 
-
     public Link(Manager manager, Element linkNode) throws UnsupportedEncodingException {
         String path = linkNode.getChild("path").getValue();
         String ownerName = linkNode.getChild("owner").getValue();
@@ -21,46 +20,42 @@ public class Link extends Link_Base {
         User user = manager.getUserByUsername(ownerName);
 
         Directory barra = manager.getHomeDirectory().getParent();
-        Directory parent = (Directory) barra.lookup(path);
+        //Directory parent = (Directory) barra.lookup(path);
 
         if (user == null){
             //throw new UserDoesNotExistException(ownerName);
         }
 
-        else if(parent == null){
+        try {
+            barra.lookup(path);
+        } catch (NullPointerException a) {
             manager.createMissingDirectories(path);
             setManager(manager);
             xmlImport(linkNode);
-        }
-        else if (!parent.hasFile(name)){
-            setManager(manager);
-            xmlImport(linkNode);
-        }
-        else {
-            throw new FileAlreadyExistsException(7185); //random
+            return;
+        } finally {
+            Directory parent = (Directory) barra.lookup(path);
+            if (!parent.hasFile(name)) {
+                setManager(manager);
+                xmlImport(linkNode);
+            } else {
+                throw new FileAlreadyExistsException(1111); //random
+            }
         }
     }
 
     @Override
     public void xmlImport(Element dirNode) {
         super.xmlImport(dirNode);
-        try {
+        /*try {
             setContent(new String(dirNode.getChild("value").getValue().getBytes("UTF-8")));
         } catch (UnsupportedEncodingException e) {
             //throw new ImportDocumentException();
-        }
+        }*/
     }
 
-    /* C
     @Override
-    public String toString() {
-        return "link " +
-                super.getPermissions() +
-                super.getContent().length() +
-                " " + super.getUser().getUsername() +
-                " " + super.getId() +
-                " " + super.getLastModified() +
-                " " + super.getName();
+    public String getFileType() {
+        return "link";
     }
-	C */
 }

@@ -6,6 +6,8 @@ import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+import org.jdom2.Element;
+
 public class Directory extends Directory_Base {
 	
 	public Directory(String name, String permission, Manager manager, User owner, Directory parent) {
@@ -21,23 +23,28 @@ public class Directory extends Directory_Base {
 		User user = manager.getUserByUsername(ownerName);
 
 		Directory barra = manager.getHomeDirectory().getParent();
-		Directory parent = (Directory)barra.lookup(path);
+		//Directory parent = (Directory)barra.lookup(path);
 
 
 		if (user == null){
 			//throw new UserDoesNotExistException;
 		}
-		else if(parent == null){
+
+		try {
+			barra.lookup(path);
+		} catch (NullPointerException a) {
 			manager.createMissingDirectories(path);
 			setManager(manager);
 			super.xmlImport(dirNode);
-		}
-		else if (!parent.hasFile(name)){
-			setManager(manager);
-			super.xmlImport(dirNode);
-		}
-		else {
-			throw new FileAlreadyExistsException(2222); //random
+			return;
+		} finally {
+			Directory parent = (Directory) barra.lookup(path);
+			if (!parent.hasFile(name)) {
+				setManager(manager);
+				super.xmlImport(dirNode);
+			} else {
+				throw new FileAlreadyExistsException(1111); //random
+			}
 		}
 	}
 
@@ -67,9 +74,21 @@ public class Directory extends Directory_Base {
 		String[] names = path.split("/");
 		System.out.println("lookup:filename:"+this.getName()+this.getFile(names[1]).getName());
 		return (Directory) this.getFile(names[1]);
-	}
 */
 
+	@Override
+	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
+		PlainFile plainFile = new PlainFile(name, owner.getUmask(), manager, owner, this, content);
+		this.addFile(plainFile);
+		return plainFile;
+	}
+
+	public File getFile(String name) {
+		for (File file : getFileSet())
+			if (file.getName().equals(name))
+				return file;
+		return null;
+	}
 
 
 	public boolean hasFile(String name){
@@ -80,26 +99,47 @@ public class Directory extends Directory_Base {
 		}
 		return false;
 	}
-	/*
 
-	
-	public File lookup(String path) throws ExpectedSlashPathStartException, NoSuchFileInThisDirectoryException{
+	public File lookup(String path) {
 		String name;
 
-		if(path.charAt(0) != '/') 
-			throw new ExpectedSlashPathStartException();
-		if(path.charAt(1) == '/' || path.charAt(1) == '.'){
-			path = path.subString(path.indexOf("/", 1));
+		while(path.endsWith("/"))
+			path = path.substring(0, path.lastIndexOf('/'));
+
+		if(path.startsWith("/")) {
+			if(this != getParent()) {
+				return getParent().lookup(path);
+			} else {
+				while(path.startsWith("/"))
+					path = path.substring(1);
+			}
+		}
+		if(path.startsWith("..")){
+			if(path.indexOf('/') == -1) return getParent();
+			path = path.substring(path.indexOf("/", 1) + 1);
+			while(path.startsWith("/"))
+				path = path.substring(1);
+			return getParent().lookup(path);
+		}
+		if(path.startsWith(".")){
+			if(path.indexOf('/') == -1) return this;
+			path = path.substring(path.indexOf("/", 1) + 1);
+			while(path.startsWith("/"))
+				path = path.substring(1);
 			return this.lookup(path);
 		}
-		if(!path.subString(1).contains('/'))
-			return getFile(path);
+		if(path.indexOf('/') == -1) {
+			name = path;
+			return getFile(name);
+		}
 
-		name = path.subString(1, path.indexOf("/", 1));
-		path = path.subString(path.indexOf("/", 1));
-		return getFile(name).lookup(path);
+		name = path.substring(0, path.indexOf("/", 1));
+		path = path.substring(path.indexOf("/", 1) + 1);
+		while(path.startsWith("/"))
+			path = path.substring(1);
+		return this.getFile(name).lookup(path);
 	}
-
+	/*
 	public void remove() throws notEmptyDirectoryException{                  //TO REVIEW!!!
 		
 		if (this.getFileSet().size()==0){
@@ -118,23 +158,64 @@ public class Directory extends Directory_Base {
 		deleteDomainObject();	
 		
 	}
-	
-    public void lsDir() {
-        for(File file : super.getFileSet()) {
-            System.out.println(file.toString());
-        }
+	C */
+
+	public void lsDir() {
+		List<File> files = new ArrayList<File>(getFileSet());
+
+		Collections.sort(files, new Comparator<File>() {
+			public int compare(File f1, File f2) {
+				return f1.getName().compareTo(f2.getName());
+			}
+		});
+
+		System.out.println(this.toString("."));
+		System.out.println(getParent().toString(".."));
+
+		for (File f: files)
+			System.out.println(f.toString());
     }
 
-    
-    @Override
-    public String toString() {
-        return "app " +
-                super.getPermissions() +
-                super.getFileSet().size() + // TODO need to add + 2 ???
-                " " + super.getUser().getUsername() +
-                " " + super.getId() +
-                " " + super.getLastModified() +
-                " " + super.getName();
-    }
-	C */ 
+	public Element xmlExport() {
+		Element element = new Element("dir");
+		element.setAttribute("id", getId().toString());
+		
+		Element pathElement = new Element("path");
+		pathElement.setText(getAbsolutePath());
+		element.addContent(pathElement);
+
+		Element nameElement = new Element("name");
+		nameElement.setText(getName());
+		element.addContent(nameElement);
+
+		Element ownerElement = new Element("owner");
+		ownerElement.setText(getOwner().getName());
+		element.addContent(ownerElement);
+
+		Element permissionElement = new Element("perm");
+		permissionElement.setText(getPermissions());
+		element.addContent(permissionElement);
+
+		return element;
+	}
+
+	@Override
+	public String getFileType() {
+		return "dir";
+	}
+
+	@Override
+	public int getSize() {
+		return getFileSet().size() + 2;
+	}
+
+	public String toString(String name) {
+		return getFileType() +
+				" " + getPermissions() +
+				" " + getSize() +
+				" " + getOwner().getUsername() +
+				" " + getId() +
+				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
+				" " + name;
+	}
 }

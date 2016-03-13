@@ -6,51 +6,33 @@ import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 import pt.tecnico.myDrive.exception.WrongSizePermissionException;
 
-import java.io.UnsupportedEncodingException;
-
-import org.jdom2.DataConversionException;
-
-
-
 
 public class User extends User_Base {
 
-/*
-	public User(Manager manager, Element userNode){
-
-		String username = userNode.getAttribute("username").getValue();
-		String home = userNode.getChild("home").getValue();
-
-		User user = manager.getUserByUsername(username);
-		Directory barra = getHome().getParent();
-
-		if (user != null){
-			throw new UserAlreadyExistsException(username);
-		}
-		else if(barra.lookup(home) == null){
-			Directory newHomeDir = manager.createMissingDirectories(home);
-		}
-		this.xmlImport(userNode);
-		manager.addUser(this);
-	}
-*/
     public User() {
         super();
     }
 	
-	public User(String username, String password, String name, String umask, Manager manager, Directory home) {
+	public User(String username, String password, String name, String umask, Directory home) {
 		super();
-		this.initUser(username, password, name, umask, manager, home);
+		this.initUser(username, password, name, umask, home);
 	}
-	
-	
-	private void initUser(String username, String password, String name, String umask, Manager manager, Directory home) {
-		this.setManager(manager);
+
+	private void initUser(String username, String password, String name, String umask, Directory home) {
+		
 		this.setHome(home);
 		this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
 		this.setUmask(umask);
+	}
+	@Override
+	public void setManager(Manager manager) {
+		if (manager == null) {	// to remove user
+			super.setManager(null);
+			return;
+		}
+		manager.addUser(this);
 	}
 	/* C
 
@@ -66,31 +48,6 @@ public class User extends User_Base {
 				throw new InvalidCharPermissionException(permission.charAt(i), i);
 		super.setUmask(permission);
 	}
-
-
-	public void xmlImport(Element userNode){
-			//manager nao preciso, certo??
-	try {
-			setUsername(new String(userNode.getAttribute("username").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}//DO SOMETHING
-
-	try {
-			setPassword(new String(userNode.getChild("password").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-
-	try {
-			setName(new String(userNode.getChild("name").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-	try {
-			setUmask(new String(userNode.getChild("mask").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-	try {
-			addFile(new Directory(new String (userNode.getChild("home").getValue().getBytes("UTF-8"))));  //ASSUMO QUE DIRECTORY RECEBE STRING
-	} catch (UnsupportedEncodingException e){}
-	}
-
-	/*
-
 
 	public boolean hasPermission(File file, Mask mask){
 		if(this.equals(file.getUser())) return ownerHasPermission(file, mask);
@@ -153,5 +110,19 @@ public class User extends User_Base {
 		element.addContent(maskElement);
 
 		return element;
+	}
+
+	public void xmlImport(Element userElement) {
+		String password = userElement.getChildText("password");
+		String name = userElement.getChildText("name");
+		String mask = userElement.getChildText("mask");
+		String home = userElement.getChildText("home");
+
+		if (password != null) setPassword(password);
+		if (name != null) setName(name);
+		if (mask != null) setUmask(mask);
+		if (home != null && !home.equals("/home/" + getUsername())) {
+			//TODO create Missing Files
+		}
 	}
 }
