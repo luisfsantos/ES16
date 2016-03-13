@@ -2,10 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 
-import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-import pt.tecnico.myDrive.exception.EmptyUsernameException;
-import pt.tecnico.myDrive.exception.InvalidUsernameException;
+import pt.tecnico.myDrive.exception.*;
 
 import java.util.regex.Pattern;
 import java.io.UnsupportedEncodingException;
@@ -78,23 +75,21 @@ public class User extends User_Base {
 		}
 		manager.addUser(this);
 	}
-	/* C
-
 
 	@Override
 	public void setUmask(String permission) throws WrongSizePermissionException, InvalidCharPermissionException{
 		if(permission.length() != 8) throw new WrongSizePermissionException(permission.length());
 		Mask mask[] = Mask.values();
-		//String mask = "rwxdrwxd";
-		for(int i = 0; i < 8; i++)
-			//if(permission.charAt(i) != mask.charAt(i) && permission.charAt(i) != '-')
-			if(permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
+		for(int i = 0; i < 8; i++) {
+			if (permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
 				throw new InvalidCharPermissionException(permission.charAt(i), i);
+		}
 		super.setUmask(permission);
 	}
 
 	public boolean hasPermission(File file, Mask mask){
-		if(this.equals(file.getUser())) return ownerHasPermission(file, mask);
+		if(this.getUsername() == "root") return true;
+		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
 		else { return allHasPermission(file, mask);}
 	}
 
@@ -131,7 +126,6 @@ public class User extends User_Base {
 	public boolean equals(User user){
 		return this.getUsername() == user.getUsername();
 	}
-	C */
 
 	public Element xmlExport() {
 		Element element = new Element("user");
