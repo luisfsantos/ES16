@@ -104,15 +104,6 @@ public class Directory extends Directory_Base {
 		return null;
 	}
 
-	public File getFile(String name) {
-		for (File file : getFileSet())
-			if (file.getName().equals(name))
-				return file;
-		return null;
-
-	}
-
-
 	public boolean hasFile(String name){
 		Iterator iterator = getFileSet().iterator();
 		while(iterator.hasNext()){
@@ -152,14 +143,14 @@ public class Directory extends Directory_Base {
 		}
 		if(path.indexOf('/') == -1) {
 			name = path;
-			return getFile(name);
+			return getFileByName(name);
 		}
 
 		name = path.substring(0, path.indexOf("/", 1));
 		path = path.substring(path.indexOf("/", 1) + 1);
 		while(path.startsWith("/"))
 			path = path.substring(1);
-		return this.getFile(name).lookup(path);
+		return this.getFileByName(name).lookup(path);
 	}
 
 	
