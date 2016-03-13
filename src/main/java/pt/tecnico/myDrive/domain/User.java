@@ -167,7 +167,6 @@ public class User extends User_Base {
 				String dirName = home.substring(last + 1);
 				Directory parentDir = super.getManager().createAbsolutePath(parentPath);
 				Directory homeDir = parentDir.createDirectory(dirName, super.getManager(), this);
-				//TODO Delete previous user home dir from database
 				super.setHome(homeDir);
 			} else {
 				Directory homeDir = getManager().getHomeDirectory().createDirectory(getUsername(), getManager(), this);

@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 import org.joda.time.DateTime;
+import pt.tecnico.myDrive.exception.CannotCreateNewFileException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.UserDoesNotExistException;
@@ -26,19 +27,19 @@ public abstract class File extends File_Base {
 
 
 	public Directory createDirectory(String name, Manager manager, User owner) {
-		return null; //TODO - create exception
+		throw new CannotCreateNewFileException(getFileType());
 	}
 
 	public App createApp(String name, Manager manager, User owner, String content) {
-		return null; //TODO - create exception
+		throw new CannotCreateNewFileException(getFileType());
 	}
 
 	public Link createLink(String name, Manager manager, User owner, String content) {
-		return null; //TODO - create exception
+		throw new CannotCreateNewFileException(getFileType());
 	}
 
 	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
-		return null; //TODO - create exception
+		throw new CannotCreateNewFileException(getFileType());
 	}
 
 	/* C
