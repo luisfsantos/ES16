@@ -65,7 +65,7 @@ public class User extends User_Base {
         boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);    
 
         if (username.isEmpty()) throw new EmptyUsernameException();
-        else if (!isAlphanumeric) throw new InvalidUsernameException(this.getUsername());
+        else if (!isAlphanumeric) throw new InvalidUsernameException(username);
 		
 	}
 	
