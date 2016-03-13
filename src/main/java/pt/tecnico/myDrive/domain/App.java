@@ -18,7 +18,7 @@ public class App extends App_Base {
             setContent(method);
             this.xmlImport(manager, appNode);
         } catch (UnsupportedEncodingException e) {
-            throw new ImportDocumentException();
+            throw new ImportDocumentException("UnsupportedEncodingException");
         }
     }
 

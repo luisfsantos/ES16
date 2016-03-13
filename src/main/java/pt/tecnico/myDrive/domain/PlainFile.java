@@ -23,7 +23,7 @@ public class PlainFile extends PlainFile_Base {
             setContent(contents);
             this.xmlImport(manager, plainNode);
         } catch (UnsupportedEncodingException e) {
-            throw new ImportDocumentException();
+            throw new ImportDocumentException("UnsupportedEncodingException");
         }
     }
 

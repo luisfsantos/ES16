@@ -17,11 +17,16 @@ public class User extends User_Base {
     }
 
 	public User(Manager manager, Element userNode) {
-		String username; // TODO Validate username
+		String username = userNode.getAttributeValue("username"); // TODO Validate username
+
+		if (username == null) {
+			throw new ImportDocumentException("Missing username value");
+		}
+
 		try {
-			username = new String(userNode.getAttributeValue("username").getBytes("UTF-8"));
+			username = new String(username.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			throw new ImportDocumentException();
+			throw new ImportDocumentException("UnsupportedEncoding");
 		}
 
 		if (manager.getUserByUsername(username) != null) {
@@ -175,7 +180,7 @@ public class User extends User_Base {
 				super.setHome(homeDir);
 			}
 		} catch (UnsupportedEncodingException e) {
-			throw new ImportDocumentException();
+			throw new ImportDocumentException("UnsupportedEncodingException");
 		}
 	}
 }

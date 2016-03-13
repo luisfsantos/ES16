@@ -77,31 +77,40 @@ public abstract class File extends File_Base {
 	}
 
 	public void xmlImport(Manager manager, Element fileNode) {
+		String path = fileNode.getChildText("path");
+		String name = fileNode.getChildText("name");
+		String owner = fileNode.getChildText("owner");
+		String perm = fileNode.getChildText("perm");
+
+		if (name == null || path == null) {
+			throw new ImportDocumentException("Missing name or path value");
+		}
+
 		try {
-			String path = new String(fileNode.getChild("path").getValue().getBytes("UTF-8"));
-			String ownerName = new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"));
-			String name = new String(fileNode.getChild("name").getValue().getBytes("UTF-8"));
-
-			User owner = manager.getUserByUsername(ownerName);
-			if (owner == null){
-				throw new UserDoesNotExistException(ownerName);
-			}
-
-			Directory parentDir = manager.createAbsolutePath(path);
+			Directory parentDir = manager.createAbsolutePath(new String(path.getBytes("UTF-8")));
 			if (parentDir.hasFile(name)) {
 				throw new FileAlreadyExistsInDirectoryException(name, parentDir.getName());
 			}
 			parentDir.addFile(this);
 
+			setName(new String(name.getBytes("UTF-8")));
+
+			if(owner != null) {
+				User ownerUser = manager.getUserByUsername(new String(owner.getBytes("UTF-8")));
+				if (ownerUser == null) {
+					throw new UserDoesNotExistException(owner);
+				}
+				setOwner(ownerUser);
+			}
+
+			if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
+			else setPermissions("rwxd----");
+
 			setLastModified(new DateTime());
 			setId(manager.getNextIdCounter());
 			setManager(manager);
-
-			setName(new String(fileNode.getChild("name").getValue().getBytes("UTF-8")));
-			setOwner(getManager().getUserByUsername(new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"))));
-			setPermissions(new String(fileNode.getChild("perm").getValue().getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
-			throw new ImportDocumentException();
+			throw new ImportDocumentException("UnsupportedEncodingException");
 		}
 	}
 

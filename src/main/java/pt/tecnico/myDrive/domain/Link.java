@@ -18,7 +18,7 @@ public class Link extends Link_Base {
             setContent(value);
             this.xmlImport(manager, linkNode);
         } catch (UnsupportedEncodingException e) {
-            throw new ImportDocumentException();
+            throw new ImportDocumentException("UnsupportedEncodingException");
         }
     }
 

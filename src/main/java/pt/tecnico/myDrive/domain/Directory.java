@@ -3,7 +3,6 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Directory extends Directory_Base {
@@ -12,7 +11,7 @@ public class Directory extends Directory_Base {
 		this.initFile(name, permission, manager, owner, parent);
 	}
 
-	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
+	public Directory(Manager manager, Element dirNode) {
 		this.xmlImport(manager, dirNode);
 	}
 
