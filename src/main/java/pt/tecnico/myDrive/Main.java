@@ -60,7 +60,7 @@ public class Main {
     	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
     	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
 
-    	//xmlPrint();
+    	xmlPrint();
     }
 
 

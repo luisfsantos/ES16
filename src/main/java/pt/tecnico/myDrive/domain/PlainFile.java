@@ -105,6 +105,34 @@ public class PlainFile extends PlainFile_Base {
 		setManager(null);
 		deleteDomainObject();
 	}
+	
+	@Override
+	public Element xmlExport() {
+		Element element = new Element("plain");
+		element.setAttribute("id", getId().toString());
+		
+		Element pathElement = new Element("path");
+		pathElement.setText(getAbsolutePath());
+		element.addContent(pathElement);
+
+		Element nameElement = new Element("name");
+		nameElement.setText(getName());
+		element.addContent(nameElement);
+
+		Element ownerElement = new Element("owner");
+		ownerElement.setText(getOwner().getName());
+		element.addContent(ownerElement);
+
+		Element permissionElement = new Element("perm");
+		permissionElement.setText(getPermissions());
+		element.addContent(permissionElement);
+		
+		Element contentsElement = new Element("contents");
+		contentsElement.setText(getContent());
+		element.addContent(contentsElement);
+		
+		return element;
+	}
     
 	
 }

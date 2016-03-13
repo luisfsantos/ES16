@@ -71,4 +71,32 @@ public class App extends App_Base {
     public String getFileType() {
         return "app";
     }
+    
+    @Override
+	public Element xmlExport() {
+		Element element = new Element("app");
+		element.setAttribute("id", getId().toString());
+		
+		Element pathElement = new Element("path");
+		pathElement.setText(getAbsolutePath());
+		element.addContent(pathElement);
+
+		Element nameElement = new Element("name");
+		nameElement.setText(getName());
+		element.addContent(nameElement);
+
+		Element ownerElement = new Element("owner");
+		ownerElement.setText(getOwner().getName());
+		element.addContent(ownerElement);
+
+		Element permissionElement = new Element("perm");
+		permissionElement.setText(getPermissions());
+		element.addContent(permissionElement);
+		
+		Element methodElement = new Element("method");
+		methodElement.setText(getContent());
+		element.addContent(methodElement);
+		
+		return element;
+	}
 }
