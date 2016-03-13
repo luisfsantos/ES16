@@ -1,16 +1,59 @@
 package pt.tecnico.myDrive.domain;
 
+import org.jdom2.Element;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-
+import pt.tecnico.myDrive.exception.NotEmptyDirectoryException;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.InvalidFileNameException;
+import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 
 public class Directory extends Directory_Base {
 	
 	public Directory(String name, String permission, Manager manager, User owner, Directory parent) {
 		this.initFile(name, permission, manager, owner, parent);
 	}
+/*
+	public Directory(Manager manager, Element dirNode) { //throws UserDoesNotExistException{
+
+		String path = dirNode.getChild("path").getValue();
+		String ownerName = dirNode.getChild("owner").getValue();
+		String name = dirNode.getChild("name").getValue();
+
+		User user = manager.getUserByUsername(ownerName);
+
+		Directory barra = manager.getHomeDirectory().getParent();
+		//Directory parent = (Directory)barra.lookup(path);
+
+
+		if (user == null){
+			//throw new UserDoesNotExistException;
+		}
+
+		try {
+			barra.lookup(path);
+		} catch (NullPointerException a) {
+			manager.createMissingDirectories(path);
+			setManager(manager);
+			super.xmlImport(dirNode);
+			return;
+		} finally {
+			Directory parent = (Directory) barra.lookup(path);
+			if (!parent.hasFile(name)) {
+				setManager(manager);
+				super.xmlImport(dirNode);
+			} else {
+				throw new FileAlreadyExistsException(1111); //random
+			}
+		}
+	}
+
+*/
 	
 	
 	@Override
@@ -36,6 +79,13 @@ public class Directory extends Directory_Base {
 		this.addFile(link);
 		return link;
 	}
+	
+/*
+	public Directory lookup(String path){
+		String[] names = path.split("/");
+		System.out.println("lookup:filename:"+this.getName()+this.getFile(names[1]).getName());
+		return (Directory) this.getFile(names[1]);
+*/
 
 	@Override
 	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
@@ -45,70 +95,83 @@ public class Directory extends Directory_Base {
 		return plainFile;
 	}
 	
-	public void verifyFileNameDir(String name) throws FileAlreadyExistsException{ //CHANGE EXCEPTION NAME
+	public void verifyFileNameDir(String name) throws FileAlreadyExistsInDirectoryException, InvalidFileNameException{ //CHANGE EXCEPTION NAME
 		for (File f : this.getFileSet()){
 			if(f.getName().equals(name))
-				throw new FileAlreadyExistsException(10002);
+				throw new FileAlreadyExistsInDirectoryException(name, this.getName());
 			else if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
-				throw new FileAlreadyExistsException(10003);		
+				throw new InvalidFileNameException(name);		
 		}
 	}
 	
-	/* C
-	public File getFile(String name) throws NoSuchFileInThisDirectoryException{
-		Iterator iterator = getFileSet().iterator();
-		while(iterator.hasNext()){
-			File file = iterator.next();
-			if(file.getName() == name) return file;
-		}
-		throw new NoSuchFileInThisDirectoryException(name);
+
+	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
+		for (File file : getFileSet())
+			if (file.getName().equals(name)){
+				return file;
+			}
+		throw new FileDoesntExistsInDirectoryException(name,this.getName());
 	}
+	
+	/* C
+	public File getFile(String name) {
+		for (File file : getFileSet())
+			if (file.getName().equals(name))
+				return file;
+		return null;
+
+	}
+
 
 	public boolean hasFile(String name){
 		Iterator iterator = getFileSet().iterator();
 		while(iterator.hasNext()){
-			File file = iterator.next();
+			File file = (File)iterator.next();
 			if(file.getName() == name) return true;
 		}
 		return false;
 	}
 
-	
-	public File lookup(String path) throws ExpectedSlashPathStartException, NoSuchFileInThisDirectoryException{
+	public File lookup(String path) {
 		String name;
 
-		if(path.charAt(0) != '/') 
-			throw new ExpectedSlashPathStartException();
-		if(path.charAt(1) == '/' || path.charAt(1) == '.'){
-			path = path.subString(path.indexOf("/", 1));
+		while(path.endsWith("/"))
+			path = path.substring(0, path.lastIndexOf('/'));
+
+		if(path.startsWith("/")) {
+			if(this != getParent()) {
+				return getParent().lookup(path);
+			} else {
+				while(path.startsWith("/"))
+					path = path.substring(1);
+			}
+		}
+		if(path.startsWith("..")){
+			if(path.indexOf('/') == -1) return getParent();
+			path = path.substring(path.indexOf("/", 1) + 1);
+			while(path.startsWith("/"))
+				path = path.substring(1);
+			return getParent().lookup(path);
+		}
+		if(path.startsWith(".")){
+			if(path.indexOf('/') == -1) return this;
+			path = path.substring(path.indexOf("/", 1) + 1);
+			while(path.startsWith("/"))
+				path = path.substring(1);
 			return this.lookup(path);
 		}
-		if(!path.subString(1).contains('/'))
-			return getFile(path);
-
-		name = path.subString(1, path.indexOf("/", 1));
-		path = path.subString(path.indexOf("/", 1));
-		return getFile(name).lookup(path);
-	}
-
-	public void remove() throws notEmptyDirectoryException{                  //TO REVIEW!!!
-		
-		if (this.getFileSet().size()==0){
-			
-			this.rmv();                                                  
+		if(path.indexOf('/') == -1) {
+			name = path;
+			return getFile(name);
 		}
-		else 
-			throw new notEmptyDirectoryException();
+
+		name = path.substring(0, path.indexOf("/", 1));
+		path = path.substring(path.indexOf("/", 1) + 1);
+		while(path.startsWith("/"))
+			path = path.substring(1);
+		return this.getFile(name).lookup(path);
 	}
-	
-	public void rmv(){                       //TO REVIEW
-		
-		setParent(null);
-		setUser(null);
-		setManager(null);
-		deleteDomainObject();	
-		
-	}
+
 	C */
 
 	/* 
@@ -123,6 +186,45 @@ DAVID
 DAVID		
 	}*/
 	
+	public File lookup(String path) {
+		String name;
+
+		while(path.endsWith("/"))
+			path = path.substring(0, path.lastIndexOf('/'));
+
+		if(path.startsWith("/")) {
+			if(this != getParent()) {
+				return getParent().lookup(path);
+			} else {
+				while(path.startsWith("/"))
+					path = path.substring(1);
+			}
+		}
+		if(path.startsWith("..")){
+			if(path.indexOf('/') == -1) return getParent();
+			path = path.substring(path.indexOf("/", 1) + 1);
+			while(path.startsWith("/"))
+				path = path.substring(1);
+			return getParent().lookup(path);
+		}
+		if(path.startsWith(".")){
+			if(path.indexOf('/') == -1) return this;
+			path = path.substring(path.indexOf("/", 1) + 1);
+			while(path.startsWith("/"))
+				path = path.substring(1);
+			return this.lookup(path);
+		}
+		if(path.indexOf('/') == -1) {
+			name = path;
+			return getFileByName(name);
+		}
+
+		name = path.substring(0, path.indexOf("/", 1));
+		path = path.substring(path.indexOf("/", 1) + 1);
+		while(path.startsWith("/"))
+			path = path.substring(1);
+		return this.getFileByName(name).lookup(path);
+	}
 	
 	
 	public void lsDir() {
@@ -184,13 +286,13 @@ DAVID
 				" " + name;
 	}
 	
-public void remove() throws FileAlreadyExistsException{                  //CHANGE EXCEPTION NAME!!!
+public void remove() throws NotEmptyDirectoryException{                  //CHANGE EXCEPTION NAME!!!
 		
 		if (this.getFileSet().size()==0){
 			this.rmv();                                                  
 		}
 		else 
-			throw new FileAlreadyExistsException(10000);
+			throw new NotEmptyDirectoryException(this.getName());
 	}
 	
 	public void rmv(){                       //TO REVIEW

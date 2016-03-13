@@ -16,6 +16,6 @@ public class WrongSizePermissionException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "Expected different size got " + size;
+        return "Expected different size got " + getSize();
     }
 }

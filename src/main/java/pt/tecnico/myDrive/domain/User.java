@@ -2,15 +2,15 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
+import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
+import pt.tecnico.myDrive.exception.InvalidPathException;
 import pt.tecnico.myDrive.exception.WrongSizePermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-
-import java.io.UnsupportedEncodingException;
-
-import org.jdom2.DataConversionException;
-
-
+import pt.tecnico.myDrive.exception.EmptyUsernameException;
+import pt.tecnico.myDrive.exception.InvalidUsernameException;
+import java.util.regex.Pattern;
 
 
 public class User extends User_Base {
@@ -19,18 +19,16 @@ public class User extends User_Base {
         super();
     }
 	
-	public User(String username, String password, String name, String umask, Directory home) throws UserAlreadyExistsException{
+	public User(String username, String password, String name, String umask, Directory home){
 		super();
-		
-		if (Manager.getInstance().hasUser(username)) {
-			throw new UserAlreadyExistsException(username);
-	    }
+		this.validateUsername(username);
 		this.initUser(username, password, name, umask, home);
 	}
+
 	
-	
-	private void initUser(String username, String password, String name, String umask, Directory home){
-		
+
+	private void initUser(String username, String password, String name, String umask, Directory home) {
+
 		this.setHome(home);
 		this.setUsername(username);
 		this.setPassword(password);
@@ -39,30 +37,28 @@ public class User extends User_Base {
 	}
 	
 	
+	
+	public void validateUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException {
+		if (Manager.getInstance().hasUser(username)) {
+			throw new UserAlreadyExistsException(username);
+	    }
+		
+        boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);    
+
+        if (username.isEmpty()) throw new EmptyUsernameException();
+        else if (!isAlphanumeric) throw new InvalidUsernameException(this.getUsername());
+		
+	}
+	
+	
 	@Override
 	public void setManager(Manager manager) {
 		if (manager == null) {	// to remove user
-			super.setManager(manager);
+			super.setManager(null);
 			return;
 		}
 		manager.addUser(this);
 	}
-	
-	/*
-			if (username == null){
-			RAISE EXCEPTION
-		}
-		else if (password == null){
-            password = username;
-        }
-        else if (name == null){
-       	    name = username;
-        }
-        else if(mask == null){
-            mask = "rwxd----";
-        }
-	*/
-	
 	/* C
 
 
@@ -77,32 +73,6 @@ public class User extends User_Base {
 				throw new InvalidCharPermissionException(permission.charAt(i), i);
 		super.setUmask(permission);
 	}
-
-	public void xmlImport(Element userNode){
-			//manager nao preciso, certo??
-	try {
-			setUsername(new String(userNode.getAttribute("username").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}//DO SOMETHING
-
-	try {
-			setPassword(new String(userNode.getChild("password").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-
-	try {
-			setName(new String(userNode.getChild("name").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-	try {
-			setUmask(new String(userNode.getChild("mask").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-	try {
-			addFile(new Directory(userNode.getChild("home").getValue().getBytes("UTF-8")));  //ASSUMO QUE DIRECTORY RECEBE STRING
-	} catch (UnsupportedEncodingException e){}
-	
-	
-	}
-
-
-
 
 	public boolean hasPermission(File file, Mask mask){
 		if(this.equals(file.getUser())) return ownerHasPermission(file, mask);
@@ -143,7 +113,7 @@ public class User extends User_Base {
 		return this.getUsername() == user.getUsername();
 	}
 	C */
-	
+
 	public Element xmlExport() {
 		Element element = new Element("user");
 		element.setAttribute("username", getUsername());
@@ -165,5 +135,27 @@ public class User extends User_Base {
 		element.addContent(maskElement);
 
 		return element;
+	}
+
+	public void xmlImport(Element userElement) {
+		String password = userElement.getChildText("password");
+		String name = userElement.getChildText("name");
+		String mask = userElement.getChildText("mask");
+		String home = userElement.getChildText("home");
+
+		if (password != null) setPassword(password);
+		if (name != null) setName(name);
+		if (mask != null) setUmask(mask);
+		if (home != null && !home.equals("/home/" + getUsername())) {
+			/*int last = home.lastIndexOf('/');
+			String parentPath = home.substring(0, last);
+			String dirName = home.substring(last + 1);
+			Directory parentDir = super.getManager().createAbsolutePath(parentPath);
+
+			Directory homeDir = parentDir.createDirectory(dirName, super.getManager(), this);
+			//TODO Delete previous user home dir from database
+			super.setHome(homeDir);
+			*/
+		}
 	}
 }

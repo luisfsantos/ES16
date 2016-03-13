@@ -7,29 +7,38 @@ import org.jdom2.Element;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.InvalidPathException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Pattern;
+
 
 
 
 public class Manager extends Manager_Base {
 	static final Logger log = LogManager.getRootLogger();
+	private Directory rootDirectory;
 	
 	// manager use Singleton design pattern
     public static Manager getInstance() {
     	Manager manager = FenixFramework.getDomainRoot().getManager();
     	if (manager != null) {
+    		for (File file: manager.getFileSet()) {
+        		if (file.getName().equals("/"))
+        			manager.rootDirectory = (Directory)file;
+        	}
     		return manager;
     	}
     	return new Manager();
     } 
     
     private Manager() {
+
     	this.setRoot(FenixFramework.getDomainRoot());
         this.setIdCounter(0);
         
@@ -38,6 +47,7 @@ public class Manager extends Manager_Base {
         		
         File startHome = new Directory("/", "rwxdr-x-", this, superUser, null);
         startHome.setParent((Directory)startHome);
+        this.rootDirectory = (Directory)startHome;
         
         Directory home = startHome.createDirectory("home", this, superUser);
         Directory rootHome = home.createDirectory("root", this, superUser);
@@ -45,10 +55,14 @@ public class Manager extends Manager_Base {
         
         log.trace("[Manager:getInstance] new Manager created");
     }
-    
 	
         
-    public User getUserByUsername(String username) {
+    public Directory getRootDirectory() {
+		return rootDirectory;
+	}
+
+
+	public User getUserByUsername(String username) {
     	for (User user: this.getUserSet()) {
     		if (user.getUsername().equals(username))
     			return user;
@@ -151,126 +165,72 @@ public class Manager extends Manager_Base {
     	return null;
     }
     
+   /* public Directory createMissingDirectories(String directoriesToCreate){   
+		for (File h: rootDirectory.getFileSet()) {
+			if (h.getName().equals("home")) {
+				return (Directory) h;
+			}
+		}
+		return null;
+	}
 
-    /* 
-    public Directory createMissingDirectories(String directoriesToCreate){   }
 
-    public Directory lookUpDir(String pathname){};
-    
-    
-    public void xmlImport(Element rootDrive) {      
-        
+    public Directory createMissingDirectories(String dirs){
+		String[] tokens = dirs.split("/");
+		String building="";
+		User sudo = getUserByUsername("root");
+		Directory barra = getRootDirectory();
 
-        for (Element userNode: rootDrive.getChildren("user")){
-            String username = userNode.getAttribute("username").getValue();
-            String home = userNode.getChild("home").getValue();  
-            
-            User user = getUserByUsername(username);
-            Directory homeDir = lookUpDir(home);
+		for(int i=1;i<tokens.length;i++){
+			if (barra.lookup(building+'/'+tokens[i])!=null){ //dir exists
+				building+='/'+tokens[i];
+			}
+			else{
+				barra.lookup(building).createDirectory(tokens[i],this,sudo);
+				building+='/'+tokens[i]; //to add new dir to building
+			}
+		}
+		return (Directory) barra.lookup(dirs);
+	}*/
 
-            if (user == null){
+    //public Directory lookUpDir(String pathname){};
 
-                if(homeDir == null){
-                    homeDir = createMissingDirectories(home);
-                }
-            user = new User(username,this,homeDir);          
-            }
-            user.xmlImport(userNode);
 
-        }
-    }
-	
-    C */
-    
-        /*
-        for(Element plainNode: rootDrive.getChildren("plain")){
-            
-            String path = plainNode.getChild("path").getValue(); 
-            String name = plainNode.getChild("name").getValue();
-            String owner = plainNode.getChild("owner").getValue();
-            String perm = plainNode.getChild("perm").getValue(); 
-            String contents = plainNode.getChild("contents").getValue();
-            int id = getNextIdCounter();
+/*
+	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
+		for(Element node : myDriveElement.getChildren("user")) {
+			String username = node.getAttributeValue("username"); // TODO Validate username
+			User user;
 
-            Directory parent = lookUpDir(path);
-            User user = getUserByUsername(owner);
-            
-            if (user == null){
-                throw new UserDoesNotExistException(owner);
-            }
-            if(parent == null){
-                parent = createMissingDirectories(path);  //devolve o objecto
-            }
-            PlainFile plain = new PlainFile(id,name,user,perm,parent,contents);//verificacoes devem ser feitas no constructor
-            plain.xmlImport(plainNode);
-        }
+			try {
+				if (getUserByUsername(username) != null) {
+					throw new UserAlreadyExistsException(username);
+				}
+			} catch (UserAlreadyExistsException e) {
+				throw new ImportDocumentException();
+			}
 
-        for(Element dirNode: rootDrive.getChildren("dir")){
-           
-            String path = dirNode.getChild("path").getValue(); 
-            String name = dirNode.getChild("name").getValue();
-            String owner = dirNode.getChild("owner").getValue();
-            String perm = dirNode.getChild("perm").getValue(); 
-            int id = getNextIdCounter();
+			createNewUser(username);
+			user = getUserByUsername(username);
+			user.xmlImport(node);
+		}
 
-            Directory parent = lookUpDir(path);
-            User user = getUserByUsername(owner);
+		for (Element dirNode: myDriveElement.getChildren("dir")){
+			new Directory(this,dirNode);
+		}
+		for (Element plainNode : myDriveElement.getChildren("plain")) {
+			new PlainFile(this,plainNode);
+		}
 
-            if(user == null){
-                throw new UserDoesNotExistException(owner)
-            }
-            if(parent == null){
-                parent = createMissingDirectories(path);
-            }
-            Directory dir = new Directory(id,name,user,perm,parent)
-            dir.xmlImport(dirNode);
-        }
-        
-            
-        for(Element linkNode: rootDrive.getChildren("link")){
-            String path =linkNode.getChild("path").getValue(); 
-            String name = linkNode.getChild("name").getValue();
-            String owner = linkNode.getChild("owner").getValue();
-            String perm = linkNode.getChild("perm").getValue();
-            String value = linkNode.getChild("value").getValue();
-            int id = getNextIdCounter();
+		for (Element linkNode: myDriveElement.getChildren("link")){
+			new Link(this,linkNode);
+		}
+		for (Element appNode: myDriveElement.getChildren("app")){
+			new App(this,appNode);
+		}
 
-            Directory parent = lookUpDir(path);
-            User user = getUserByUsername(owner);
-
-            if(user == null){
-                throw new UserDoesNotExistException(owner)
-            }
-            if(parent == null){
-                parent = createMissingDirectories(path);
-            }
-            Link link = new Link(id,name,user,perm,parent,value);
-            link.xmlImport(linkNode);   
-        }
-        
-        for(Element appNode: rootDrive.getChildren("app")){
-            String path = appNode.getChild("path").getValue(); 
-            String name = appNode.getChild("name").getValue();
-            String owner = appNode.getChild("owner").getValue();
-            String perm = appNode.getChild("perm").getValue(); 
-            String method = appNode.getChild("method").getValue();
-            int id = getNextIdCounter();
-
-            Directory parent = lookUpDir(path);
-            User user = getUserByUsername(owner);
-
-            if(user == null){
-                throw new UserDoesNotExistException(owner)
-            }
-            if(parent == null){
-                parent = createMissingDirectories(path);
-            }
-            App app = new App(id,name,user,perm,parent,method);
-            app.xmlImport(appNode);
-        }
-        */
-
-    
+	}
+*/
     public Document xmlExport() {
     	final int defaultNoFiles= 3;
         Element element = new Element("myDrive");
@@ -291,10 +251,38 @@ public class Manager extends Manager_Base {
             for (File f: files)
                 element.addContent(f.xmlExport());
         }
-        
         return doc;
-
-        
     }
+/*
+	public Directory createAbsolutePath(String path) {
+		if(!path.startsWith("/")) {
+			throw new InvalidPathException(path);
+		}
+		Directory startDir = getRootDirectory();
 
+		return createAbsolutePathAux(startDir, path.substring(1));
+	}
+
+	private Directory createAbsolutePathAux(Directory dir, String path) {
+		int first = path.indexOf('/');
+		User root = getUserByUsername("root");
+
+		if(first == -1) {
+			Directory finalDir = (Directory) dir.getFile(path);
+			if(finalDir == null) return dir.createDirectory(path, getInstance(), root);
+			else return finalDir;
+		}
+
+		String dirName = path.substring(0, first);
+		Directory nextDir = (Directory) dir.getFile(dirName);
+		String nextPath =  path.substring(first + 1);
+
+		if(nextDir != null) {
+			return createAbsolutePathAux(nextDir, nextPath);
+		} else {
+			nextDir = dir.createDirectory(dirName, getInstance(), root);
+			return createAbsolutePathAux(nextDir, nextPath);
+		}
+	}
+*/
 }
