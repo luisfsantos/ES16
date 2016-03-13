@@ -50,11 +50,11 @@ public class Directory extends Directory_Base {
 	}
 	
 	public void verifyFileNameDir(String name) throws FileAlreadyExistsInDirectoryException, InvalidFileNameException{ //CHANGE EXCEPTION NAME
-		for (File f : this.getFileSet()){
+		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
+			throw new InvalidFileNameException(name);
+		for (File f : this.getFileSet()) {
 			if(f.getName().equals(name))
 				throw new FileAlreadyExistsInDirectoryException(name, this.getName());
-			else if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
-				throw new InvalidFileNameException(name);		
 		}
 	}
 	

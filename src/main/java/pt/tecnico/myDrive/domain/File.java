@@ -83,19 +83,13 @@ public abstract class File extends File_Base {
 		String path = fileNode.getChildText("path");
 		String name = fileNode.getChildText("name");
 		String owner = fileNode.getChildText("owner");
-		String perm = fileNode.getChildText("perm");
+		String perm = fileNode.getChildText("perm"); //TODO Validate length and character
 
 		if (name == null || path == null) {
 			throw new ImportDocumentException("Missing name or path value");
 		}
 
 		try {
-			Directory parentDir = manager.createAbsolutePath(new String(path.getBytes("UTF-8")));
-			if (parentDir.hasFile(name)) {
-				throw new FileAlreadyExistsInDirectoryException(name, parentDir.getName());
-			}
-			parentDir.addFile(this);
-
 			setName(new String(name.getBytes("UTF-8")));
 
 			if(owner != null) {
@@ -111,6 +105,11 @@ public abstract class File extends File_Base {
 
 			setLastModified(new DateTime());
 			setId(manager.getNextIdCounter());
+
+			Directory parentDir = manager.createAbsolutePath(new String(path.getBytes("UTF-8")));
+			parentDir.verifyFileNameDir(name);
+			parentDir.addFile(this);
+
 			setManager(manager);
 		} catch (UnsupportedEncodingException e) {
 			throw new ImportDocumentException("UnsupportedEncodingException");

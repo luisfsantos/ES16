@@ -16,6 +16,6 @@ public class InvalidFileNameException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return getFileName() + " contains invalid characters";
+        return getFileName() + " is not a valid file name";
     }
 }

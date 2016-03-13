@@ -17,7 +17,7 @@ public class User extends User_Base {
     }
 
 	public User(Manager manager, Element userNode) {
-		String username = userNode.getAttributeValue("username"); // TODO Validate username
+		String username = userNode.getAttributeValue("username");
 
 		if (username == null) {
 			throw new ImportDocumentException("Missing username value");
@@ -29,10 +29,6 @@ public class User extends User_Base {
 			throw new ImportDocumentException("UnsupportedEncoding");
 		}
 
-		if (manager.getUserByUsername(username) != null) {
-			throw new UserAlreadyExistsException(username);
-		}
-
 		initUser(username, username, username, "rwxd----", null);
 		setManager(manager);
 		xmlImport(userNode);
@@ -40,14 +36,13 @@ public class User extends User_Base {
 	
 	public User(String username, String password, String name, String umask, Directory home){
 		super();
-		this.validateUsername(username);
 		this.initUser(username, password, name, umask, home);
 	}
 
 	
 
 	private void initUser(String username, String password, String name, String umask, Directory home) {
-
+		this.validateUsername(username);
 		this.setHome(home);
 		this.setUsername(username);
 		this.setPassword(password);
@@ -55,8 +50,7 @@ public class User extends User_Base {
 		this.setUmask(umask);
 	}
 	
-	
-	
+
 	public void validateUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException {
 		if (Manager.getInstance().hasUser(username)) {
 			throw new UserAlreadyExistsException(username);
@@ -65,7 +59,7 @@ public class User extends User_Base {
         boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);    
 
         if (username.isEmpty()) throw new EmptyUsernameException();
-        else if (!isAlphanumeric) throw new InvalidUsernameException(this.getUsername());
+        else if (!isAlphanumeric) throw new InvalidUsernameException(username);
 		
 	}
 	
