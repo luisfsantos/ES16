@@ -4,6 +4,7 @@ import org.jdom2.DataConversionException;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -13,9 +14,7 @@ public abstract class File extends File_Base {
 		super();
 	}
 
-
 	protected void initFile(String name, String permission, Manager manager, User owner, Directory parent) {
-
 		this.setManager(manager);
 		this.setOwner(owner);
 		this.setParent(parent);
@@ -23,7 +22,6 @@ public abstract class File extends File_Base {
 		this.setPermissions(permission);
 		this.setId(manager.getNextIdCounter());
 		this.setLastModified(new DateTime());
-		
 	}
 
 
@@ -67,7 +65,7 @@ public abstract class File extends File_Base {
 	}
 	
 
-	
+
 	C */
 
 	public String getAbsolutePath() {
@@ -95,7 +93,6 @@ public abstract class File extends File_Base {
 		}
 	}
 
-
 	@Override
 	public String toString() {
 		return getFileType() +
@@ -106,7 +103,7 @@ public abstract class File extends File_Base {
 				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
 				" " + getName();
 	}
-	
+
 	public abstract String getFileType();
 	public abstract int getSize();
 
@@ -115,7 +112,7 @@ public abstract class File extends File_Base {
 	public void showContent(){}
 	public void setContent(String x){}
 	public void lsDir(){}
-	
+
 
 	public abstract File lookup(String path);
 

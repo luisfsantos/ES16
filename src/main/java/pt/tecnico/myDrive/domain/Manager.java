@@ -81,19 +81,19 @@ public class Manager extends Manager_Base {
     }
     
     
-    public void createNewUser(String username){    //throws UserAlreadyExistsException
-
-    	this.createNewUser(username, username, username, "rwxd----");
-    }	
+    public User createNewUser(String username){
+    	return this.createNewUser(username, username, username, "rwxd----");
+    }
     
     
     // miss exceptions
-    public void createNewUser(String username, String password, String name, String umask){
-
+    public User createNewUser(String username, String password, String name, String umask){
     	User newUser = new User(username, password, name, umask, null);
     	Directory userHome = this.getHomeDirectory().createDirectory(username, this, newUser);
     	newUser.setHome(userHome);
     	this.addUser(newUser);
+
+		return newUser;
     }
     
     
@@ -151,20 +151,16 @@ public class Manager extends Manager_Base {
     
     
     public Directory getHomeDirectory() {
-    	for (File f: this.getFileSet()) {
-    		if (f.getName().equals("/")) {
-    			Directory pathStart = (Directory) f;
-    			for (File h: pathStart.getFileSet()) {
-    				if (h.getName().equals("home")) {
-    					return (Directory) h;
-    				}
-    			}
-    			return null;
-    		}
-    	}
-    	return null;
-    }
+		for (File h: rootDirectory.getFileSet()) {
+			if (h.getName().equals("home")) {
+				return (Directory) h;
+			}
+		}
+		return null;
+	}
+
     
+
 
     public Directory createMissingDirectories(String dirs){
 		String[] tokens = dirs.split("/");
@@ -189,21 +185,8 @@ public class Manager extends Manager_Base {
 
 
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
-		for(Element node : myDriveElement.getChildren("user")) {
-			String username = node.getAttributeValue("username"); // TODO Validate username
-			User user;
-
-			try {
-				if (getUserByUsername(username) != null) {
-					throw new UserAlreadyExistsException(username);
-				}
-			} catch (UserAlreadyExistsException e) {
-				throw new ImportDocumentException();
-			}
-
-			createNewUser(username);
-			user = getUserByUsername(username);
-			user.xmlImport(node);
+		for(Element userNode : myDriveElement.getChildren("user")) {
+			new User(this, userNode);
 		}
 
 		for (Element dirNode: myDriveElement.getChildren("dir")){
@@ -244,17 +227,17 @@ public class Manager extends Manager_Base {
         }
         return doc;
     }
-/*
+
 	public Directory createAbsolutePath(String path) {
 		if(!path.startsWith("/")) {
 			throw new InvalidPathException(path);
 		}
 		Directory startDir = getRootDirectory();
 
-		return createAbsolutePathAux(startDir, path.substring(1));
+		return createAbsolutePath(startDir, path.substring(1));
 	}
 
-	private Directory createAbsolutePathAux(Directory dir, String path) {
+	private Directory createAbsolutePath(Directory dir, String path) {
 		int first = path.indexOf('/');
 		User root = getUserByUsername("root");
 
@@ -269,11 +252,10 @@ public class Manager extends Manager_Base {
 		String nextPath =  path.substring(first + 1);
 
 		if(nextDir != null) {
-			return createAbsolutePathAux(nextDir, nextPath);
+			return createAbsolutePath(nextDir, nextPath);
 		} else {
 			nextDir = dir.createDirectory(dirName, getInstance(), root);
-			return createAbsolutePathAux(nextDir, nextPath);
+			return createAbsolutePath(nextDir, nextPath);
 		}
 	}
-*/
 }
