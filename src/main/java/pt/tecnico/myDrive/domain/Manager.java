@@ -67,13 +67,15 @@ public class Manager extends Manager_Base {
     }
     
     
-    public void createNewUser(String username){   
+    public void createNewUser(String username){    //throws UserAlreadyExistsException
+
     	this.createNewUser(username, username, username, "rwxd----");
-    }
+    }	
     
     
     // miss exceptions
     public void createNewUser(String username, String password, String name, String umask){
+
     	User newUser = new User(username, password, name, umask, null);
     	Directory userHome = this.getHomeDirectory().createDirectory(username, this, newUser);
     	newUser.setHome(userHome);
@@ -150,7 +152,7 @@ public class Manager extends Manager_Base {
     }
     
 
-    /* C
+    /* 
     public Directory createMissingDirectories(String directoriesToCreate){   }
 
     public Directory lookUpDir(String pathname){};
@@ -290,10 +292,8 @@ public class Manager extends Manager_Base {
                 element.addContent(f.xmlExport());
         }
         
-
         return doc;
-        
-        
+
         
     }
 

@@ -4,6 +4,7 @@ import org.jdom2.Element;
 
 import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
 import pt.tecnico.myDrive.exception.WrongSizePermissionException;
+import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -18,13 +19,17 @@ public class User extends User_Base {
         super();
     }
 	
-	public User(String username, String password, String name, String umask, Directory home) {
+	public User(String username, String password, String name, String umask, Directory home) throws UserAlreadyExistsException{
 		super();
+		
+		if (Manager.getInstance().hasUser(username)) {
+			throw new UserAlreadyExistsException(username);
+	    }
 		this.initUser(username, password, name, umask, home);
 	}
 	
 	
-	private void initUser(String username, String password, String name, String umask, Directory home) {
+	private void initUser(String username, String password, String name, String umask, Directory home){
 		
 		this.setHome(home);
 		this.setUsername(username);

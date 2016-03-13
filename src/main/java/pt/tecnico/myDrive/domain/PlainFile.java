@@ -39,4 +39,12 @@ public class PlainFile extends PlainFile_Base {
     public String getFileType() {
         return "plain-file";
     }
+    
+	public void remove(){
+		setParent(null);
+		setOwner(null);
+		setManager(null);
+		deleteDomainObject();
+	}
+    
 }

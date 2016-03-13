@@ -3,6 +3,8 @@ package pt.tecnico.myDrive.domain;
 import java.util.*;
 
 import org.jdom2.Element;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+
 
 public class Directory extends Directory_Base {
 	
@@ -13,6 +15,7 @@ public class Directory extends Directory_Base {
 	
 	@Override
 	public Directory createDirectory(String name, Manager manager, User owner) {
+		this.verifyFileNameDir(name);
 		Directory dir = new Directory(name, owner.getUmask(), manager, owner, this);
 		this.addFile(dir);
 		return dir;
@@ -20,6 +23,7 @@ public class Directory extends Directory_Base {
 	
 	@Override
 	public App createApp(String name, Manager manager, User owner, String content) {
+		this.verifyFileNameDir(name);
 		App app = new App(name, owner.getUmask(), manager, owner, this, content);
 		this.addFile(app);
 		return app;
@@ -27,6 +31,7 @@ public class Directory extends Directory_Base {
 	
 	@Override
 	public Link createLink(String name, Manager manager, User owner, String content) {
+		this.verifyFileNameDir(name);
 		Link link = new Link(name, owner.getUmask(), manager, owner, this, content);
 		this.addFile(link);
 		return link;
@@ -34,9 +39,19 @@ public class Directory extends Directory_Base {
 
 	@Override
 	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
+		this.verifyFileNameDir(name);
 		PlainFile plainFile = new PlainFile(name, owner.getUmask(), manager, owner, this, content);
 		this.addFile(plainFile);
 		return plainFile;
+	}
+	
+	public void verifyFileNameDir(String name) throws FileAlreadyExistsException{ //CHANGE EXCEPTION NAME
+		for (File f : this.getFileSet()){
+			if(f.getName().equals(name))
+				throw new FileAlreadyExistsException(10002);
+			else if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
+				throw new FileAlreadyExistsException(10003);		
+		}
 	}
 	
 	/* C
@@ -96,6 +111,20 @@ public class Directory extends Directory_Base {
 	}
 	C */
 
+	/* 
+DAVID 
+	 public File getFileByName(String name) throws FileAlreadyExistsException {
+	 
+		for (File f : getFileSet()){
+			if (f.getName().equals(name))
+				return f;
+		}
+		throw new FileAlreadyExistsException(9999);
+DAVID		
+	}*/
+	
+	
+	
 	public void lsDir() {
 		List<File> files = new ArrayList<File>(getFileSet());
 
@@ -153,5 +182,23 @@ public class Directory extends Directory_Base {
 				" " + getId() +
 				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
 				" " + name;
+	}
+	
+public void remove() throws FileAlreadyExistsException{                  //CHANGE EXCEPTION NAME!!!
+		
+		if (this.getFileSet().size()==0){
+			this.rmv();                                                  
+		}
+		else 
+			throw new FileAlreadyExistsException(10000);
+	}
+	
+	public void rmv(){                       //TO REVIEW
+		
+		setParent(null);
+		setOwner(null);
+		setManager(null);
+		deleteDomainObject();	
+		
 	}
 }
