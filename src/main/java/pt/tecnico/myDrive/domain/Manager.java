@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Pattern;
+
 
 
 
@@ -179,9 +179,9 @@ public class Manager extends Manager_Base {
 		}
 		return (Directory) barra.lookup(dirs);
 	}
-/*
-    public Directory lookUpDir(String pathname){};
-*/
+
+    //public Directory lookUpDir(String pathname){};
+
 
 
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
@@ -204,6 +204,7 @@ public class Manager extends Manager_Base {
 		}
 
 	}
+
     public Document xmlExport() {
     	final int defaultNoFiles= 3;
         Element element = new Element("myDrive");
@@ -224,7 +225,6 @@ public class Manager extends Manager_Base {
             for (File f: files)
                 element.addContent(f.xmlExport());
         }
-
         return doc;
     }
 

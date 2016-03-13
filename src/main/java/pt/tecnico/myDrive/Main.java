@@ -37,18 +37,30 @@ public class Main {
 			}
 			
 		} finally { FenixFramework.shutdown(); }
-		
 	}
 	
     @Atomic
     public static void setup() {
-    	Manager.getInstance().createNewUser("user2");
+
+    	//DAVID
+    	//Manager.getInstance().createNewUser("root");
+    	//System.out.println(Manager.getInstance().getHomeDirectory().getParent().getName());
+    	//System.out.println(Manager.getInstance().getHomeDirectory().getName());
+    	//Manager.getInstance().getHomeDirectory().lsDir();
+    	//Manager.getInstance().getHomeDirectory().getFileByName("README10").remove();
+    	//Manager.getInstance().getHomeDirectory().getFileByName("README3").showContent();
+    	//Manager.getInstance().getHomeDirectory().createPlainFile("README3", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"),"banana3");
+    	//Manager.getInstance().getHomeDirectory().createDirectory("DA\0", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"));
+    	//DAVID
+    	
+ 
+
     	log.trace("[Main:setup] Root directory = " + Manager.getInstance().getRootDirectory().getName());
     	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
     	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
     	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
 
-    	xmlPrint();
+    	//xmlPrint();
     }
 
 
@@ -62,9 +74,10 @@ public class Main {
 		for (User u: manager.getUserSet()) {
 			System.out.println("User:" + u.getName()+ " has " + u.getFileSet().size() + " files:");
 			for (File f: u.getFileSet())
-				System.out.println("\t" + f.getName() + " -> " + f.getAbsolutePath());
+				System.out.println("\t" + f.getName() + " contains.... ");
 		}
 	}
+
 
 	@Atomic
     public static void xmlScan(java.io.File file) {

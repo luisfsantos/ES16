@@ -1,7 +1,9 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -12,7 +14,8 @@ public class App extends App_Base {
     	this.setContent(content);
     }
 
-    public App(Manager manager, Element appNode){ //throws UserDoesNotExistException{
+    public App(Manager manager, Element appNode) throws UnsupportedEncodingException { //throws UserDoesNotExistException{
+
 
         String path = appNode.getChild("path").getValue();
         String ownerName = appNode.getChild("owner").getValue();
@@ -21,10 +24,9 @@ public class App extends App_Base {
         User user = manager.getUserByUsername(ownerName);
 
         Directory barra = manager.getHomeDirectory().getParent();
-        //Directory parent = (Directory) barra.lookup(path);
 
         if (user == null){
-            //throw new UserDoesNotExistException(ownerName);
+            throw new UserDoesNotExistException(ownerName);
         }
 
         try {
@@ -46,15 +48,24 @@ public class App extends App_Base {
 
     }
 
+
     @Override
-    public void xmlImport(Element appNode) { //throws ImportDocumentException {
-        super.xmlImport(appNode);
-        /*try {
+    public void xmlImport(Element appNode) throws UnsupportedEncodingException {
+        DateTime dt = new DateTime();
+        try {
+            setId(getManager().getNextIdCounter());
+            setLastModified(dt.minusMillis(0));
+            setParent((Directory) getManager().getRootDirectory().lookup(new String(appNode.getChild("path").getValue().getBytes("UTF-8"))));
+            setName(new String(appNode.getChild("name").getValue().getBytes("UTF-8")));
+            setOwner(getManager().getUserByUsername(new String(appNode.getChild("owner").getValue().getBytes("UTF-8"))));
+            setPermissions(new String(appNode.getChild("perm").getValue().getBytes("UTF-8")));
             setContent(new String(appNode.getChild("method").getValue().getBytes("UTF-8")));
         } catch (UnsupportedEncodingException e) {
-            //throw new ImportDocumentException();
-        }*/
-    }
+            throw new UnsupportedEncodingException();
+        }
+   }
+
+
 
     @Override
     public String getFileType() {

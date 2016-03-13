@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.DataConversionException;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.io.UnsupportedEncodingException;
@@ -64,12 +65,7 @@ public abstract class File extends File_Base {
 	}
 	
 
-	public void removeFile(){
-		setParent(null);
-		setUser(null);
-		setManager(null);
-		deleteDomainObject();
-	}
+
 	C */
 
 	public String getAbsolutePath() {
@@ -83,14 +79,17 @@ public abstract class File extends File_Base {
 		return null;
 	}
 
-	public void xmlImport(Element fileNode) throws ImportDocumentException {
+	public void xmlImport(Element fileNode) throws UnsupportedEncodingException {
+		DateTime dt = new DateTime();
 		try {
+			setId(getManager().getNextIdCounter());
+			setLastModified(dt.minusMillis(0));
 			setParent((Directory) getManager().getRootDirectory().lookup(new String(fileNode.getChild("path").getValue().getBytes("UTF-8"))));
 			setName(new String(fileNode.getChild("name").getValue().getBytes("UTF-8")));
 			setOwner(getManager().getUserByUsername(new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"))));
 			setPermissions(new String(fileNode.getChild("perm").getValue().getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
-			throw new ImportDocumentException();
+			throw new UnsupportedEncodingException();
 		}
 	}
 
@@ -108,6 +107,14 @@ public abstract class File extends File_Base {
 	public abstract String getFileType();
 	public abstract int getSize();
 
+
+	public void remove(){}
+	public void showContent(){}
+	public void setContent(String x){}
+	public void lsDir(){}
+
+
 	public abstract File lookup(String path);
+
 }
 
