@@ -2,7 +2,9 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
+import pt.tecnico.myDrive.exception.InvalidPathException;
 import pt.tecnico.myDrive.exception.WrongSizePermissionException;
 
 
@@ -123,7 +125,14 @@ public class User extends User_Base {
 		if (name != null) setName(name);
 		if (mask != null) setUmask(mask);
 		if (home != null && !home.equals("/home/" + getUsername())) {
-			//TODO create Missing Files
+			int last = home.lastIndexOf('/');
+			String parentPath = home.substring(0, last);
+			String dirName = home.substring(last + 1);
+			Directory parentDir = super.getManager().createAbsolutePath(parentPath);
+
+			Directory homeDir = parentDir.createDirectory(dirName, super.getManager(), this);
+			//TODO Delete previous user home dir from database
+			super.setHome(homeDir);
 		}
 	}
 }

@@ -8,6 +8,7 @@ import org.jdom2.Element;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.InvalidPathException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
 import java.util.ArrayList;
@@ -199,4 +200,34 @@ public class Manager extends Manager_Base {
         return doc;
     }
 
+	public Directory createAbsolutePath(String path) {
+		if(!path.startsWith("/")) {
+			throw new InvalidPathException(path);
+		}
+		Directory startDir = getRootDirectory();
+
+		return createAbsolutePathAux(startDir, path.substring(1));
+	}
+
+	private Directory createAbsolutePathAux(Directory dir, String path) {
+		int first = path.indexOf('/');
+		User root = getUserByUsername("root");
+
+		if(first == -1) {
+			Directory finalDir = (Directory) dir.getFile(path);
+			if(finalDir == null) return dir.createDirectory(path, getInstance(), root);
+			else return finalDir;
+		}
+
+		String dirName = path.substring(0, first);
+		Directory nextDir = (Directory) dir.getFile(dirName);
+		String nextPath =  path.substring(first + 1);
+
+		if(nextDir != null) {
+			return createAbsolutePathAux(nextDir, nextPath);
+		} else {
+			nextDir = dir.createDirectory(dirName, getInstance(), root);
+			return createAbsolutePathAux(nextDir, nextPath);
+		}
+	}
 }
