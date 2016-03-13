@@ -17,7 +17,7 @@ public class PlainFile extends PlainFile_Base {
         this.setContent(content);
     }
 
-    public PlainFile(Manager manager, Element plainNode) { //throws UserDoesNotExistException{
+    public PlainFile(Manager manager, Element plainNode) throws UnsupportedEncodingException { //throws UserDoesNotExistException{
 
         String path = plainNode.getChild("path").getValue();
         String ownerName = plainNode.getChild("owner").getValue();
@@ -52,15 +52,11 @@ public class PlainFile extends PlainFile_Base {
 
 
 
-    public void xmlImport(Element plainNode) {
+    public void xmlImport(Element plainNode) throws UnsupportedEncodingException {
         super.xmlImport(plainNode);
-        /*String a= plainNode.getChild("contents").getValue();
-        System.out.println(a);
-        try {
-            setContent(a);
-        } catch (UnsupportedEncodingException e) {
-*/
-    }
+        setContent(plainNode.getChild("contents").getValue());
+        }
+
 
 
     @Override

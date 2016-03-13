@@ -1,6 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 
 import java.io.UnsupportedEncodingException;
@@ -45,13 +46,19 @@ public class Link extends Link_Base {
     }
 
     @Override
-    public void xmlImport(Element dirNode) {
-        super.xmlImport(dirNode);
-        /*try {
+    public void xmlImport(Element dirNode) throws UnsupportedEncodingException {
+        DateTime dt = new DateTime();
+        try {
+            setId(getManager().getNextIdCounter());
+            setLastModified(dt.minusMillis(0));
+            setParent((Directory) getManager().getRootDirectory().lookup(new String(dirNode.getChild("path").getValue().getBytes("UTF-8"))));
+            setName(new String(dirNode.getChild("name").getValue().getBytes("UTF-8")));
+            setOwner(getManager().getUserByUsername(new String(dirNode.getChild("owner").getValue().getBytes("UTF-8"))));
+            setPermissions(new String(dirNode.getChild("perm").getValue().getBytes("UTF-8")));
             setContent(new String(dirNode.getChild("value").getValue().getBytes("UTF-8")));
         } catch (UnsupportedEncodingException e) {
-            //throw new ImportDocumentException();
-        }*/
+            throw new UnsupportedEncodingException();
+        }
     }
 
     @Override

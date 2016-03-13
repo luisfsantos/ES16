@@ -14,7 +14,7 @@ public class Directory extends Directory_Base {
 		this.initFile(name, permission, manager, owner, parent);
 	}
 
-	public Directory(Manager manager, Element dirNode) { //throws UserDoesNotExistException{
+	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException{ //throws UserDoesNotExistException{
 
 		String path = dirNode.getChild("path").getValue();
 		String ownerName = dirNode.getChild("owner").getValue();

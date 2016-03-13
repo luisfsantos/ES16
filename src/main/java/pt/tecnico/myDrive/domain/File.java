@@ -82,16 +82,20 @@ public abstract class File extends File_Base {
 		return null;
 	}
 
-	public void xmlImport(Element fileNode) { //throws ImportDocumentException {
+	public void xmlImport(Element fileNode) throws UnsupportedEncodingException {
+		DateTime dt = new DateTime();
 		try {
+			setId(getManager().getNextIdCounter());
+			setLastModified(dt.minusMillis(0));
 			setParent((Directory) getManager().getRootDirectory().lookup(new String(fileNode.getChild("path").getValue().getBytes("UTF-8"))));
 			setName(new String(fileNode.getChild("name").getValue().getBytes("UTF-8")));
 			setOwner(getManager().getUserByUsername(new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"))));
 			setPermissions(new String(fileNode.getChild("perm").getValue().getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
-			//throw new ImportDocumentException();
+			throw new UnsupportedEncodingException();
 		}
 	}
+
 
 	@Override
 	public String toString() {
