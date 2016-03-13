@@ -69,7 +69,7 @@ public class User extends User_Base {
 		}
 		manager.addUser(this);
 	}
-
+/*
 	@Override
 	public void setUmask(String permission) throws WrongSizePermissionException, InvalidCharPermissionException{
 		if(permission.length() != 8) throw new WrongSizePermissionException(permission.length());
@@ -82,7 +82,7 @@ public class User extends User_Base {
 		}
 		super.setUmask(permission);
 	}
-
+*/
 	public boolean hasPermission(File file, Mask mask){
 		if(this.getUsername() == "root") return true;
 		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
