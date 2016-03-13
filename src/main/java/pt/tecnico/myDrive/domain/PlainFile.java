@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.apache.commons.lang.ObjectUtils;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -17,8 +18,8 @@ public class PlainFile extends PlainFile_Base {
         this.setContent(content);
     }
 
+    public PlainFile(Manager manager, Element plainNode) throws UnsupportedEncodingException { //throws UserDoesNotExistException{
 
-    public PlainFile(Manager manager, Element plainNode) { //throws UserDoesNotExistException{
 
         String path = plainNode.getChild("path").getValue();
         String ownerName = plainNode.getChild("owner").getValue();
@@ -27,10 +28,9 @@ public class PlainFile extends PlainFile_Base {
         User user = manager.getUserByUsername(ownerName);
 
         Directory barra = manager.getRootDirectory();
-        //Directory parent = (Directory) barra.lookup(path);
 
         if (user == null) {
-            //throw new UserDoesNotExistException(ownerName);
+            throw new UserDoesNotExistException(ownerName);
         }
 
         try {
@@ -53,15 +53,11 @@ public class PlainFile extends PlainFile_Base {
 
 
 
-    public void xmlImport(Element plainNode) {
+    public void xmlImport(Element plainNode) throws UnsupportedEncodingException {
         super.xmlImport(plainNode);
-        /*String a= plainNode.getChild("contents").getValue();
-        System.out.println(a);
-        try {
-            setContent(a);
-        } catch (UnsupportedEncodingException e) {
-*/
-    }
+        setContent(plainNode.getChild("contents").getValue());
+        }
+
 
 
     @Override

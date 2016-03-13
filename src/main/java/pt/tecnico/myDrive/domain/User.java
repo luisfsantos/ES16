@@ -12,12 +12,26 @@ import pt.tecnico.myDrive.exception.EmptyUsernameException;
 import pt.tecnico.myDrive.exception.InvalidUsernameException;
 import java.util.regex.Pattern;
 
+import java.io.UnsupportedEncodingException;
+
 
 public class User extends User_Base {
 
     public User() {
         super();
     }
+
+	public User(Manager manager, Element userNode) {
+		String username = userNode.getAttributeValue("username"); // TODO Validate username
+
+		if (manager.getUserByUsername(username) != null) {
+			throw new UserAlreadyExistsException(username);
+		}
+
+		initUser(username, username, username, "rwxd----", null);
+		setManager(manager);
+		xmlImport(userNode);
+	}
 	
 	public User(String username, String password, String name, String umask, Directory home){
 		super();
@@ -143,19 +157,25 @@ public class User extends User_Base {
 		String mask = userElement.getChildText("mask");
 		String home = userElement.getChildText("home");
 
-		if (password != null) setPassword(password);
-		if (name != null) setName(name);
-		if (mask != null) setUmask(mask);
-		if (home != null && !home.equals("/home/" + getUsername())) {
-			/*int last = home.lastIndexOf('/');
-			String parentPath = home.substring(0, last);
-			String dirName = home.substring(last + 1);
-			Directory parentDir = super.getManager().createAbsolutePath(parentPath);
-
-			Directory homeDir = parentDir.createDirectory(dirName, super.getManager(), this);
-			//TODO Delete previous user home dir from database
-			super.setHome(homeDir);
-			*/
+		try {
+			if (password != null) setPassword(new String(password.getBytes("UTF-8")));
+			if (name != null) setName(new String(name.getBytes("UTF-8")));
+			if (mask != null) setUmask(new String(mask.getBytes("UTF-8")));
+			if (home != null && !home.equals("/home/" + getUsername())) {
+				home = new String(home.getBytes("UTF-8"));
+				int last = home.lastIndexOf('/');
+				String parentPath = home.substring(0, last);
+				String dirName = home.substring(last + 1);
+				Directory parentDir = super.getManager().createAbsolutePath(parentPath);
+				Directory homeDir = parentDir.createDirectory(dirName, super.getManager(), this);
+				//TODO Delete previous user home dir from database
+				super.setHome(homeDir);
+			} else {
+				Directory homeDir = getManager().getHomeDirectory().createDirectory(getUsername(), getManager(), this);
+				super.setHome(homeDir);
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new ImportDocumentException();
 		}
 	}
 }

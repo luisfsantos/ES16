@@ -74,7 +74,7 @@ public class Main {
 		for (User u: manager.getUserSet()) {
 			System.out.println("User:" + u.getName()+ " has " + u.getFileSet().size() + " files:");
 			for (File f: u.getFileSet())
-				System.out.println("\t" + f.getName() + " -> " + f.getAbsolutePath());
+				System.out.println("\t" + f.getName() + " contains.... ");
 		}
 	}
 
