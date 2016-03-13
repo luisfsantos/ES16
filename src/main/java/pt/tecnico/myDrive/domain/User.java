@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 
 import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
+import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 import pt.tecnico.myDrive.exception.WrongSizePermissionException;
 
 import java.io.UnsupportedEncodingException;
@@ -14,6 +15,25 @@ import org.jdom2.DataConversionException;
 
 public class User extends User_Base {
 
+/*
+	public User(Manager manager, Element userNode){
+
+		String username = userNode.getAttribute("username").getValue();
+		String home = userNode.getChild("home").getValue();
+
+		User user = manager.getUserByUsername(username);
+		Directory barra = getHome().getParent();
+
+		if (user != null){
+			throw new UserAlreadyExistsException(username);
+		}
+		else if(barra.lookup(home) == null){
+			Directory newHomeDir = manager.createMissingDirectories(home);
+		}
+		this.xmlImport(userNode);
+		manager.addUser(this);
+	}
+*/
     public User() {
         super();
     }
@@ -32,22 +52,6 @@ public class User extends User_Base {
 		this.setName(name);
 		this.setUmask(umask);
 	}
-	
-	/*
-			if (username == null){
-			RAISE EXCEPTION
-		}
-		else if (password == null){
-            password = username;
-        }
-        else if (name == null){
-       	    name = username;
-        }
-        else if(mask == null){
-            mask = "rwxd----";
-        }
-	*/
-	
 	/* C
 
 
@@ -62,6 +66,7 @@ public class User extends User_Base {
 				throw new InvalidCharPermissionException(permission.charAt(i), i);
 		super.setUmask(permission);
 	}
+
 
 	public void xmlImport(Element userNode){
 			//manager nao preciso, certo??
@@ -80,13 +85,11 @@ public class User extends User_Base {
 			setUmask(new String(userNode.getChild("mask").getValue().getBytes("UTF-8")));
 	} catch (UnsupportedEncodingException e){}
 	try {
-			addFile(new Directory(userNode.getChild("home").getValue().getBytes("UTF-8")));  //ASSUMO QUE DIRECTORY RECEBE STRING
+			addFile(new Directory(new String (userNode.getChild("home").getValue().getBytes("UTF-8"))));  //ASSUMO QUE DIRECTORY RECEBE STRING
 	} catch (UnsupportedEncodingException e){}
-	
-	
 	}
 
-
+	/*
 
 
 	public boolean hasPermission(File file, Mask mask){
@@ -128,7 +131,7 @@ public class User extends User_Base {
 		return this.getUsername() == user.getUsername();
 	}
 	C */
-	
+
 	public Element xmlExport() {
 		Element element = new Element("user");
 		element.setAttribute("username", getUsername());

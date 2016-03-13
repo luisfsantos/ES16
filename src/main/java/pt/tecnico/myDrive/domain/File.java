@@ -1,7 +1,10 @@
 package pt.tecnico.myDrive.domain;
 
+import org.jdom2.DataConversionException;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
+
+import java.io.UnsupportedEncodingException;
 
 public class File extends File_Base {
 
@@ -9,8 +12,7 @@ public class File extends File_Base {
 		super();
 	}
 
-	
-	protected void initFile (String name, String permission, Manager manager, User owner, Directory parent) { 
+	protected void initFile(String name, String permission, Manager manager, User owner, Directory parent) {
 		this.setManager(manager);
 		this.setOwner(owner);
 		this.setParent(parent);
@@ -20,15 +22,15 @@ public class File extends File_Base {
 		this.setLastModified(new DateTime());
 	}
 
-	
+
 	public Directory createDirectory(String name, Manager manager, User owner) {
 		return null; // create exception
 	}
-	
+
 	public App createApp(String name, Manager manager, User owner, String content) {
 		return null; // create exception
 	}
-	
+
 	public Link createLink(String name, Manager manager, User owner, String content) {
 		return null; // create exception
 	}
@@ -64,16 +66,27 @@ public class File extends File_Base {
 		deleteDomainObject();
 	}
 	C */
-	
+
 	public String getAbsolutePath() {
 		if (this == getParent())
-				return "";
+			return "";
 		else return getParent().getAbsolutePath() + "/" + getName();
 	}
-	
+
 	public Element xmlExport() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	public void xmlImport(Element fileNode) { //throws ImportDocumentException {
+		try {
+			setParent((Directory) getManager().getHomeDirectory().getParent().lookup(new String(fileNode.getChild("path").getValue().getBytes("UTF-8"))));
+			setName(new String(fileNode.getChild("name").getValue().getBytes("UTF-8")));
+			setOwner(getManager().getUserByUsername(new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"))));
+			setPermissions(new String(fileNode.getChild("perm").getValue().getBytes("UTF-8")));
+		} catch (UnsupportedEncodingException e) {
+			//throw new ImportDocumentException();
+		}
+	}
 }
+

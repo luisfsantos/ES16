@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
+import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.domain.File;
 
@@ -32,12 +33,10 @@ public class Main {
 			}
 			else {
 				// import
-				/* C
 				for (String s: args){
 	    			xmlScan(new java.io.File(s));
 	    		}
-	    		C */
-	    		
+				print();
 			}
 			
 		} finally { FenixFramework.shutdown(); }
@@ -50,12 +49,24 @@ public class Main {
     	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
     	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
     	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
+
     	xmlPrint();
     }
-    
-    
-	
-    /* C
+
+
+
+	@Atomic
+	public static void print() {
+		log.trace("Print: " + FenixFramework.getDomainRoot());
+		Manager manager = Manager.getInstance();
+
+		for (User u: manager.getUserSet()) {
+			System.out.println("User" + u.getName()+ " has " + u.getFileSet().size() + "files:");
+			for (File f: manager.getFileSet())
+				System.out.println("\t" + f.getName() + " -> " + f.getAbsolutePath());
+		}
+	}
+
 	@Atomic
     public static void xmlScan(java.io.File file) {
         log.trace("xmlScan: " + FenixFramework.getDomainRoot());  
@@ -68,7 +79,6 @@ public class Main {
 		    e.printStackTrace();
 		}
 	}
-	C */
 
     @Atomic
     public static void xmlPrint() {

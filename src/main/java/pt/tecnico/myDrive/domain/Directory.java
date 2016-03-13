@@ -1,5 +1,9 @@
 package pt.tecnico.myDrive.domain;
 
+import org.jdom2.Element;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Directory extends Directory_Base {
@@ -7,8 +11,37 @@ public class Directory extends Directory_Base {
 	public Directory(String name, String permission, Manager manager, User owner, Directory parent) {
 		this.initFile(name, permission, manager, owner, parent);
 	}
-	
-	
+
+	public Directory(Manager manager, Element dirNode) { //throws UserDoesNotExistException{
+
+		String path = dirNode.getChild("path").getValue();
+		String ownerName = dirNode.getChild("owner").getValue();
+		String name = dirNode.getChild("name").getValue();
+
+		User user = manager.getUserByUsername(ownerName);
+
+		Directory barra = manager.getHomeDirectory().getParent();
+		Directory parent = (Directory)barra.lookup(path);
+
+
+		if (user == null){
+			//throw new UserDoesNotExistException;
+		}
+		else if(parent == null){
+			manager.createMissingDirectories(path);
+			setManager(manager);
+			super.xmlImport(dirNode);
+		}
+		else if (!parent.hasFile(name)){
+			setManager(manager);
+			super.xmlImport(dirNode);
+		}
+		else {
+			throw new FileAlreadyExistsException(2222); //random
+		}
+	}
+
+
 	@Override
 	public Directory createDirectory(String name, Manager manager, User owner) {
 		Directory dir = new Directory(name, owner.getUmask(), manager, owner, this);
@@ -29,25 +62,25 @@ public class Directory extends Directory_Base {
 		this.addFile(link);
 		return link;
 	}
-	
-	/* C
-	public File getFile(String name) throws NoSuchFileInThisDirectoryException{
-		Iterator iterator = getFileSet().iterator();
-		while(iterator.hasNext()){
-			File file = iterator.next();
-			if(file.getName() == name) return file;
-		}
-		throw new NoSuchFileInThisDirectoryException(name);
+/*
+	public Directory lookup(String path){
+		String[] names = path.split("/");
+		System.out.println("lookup:filename:"+this.getName()+this.getFile(names[1]).getName());
+		return (Directory) this.getFile(names[1]);
 	}
+*/
+
+
 
 	public boolean hasFile(String name){
 		Iterator iterator = getFileSet().iterator();
 		while(iterator.hasNext()){
-			File file = iterator.next();
+			File file = (File)iterator.next();
 			if(file.getName() == name) return true;
 		}
 		return false;
 	}
+	/*
 
 	
 	public File lookup(String path) throws ExpectedSlashPathStartException, NoSuchFileInThisDirectoryException{
