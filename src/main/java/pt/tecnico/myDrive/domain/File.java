@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.DataConversionException;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -82,14 +83,14 @@ public abstract class File extends File_Base {
 		return null;
 	}
 
-	public void xmlImport(Element fileNode) { //throws ImportDocumentException {
+	public void xmlImport(Element fileNode) throws ImportDocumentException {
 		try {
 			setParent((Directory) getManager().getRootDirectory().lookup(new String(fileNode.getChild("path").getValue().getBytes("UTF-8"))));
 			setName(new String(fileNode.getChild("name").getValue().getBytes("UTF-8")));
 			setOwner(getManager().getUserByUsername(new String(fileNode.getChild("owner").getValue().getBytes("UTF-8"))));
 			setPermissions(new String(fileNode.getChild("perm").getValue().getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
-			//throw new ImportDocumentException();
+			throw new ImportDocumentException();
 		}
 	}
 
