@@ -19,6 +19,7 @@ public class PlainFile extends PlainFile_Base {
 
     public PlainFile(Manager manager, Element plainNode) throws UnsupportedEncodingException { //throws UserDoesNotExistException{
 
+
         String path = plainNode.getChild("path").getValue();
         String ownerName = plainNode.getChild("owner").getValue();
         String name = plainNode.getChild("name").getValue();
@@ -90,6 +91,14 @@ public class PlainFile extends PlainFile_Base {
     public String getFileType() {
         return "plain-file";
     }
+    
+	public void remove(){
+		setParent(null);
+		setOwner(null);
+		setManager(null);
+		deleteDomainObject();
+	}
+    
 }
 
 

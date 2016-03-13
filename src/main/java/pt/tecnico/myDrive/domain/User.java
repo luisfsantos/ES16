@@ -7,6 +7,10 @@ import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 import pt.tecnico.myDrive.exception.InvalidPathException;
 import pt.tecnico.myDrive.exception.WrongSizePermissionException;
+import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
+import pt.tecnico.myDrive.exception.EmptyUsernameException;
+import pt.tecnico.myDrive.exception.InvalidUsernameException;
+import java.util.regex.Pattern;
 
 
 public class User extends User_Base {
@@ -15,19 +19,38 @@ public class User extends User_Base {
         super();
     }
 	
-	public User(String username, String password, String name, String umask, Directory home) {
+	public User(String username, String password, String name, String umask, Directory home){
 		super();
+		this.validateUsername(username);
 		this.initUser(username, password, name, umask, home);
 	}
 
+	
+
 	private void initUser(String username, String password, String name, String umask, Directory home) {
-		
+
 		this.setHome(home);
 		this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
 		this.setUmask(umask);
 	}
+	
+	
+	
+	public void validateUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException {
+		if (Manager.getInstance().hasUser(username)) {
+			throw new UserAlreadyExistsException(username);
+	    }
+		
+        boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);    
+
+        if (username.isEmpty()) throw new EmptyUsernameException();
+        else if (!isAlphanumeric) throw new InvalidUsernameException(this.getUsername());
+		
+	}
+	
+	
 	@Override
 	public void setManager(Manager manager) {
 		if (manager == null) {	// to remove user

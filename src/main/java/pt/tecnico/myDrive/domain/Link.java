@@ -45,6 +45,7 @@ public class Link extends Link_Base {
         }
     }
 
+    
     @Override
     public void xmlImport(Element dirNode) throws UnsupportedEncodingException {
         DateTime dt = new DateTime();

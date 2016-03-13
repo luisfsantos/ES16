@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Pattern;
+
 
 
 
@@ -81,13 +81,15 @@ public class Manager extends Manager_Base {
     }
     
     
-    public void createNewUser(String username){   
+    public void createNewUser(String username){    //throws UserAlreadyExistsException
+
     	this.createNewUser(username, username, username, "rwxd----");
-    }
+    }	
     
     
     // miss exceptions
     public void createNewUser(String username, String password, String name, String umask){
+
     	User newUser = new User(username, password, name, umask, null);
     	Directory userHome = this.getHomeDirectory().createDirectory(username, this, newUser);
     	newUser.setHome(userHome);
@@ -149,16 +151,20 @@ public class Manager extends Manager_Base {
     
     
     public Directory getHomeDirectory() {
-		for (File h: rootDirectory.getFileSet()) {
-			if (h.getName().equals("home")) {
-				return (Directory) h;
-			}
-		}
-		return null;
-	}
-
+    	for (File f: this.getFileSet()) {
+    		if (f.getName().equals("/")) {
+    			Directory pathStart = (Directory) f;
+    			for (File h: pathStart.getFileSet()) {
+    				if (h.getName().equals("home")) {
+    					return (Directory) h;
+    				}
+    			}
+    			return null;
+    		}
+    	}
+    	return null;
+    }
     
-
 
     public Directory createMissingDirectories(String dirs){
 		String[] tokens = dirs.split("/");
@@ -177,9 +183,9 @@ public class Manager extends Manager_Base {
 		}
 		return (Directory) barra.lookup(dirs);
 	}
-/*
-    public Directory lookUpDir(String pathname){};
-*/
+
+    //public Directory lookUpDir(String pathname){};
+
 
 
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
@@ -215,6 +221,7 @@ public class Manager extends Manager_Base {
 		}
 
 	}
+
     public Document xmlExport() {
     	final int defaultNoFiles= 3;
         Element element = new Element("myDrive");
@@ -235,7 +242,6 @@ public class Manager extends Manager_Base {
             for (File f: files)
                 element.addContent(f.xmlExport());
         }
-
         return doc;
     }
 /*

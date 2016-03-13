@@ -15,6 +15,7 @@ public class App extends App_Base {
 
     public App(Manager manager, Element appNode) throws UnsupportedEncodingException { //throws UserDoesNotExistException{
 
+
         String path = appNode.getChild("path").getValue();
         String ownerName = appNode.getChild("owner").getValue();
         String name = appNode.getChild("name").getValue();
@@ -46,6 +47,7 @@ public class App extends App_Base {
         }
 
     }
+
 
     @Override
     public void xmlImport(Element appNode) throws UnsupportedEncodingException {
