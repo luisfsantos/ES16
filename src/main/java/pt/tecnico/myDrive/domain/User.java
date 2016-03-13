@@ -5,12 +5,6 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.InvalidCharPermissionException;
 import pt.tecnico.myDrive.exception.WrongSizePermissionException;
 
-import java.io.UnsupportedEncodingException;
-
-import org.jdom2.DataConversionException;
-
-
-
 
 public class User extends User_Base {
 
@@ -22,8 +16,7 @@ public class User extends User_Base {
 		super();
 		this.initUser(username, password, name, umask, home);
 	}
-	
-	
+
 	private void initUser(String username, String password, String name, String umask, Directory home) {
 		
 		this.setHome(home);
@@ -32,8 +25,7 @@ public class User extends User_Base {
 		this.setName(name);
 		this.setUmask(umask);
 	}
-	
-	
+
 	@Override
 	public void setManager(Manager manager) {
 		if (manager == null) {	// to remove user
@@ -42,22 +34,7 @@ public class User extends User_Base {
 		}
 		manager.addUser(this);
 	}
-	
-	/*
-			if (username == null){
-			RAISE EXCEPTION
-		}
-		else if (password == null){
-            password = username;
-        }
-        else if (name == null){
-       	    name = username;
-        }
-        else if(mask == null){
-            mask = "rwxd----";
-        }
-	*/
-	
+
 	/* C
 
 
@@ -72,32 +49,6 @@ public class User extends User_Base {
 				throw new InvalidCharPermissionException(permission.charAt(i), i);
 		super.setUmask(permission);
 	}
-
-	public void xmlImport(Element userNode){
-			//manager nao preciso, certo??
-	try {
-			setUsername(new String(userNode.getAttribute("username").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}//DO SOMETHING
-
-	try {
-			setPassword(new String(userNode.getChild("password").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-
-	try {
-			setName(new String(userNode.getChild("name").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-	try {
-			setUmask(new String(userNode.getChild("mask").getValue().getBytes("UTF-8")));
-	} catch (UnsupportedEncodingException e){}
-	try {
-			addFile(new Directory(userNode.getChild("home").getValue().getBytes("UTF-8")));  //ASSUMO QUE DIRECTORY RECEBE STRING
-	} catch (UnsupportedEncodingException e){}
-	
-	
-	}
-
-
-
 
 	public boolean hasPermission(File file, Mask mask){
 		if(this.equals(file.getUser())) return ownerHasPermission(file, mask);
@@ -171,7 +122,7 @@ public class User extends User_Base {
 		if (password != null) setPassword(password);
 		if (name != null) setName(name);
 		if (mask != null) setUmask(mask);
-		if (home == null || !home.equals("/home/" + getUsername())) {
+		if (home != null && !home.equals("/home/" + getUsername())) {
 			//TODO create Missing Files
 		}
 	}
