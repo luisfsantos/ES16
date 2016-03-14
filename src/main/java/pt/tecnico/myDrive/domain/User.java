@@ -1,11 +1,10 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
-
 import pt.tecnico.myDrive.exception.*;
 
-import java.util.regex.Pattern;
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Pattern;
 
 public class User extends User_Base {
 
@@ -69,20 +68,17 @@ public class User extends User_Base {
 		}
 		manager.addUser(this);
 	}
-/*
+
 	@Override
-	public void setUmask(String permission) throws WrongSizePermissionException, InvalidCharPermissionException{
-		if(permission.length() != 8) throw new WrongSizePermissionException(permission.length());
-		Mask mask[] = Mask.values();
-		if (permission.charAt(0) != mask[0].getValue() && permission.charAt(0) != '-')
-			throw new InvalidCharPermissionException(permission.charAt(0), 0);
-		for(int i = 1; i < 8; i++) {
-			if (permission.charAt(i) != mask[4 % i].getValue() && permission.charAt(i) != '-')
-				throw new InvalidCharPermissionException(permission.charAt(i), i);
+	public void setUmask(String permission) {
+		boolean isPermissionString =
+				Pattern.matches("[r-][w-][x-][d-][r-][w-][x-][d-]", permission);
+		if(!isPermissionString) {
+			throw new InvalidPermissionException(permission);
 		}
 		super.setUmask(permission);
 	}
-*/
+
 	public boolean hasPermission(File file, Mask mask){
 		if(this.getUsername() == "root") return true;
 		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);

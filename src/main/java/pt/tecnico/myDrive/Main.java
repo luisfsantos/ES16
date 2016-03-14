@@ -40,7 +40,7 @@ public class Main {
 	}
 	
     @Atomic
-    public static void setup() { 	
+    public static void setup() {	
     	String lista = "";
     	for (User u: Manager.getInstance().getUserSet()) {
     		lista += u.getUsername()+ "\n";
@@ -52,7 +52,6 @@ public class Main {
     	xmlPrint();
     	Manager.getInstance().getRootDirectory().lookup("/home/README").remove();
     	Manager.getInstance().getHomeDirectory().showContent();
-    	xmlPrint();
     }
 
 

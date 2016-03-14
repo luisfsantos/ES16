@@ -27,7 +27,7 @@ public class Directory extends Directory_Base {
 	public Directory createDirectory(String name) {
 		return this.createDirectory(name, this.getManager(), this.getOwner());
 	}
-	
+
 	@Override
 	public App createApp(String name, Manager manager, User owner, String content) {
 		this.verifyFileNameDir(name);
@@ -39,7 +39,7 @@ public class Directory extends Directory_Base {
 	public App createApp(String name, String content) {
 		return this.createApp(name, this.getManager(), this.getOwner(), content);
 	}
-	
+
 	@Override
 	public Link createLink(String name, Manager manager, User owner, String content) {
 		this.verifyFileNameDir(name);
@@ -51,7 +51,7 @@ public class Directory extends Directory_Base {
 	public Link createLink(String name, String content) {
 		return this.createLink(name, this.getManager(), this.getOwner(), content);
 	}
-	
+
 
 	@Override
 	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
@@ -61,13 +61,13 @@ public class Directory extends Directory_Base {
 		return plainFile;
 	}
 	
-	
+
 	public PlainFile createPlainFile(String name, String content) {
 		return this.createPlainFile(name, this.getManager(), this.getOwner(), content);
 	}
-	
-	
-	
+
+
+
 	public void verifyFileNameDir(String name) throws FileAlreadyExistsInDirectoryException, InvalidFileNameException{ //CHANGE EXCEPTION NAME
 		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
 			throw new InvalidFileNameException(name);
@@ -79,6 +79,11 @@ public class Directory extends Directory_Base {
 	
 
 	public File getFileByName(String name){
+		if (name.equals("."))
+			return this;
+		if (name.equals(".."))
+			return getParent();
+
 		for (File file : getFileSet()){
 			if (file.getName().equals(name))
 				return file;
@@ -108,20 +113,7 @@ public class Directory extends Directory_Base {
 					path = path.substring(1);
 			}
 		}
-		if(path.startsWith("..")){
-			if(path.indexOf('/') == -1) return getParent();
-			path = path.substring(path.indexOf("/", 1) + 1);
-			while(path.startsWith("/"))
-				path = path.substring(1);
-			return getParent().lookup(path);
-		}
-		if(path.startsWith(".")){
-			if(path.indexOf('/') == -1) return this;
-			path = path.substring(path.indexOf("/", 1) + 1);
-			while(path.startsWith("/"))
-				path = path.substring(1);
-			return this.lookup(path);
-		}
+		
 		if(path.indexOf('/') == -1) {
 			name = path;
 			return getFileByName(name);
@@ -137,7 +129,8 @@ public class Directory extends Directory_Base {
 		return null;
 	}
 
-	public void lsDir() {
+	@Override
+	public void showContent() {
 		List<File> files = new ArrayList<File>(getFileSet());
 
 		Collections.sort(files, new Comparator<File>() {

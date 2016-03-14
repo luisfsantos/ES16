@@ -53,7 +53,6 @@ public class Manager extends Manager_Base {
         Directory rootHome = home.createDirectory("root", this, superUser);
         superUser.setHome(rootHome);
         
-        log.trace("[Manager:getInstance] new Manager created");
     }
 	
         
