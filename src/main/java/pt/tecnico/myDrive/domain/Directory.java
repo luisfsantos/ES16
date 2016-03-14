@@ -60,6 +60,7 @@ public class Directory extends Directory_Base {
 	
 
 	public File getFileByName(String name){
+		System.out.print("got here");
 		for (File file : getFileSet()){
 			if (file.getName().equals(name))
 				return file;

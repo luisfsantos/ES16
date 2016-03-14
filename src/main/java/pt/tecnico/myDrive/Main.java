@@ -43,14 +43,14 @@ public class Main {
     public static void setup() {
 
     	//DAVID
-    	//Manager.getInstance().createNewUser("root");
-    	//System.out.println(Manager.getInstance().getHomeDirectory().getParent().getName());
-    	//System.out.println(Manager.getInstance().getHomeDirectory().getName());
-    	//Manager.getInstance().getHomeDirectory().lsDir();
-    	//Manager.getInstance().getHomeDirectory().getFileByName("README10").remove();
+    	/*Manager.getInstance().createNewUser("root");
+    	System.out.println(Manager.getInstance().getHomeDirectory().getParent().getName());
+    	System.out.println(Manager.getInstance().getHomeDirectory().getName());
+    	Manager.getInstance().getHomeDirectory().lsDir();
+    	Manager.getInstance().getHomeDirectory().getFileByName("README10").remove();
     	//Manager.getInstance().getHomeDirectory().getFileByName("README3").showContent();
     	//Manager.getInstance().getHomeDirectory().createPlainFile("README3", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"),"banana3");
-    	//Manager.getInstance().getHomeDirectory().createDirectory("DA\0", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"));
+    	//Manager.getInstance().getHomeDirectory().createDirectory("DA\0", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"));*/
     	//DAVID
     	
 
@@ -58,6 +58,10 @@ public class Main {
     	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
     	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
     	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
+		Manager.getInstance().getHomeDirectory().createDirectory("joao", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"));
+		log.trace("[lookup:test]" + Manager.getInstance().getHomeDirectory().lookup("joao").getName());
+		Manager.getInstance().getHomeDirectory().lookup("joao").setPermissions("rwxdrwx");
+
     	
     	xmlPrint();
     }
