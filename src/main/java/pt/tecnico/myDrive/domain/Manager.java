@@ -219,20 +219,20 @@ public class Manager extends Manager_Base {
 	}
 
 	private Directory createAbsolutePath(Directory dir, String path) {
+		Directory nextDir;
 		int first = path.indexOf('/');
 		User root = getUserByUsername("root");
 
 		if(first == -1) {
-			Directory finalDir = (Directory) dir.getFileByName(path);
-			if(finalDir == null) return dir.createDirectory(path, this, root);
-			else return finalDir;
+			if (!dir.hasFile(path)) return dir.createDirectory(path, this, root);
+			else return (Directory) dir.getFileByName(path);
 		}
 
 		String dirName = path.substring(0, first);
-		Directory nextDir = (Directory) dir.getFileByName(dirName);
 		String nextPath =  path.substring(first + 1);
 
-		if(nextDir != null) {
+		if(dir.hasFile(dirName)) {
+			nextDir = (Directory) dir.getFileByName(dirName);
 			return createAbsolutePath(nextDir, nextPath);
 		} else {
 			nextDir = dir.createDirectory(dirName, this, root);

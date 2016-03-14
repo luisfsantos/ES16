@@ -78,7 +78,7 @@ public class Directory extends Directory_Base {
 	}
 	
 
-	public File getFileByName(String name){
+	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
 		if (name.equals("."))
 			return this;
 		if (name.equals(".."))
@@ -88,15 +88,16 @@ public class Directory extends Directory_Base {
 			if (file.getName().equals(name))
 				return file;
 		}
-		return null;
+		throw new FileDoesntExistsInDirectoryException(name, getName());
 	}
 
 	public boolean hasFile(String name){
-		for (File file : getFileSet()){
-			if (file.getName().equals(name))
-				return true;
+		try{
+			getFileByName(name);
+		} catch (FileDoesntExistsInDirectoryException e) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public File lookup(String path) {
@@ -135,7 +136,7 @@ public class Directory extends Directory_Base {
 
 		Collections.sort(files, new Comparator<File>() {
 			public int compare(File f1, File f2) {
-				return f1.getName().compareTo(f2.getName());
+				return f1.getName().compareToIgnoreCase(f2.getName());
 			}
 		});
 
@@ -173,17 +174,12 @@ public class Directory extends Directory_Base {
 				" " + name;
 	}
 	
-public void remove() throws NotEmptyDirectoryException{                  //CHANGE EXCEPTION NAME!!!
-		
-		if (this.getFileSet().size()==0){
-			this.rmv();                                                  
-		}
-		else 
-			throw new NotEmptyDirectoryException(this.getName());
+public void remove() throws NotEmptyDirectoryException {
+		if (this.getFileSet().size() == 0) this.rmv();
+		else throw new NotEmptyDirectoryException(this.getName());
 	}
 	
-	public void rmv(){                       //TO REVIEW
-		
+	public void rmv() {
 		setParent(null);
 		setOwner(null);
 		setManager(null);
