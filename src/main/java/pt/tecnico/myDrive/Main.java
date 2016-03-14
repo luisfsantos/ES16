@@ -16,6 +16,7 @@ import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.File;
 
 
@@ -23,7 +24,6 @@ public class Main {
 	static final Logger log = LogManager.getRootLogger();
 	
 	public static void main(String[] args){
-		System.out.println("*** Welcome to MyDrive! ***");
 		
 		try {
 			if (args.length == 0) {
@@ -40,25 +40,18 @@ public class Main {
 	}
 	
     @Atomic
-    public static void setup() {
-
-    	//DAVID
-    	//Manager.getInstance().createNewUser("root");
-    	//System.out.println(Manager.getInstance().getHomeDirectory().getParent().getName());
-    	//System.out.println(Manager.getInstance().getHomeDirectory().getName());
-    	//Manager.getInstance().getHomeDirectory().lsDir();
-    	//Manager.getInstance().getHomeDirectory().getFileByName("README10").remove();
-    	//Manager.getInstance().getHomeDirectory().getFileByName("README3").showContent();
-    	//Manager.getInstance().getHomeDirectory().createPlainFile("README3", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"),"banana3");
-    	//Manager.getInstance().getHomeDirectory().createDirectory("DA\0", Manager.getInstance(), Manager.getInstance().getUserByUsername("root"));
-    	//DAVID
-    	
-
-    	log.trace("[Main:setup] Root directory = " + Manager.getInstance().getRootDirectory().getName());
-    	log.trace("[Main:setup] Home = " + Manager.getInstance().getHomeDirectory().getName());
-    	log.trace("[Main:setup] Total n of users = " + Manager.getInstance().getUserSet().size());
-    	log.trace("[Main:setup] Total n of files = " + Manager.getInstance().getFileSet().size());
-    	
+    public static void setup() { 	
+    	String lista = "";
+    	for (User u: Manager.getInstance().getUserSet()) {
+    		lista += u.getUsername()+ "\n";
+    	}
+    	Manager.getInstance().getHomeDirectory().createPlainFile("README", lista);
+    	Manager.getInstance().getHomeDirectory().getFileByName("README").showContent();
+    	Manager.getInstance().getRootDirectory().createDirectory("usr").createDirectory("local").createDirectory("bin");
+    	Manager.getInstance().getRootDirectory().lookup("/usr/local/bin").remove();
+    	xmlPrint();
+    	Manager.getInstance().getRootDirectory().lookup("/home/README").remove();
+    	Manager.getInstance().getHomeDirectory().showContent();
     	xmlPrint();
     }
 
