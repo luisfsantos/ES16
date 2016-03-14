@@ -134,11 +134,7 @@ public abstract class File extends File_Base {
 
 
 	public void remove(){}
-	public void showContent(){}
-	public void setContent(String x){}
-	public void lsDir(){}
-
-
+	public abstract void showContent();
 	public abstract File lookup(String path);
 
 }
