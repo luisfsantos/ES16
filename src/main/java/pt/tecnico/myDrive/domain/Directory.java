@@ -79,6 +79,11 @@ public class Directory extends Directory_Base {
 	
 
 	public File getFileByName(String name){
+		if (name.equals("."))
+			return this;
+		if (name.equals(".."))
+			return getParent();
+		
 		for (File file : getFileSet()){
 			if (file.getName().equals(name))
 				return file;
