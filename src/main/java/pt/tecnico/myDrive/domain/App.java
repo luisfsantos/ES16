@@ -31,12 +31,12 @@ public class App extends App_Base {
     
     @Override
 	public Element xmlExport() {
-    	Element element = super.xmlExport();
-		element.setName("app");
+    	Element appElement = super.xmlExport();
+		appElement.setName("app");
 		
-		element.getChild("contents").setName("method");
+		appElement.getChild("contents").setName("method");
 		
-		return element;
+		return appElement;
 	}
 
 	@Override

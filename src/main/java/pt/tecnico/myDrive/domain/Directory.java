@@ -135,10 +135,10 @@ public class Directory extends Directory_Base {
     }
 
 	public Element xmlExport() {
-		Element element = super.xmlExport();
-		element.setName("dir");
+		Element dirElement = super.xmlExport();
+		dirElement.setName("dir");
 
-		return element;
+		return dirElement;
 	}
 
 	@Override

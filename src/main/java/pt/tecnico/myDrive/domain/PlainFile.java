@@ -65,14 +65,14 @@ public class PlainFile extends PlainFile_Base {
 
 	@Override
 	public Element xmlExport() {
-		Element element = super.xmlExport();
-		element.setName("plain");
+		Element plainElement = super.xmlExport();
+		plainElement.setName("plain");
 
 		Element contentsElement = new Element("contents");
 		contentsElement.setText(getContent());
-		element.addContent(contentsElement);
+		plainElement.addContent(contentsElement);
 
-		return element;
+		return plainElement;
 	}
 
 	

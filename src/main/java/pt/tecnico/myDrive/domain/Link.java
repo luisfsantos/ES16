@@ -29,11 +29,11 @@ public class Link extends Link_Base {
     
     @Override
 	public Element xmlExport() {
-    	Element element = super.xmlExport();
-		element.setName("link");
+    	Element linkElement = super.xmlExport();
+		linkElement.setName("link");
 		
-		element.getChild("contents").setName("value");
+		linkElement.getChild("contents").setName("value");
 		
-		return element;
+		return linkElement;
 	}
 }
