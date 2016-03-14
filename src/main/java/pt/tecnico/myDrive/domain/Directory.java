@@ -113,20 +113,7 @@ public class Directory extends Directory_Base {
 					path = path.substring(1);
 			}
 		}
-		if(path.startsWith("..")){
-			if(path.indexOf('/') == -1) return getParent();
-			path = path.substring(path.indexOf("/", 1) + 1);
-			while(path.startsWith("/"))
-				path = path.substring(1);
-			return getParent().lookup(path);
-		}
-		if(path.startsWith(".")){
-			if(path.indexOf('/') == -1) return this;
-			path = path.substring(path.indexOf("/", 1) + 1);
-			while(path.startsWith("/"))
-				path = path.substring(1);
-			return this.lookup(path);
-		}
+		
 		if(path.indexOf('/') == -1) {
 			name = path;
 			return getFileByName(name);
