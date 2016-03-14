@@ -29,28 +29,10 @@ public class Link extends Link_Base {
     
     @Override
 	public Element xmlExport() {
-		Element element = new Element("link");
-		element.setAttribute("id", getId().toString());
+    	Element element = super.xmlExport();
+		element.setName("link");
 		
-		Element pathElement = new Element("path");
-		pathElement.setText(getAbsolutePath());
-		element.addContent(pathElement);
-
-		Element nameElement = new Element("name");
-		nameElement.setText(getName());
-		element.addContent(nameElement);
-
-		Element ownerElement = new Element("owner");
-		ownerElement.setText(getOwner().getName());
-		element.addContent(ownerElement);
-
-		Element permissionElement = new Element("perm");
-		permissionElement.setText(getPermissions());
-		element.addContent(permissionElement);
-		
-		Element valueElement = new Element("value");
-		valueElement.setText(getContent());
-		element.addContent(valueElement);
+		element.getChild("contents").setName("value");
 		
 		return element;
 	}
