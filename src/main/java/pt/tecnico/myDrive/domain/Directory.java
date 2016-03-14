@@ -24,12 +24,20 @@ public class Directory extends Directory_Base {
 		return dir;
 	}
 	
+	public Directory createDirectory(String name) {
+		return this.createDirectory(name, this.getManager(), this.getOwner());
+	}
+	
 	@Override
 	public App createApp(String name, Manager manager, User owner, String content) {
 		this.verifyFileNameDir(name);
 		App app = new App(name, owner.getUmask(), manager, owner, this, content);
 		this.addFile(app);
 		return app;
+	}
+	
+	public App createApp(String name, String content) {
+		return this.createApp(name, this.getManager(), this.getOwner(), content);
 	}
 	
 	@Override
@@ -40,6 +48,10 @@ public class Directory extends Directory_Base {
 		return link;
 	}
 	
+	public Link createLink(String name, String content) {
+		return this.createLink(name, this.getManager(), this.getOwner(), content);
+	}
+	
 
 	@Override
 	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
@@ -48,6 +60,13 @@ public class Directory extends Directory_Base {
 		this.addFile(plainFile);
 		return plainFile;
 	}
+	
+	
+	public PlainFile createPlainFile(String name, String content) {
+		return this.createPlainFile(name, this.getManager(), this.getOwner(), content);
+	}
+	
+	
 	
 	public void verifyFileNameDir(String name) throws FileAlreadyExistsInDirectoryException, InvalidFileNameException{ //CHANGE EXCEPTION NAME
 		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
