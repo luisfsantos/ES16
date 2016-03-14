@@ -67,8 +67,26 @@ public abstract class File extends File_Base {
 	}
 
 	public Element xmlExport() {
-		// TODO Auto-generated method stub
-		return null;
+		Element element = new Element("file");
+		element.setAttribute("id", getId().toString());
+		
+		Element pathElement = new Element("path");
+		pathElement.setText(getAbsolutePath());
+		element.addContent(pathElement);
+
+		Element nameElement = new Element("name");
+		nameElement.setText(getName());
+		element.addContent(nameElement);
+
+		Element ownerElement = new Element("owner");
+		ownerElement.setText(getOwner().getName());
+		element.addContent(ownerElement);
+
+		Element permissionElement = new Element("perm");
+		permissionElement.setText(getPermissions());
+		element.addContent(permissionElement);
+
+		return element;
 	}
 
 	public void xmlImport(Manager manager, Element fileNode) {

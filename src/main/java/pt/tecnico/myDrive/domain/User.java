@@ -124,26 +124,26 @@ public class User extends User_Base {
 	}
 
 	public Element xmlExport() {
-		Element element = new Element("user");
-		element.setAttribute("username", getUsername());
+		Element userElement = new Element("user");
+		userElement.setAttribute("username", getUsername());
 		
 		Element passwordElement = new Element("password");
 		passwordElement.setText(getPassword());
-		element.addContent(passwordElement);
+		userElement.addContent(passwordElement);
 
 		Element nameElement = new Element("name");
 		nameElement.setText(getName());
-		element.addContent(nameElement);
+		userElement.addContent(nameElement);
 
 		Element homeElement = new Element("home");
 		homeElement.setText(getHome().getAbsolutePath());
-		element.addContent(homeElement);
+		userElement.addContent(homeElement);
 
 		Element maskElement = new Element("mask");
 		maskElement.setText(getUmask());
-		element.addContent(maskElement);
+		userElement.addContent(maskElement);
 
-		return element;
+		return userElement;
 	}
 
 	public void xmlImport(Element userElement) {

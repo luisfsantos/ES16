@@ -31,30 +31,12 @@ public class App extends App_Base {
     
     @Override
 	public Element xmlExport() {
-		Element element = new Element("app");
-		element.setAttribute("id", getId().toString());
+    	Element appElement = super.xmlExport();
+		appElement.setName("app");
 		
-		Element pathElement = new Element("path");
-		pathElement.setText(getAbsolutePath());
-		element.addContent(pathElement);
-
-		Element nameElement = new Element("name");
-		nameElement.setText(getName());
-		element.addContent(nameElement);
-
-		Element ownerElement = new Element("owner");
-		ownerElement.setText(getOwner().getName());
-		element.addContent(ownerElement);
-
-		Element permissionElement = new Element("perm");
-		permissionElement.setText(getPermissions());
-		element.addContent(permissionElement);
+		appElement.getChild("contents").setName("method");
 		
-		Element methodElement = new Element("method");
-		methodElement.setText(getContent());
-		element.addContent(methodElement);
-		
-		return element;
+		return appElement;
 	}
 
 	@Override
