@@ -41,11 +41,11 @@ public abstract class File extends File_Base {
 	}
 
 	@Override
-	public void setPermissions(String permission)/* throws InvalidPermissionException */{
+	public void setPermissions(String permission) throws InvalidPermissionException {
 		boolean isPermissionString =
 				Pattern.matches("[r-][w-][x-][d-][r-][w-][x-][d-]", permission);
-		if(!isPermissionString)
-		//	throw new InvalidPermissionException(permission);
+		if (!isPermissionString)
+			throw new InvalidPermissionException(permission);
 		super.setPermissions(permission);
 	}
 
