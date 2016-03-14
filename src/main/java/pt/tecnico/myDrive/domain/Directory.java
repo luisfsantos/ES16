@@ -118,7 +118,8 @@ public class Directory extends Directory_Base {
 		return null;
 	}
 
-	public void lsDir() {
+	@Override
+	public void showContent() {
 		List<File> files = new ArrayList<File>(getFileSet());
 
 		Collections.sort(files, new Comparator<File>() {
