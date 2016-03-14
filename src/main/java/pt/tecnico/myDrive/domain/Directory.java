@@ -92,11 +92,12 @@ public class Directory extends Directory_Base {
 	}
 
 	public boolean hasFile(String name){
-		for (File file : getFileSet()){
-			if (file.getName().equals(name))
-				return true;
+		try{
+			getFileByName(name);
+		} catch (FileDoesntExistsInDirectoryException e) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public File lookup(String path) {
