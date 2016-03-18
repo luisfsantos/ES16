@@ -10,12 +10,12 @@ import java.io.UnsupportedEncodingException;
 
 public class PlainFile extends PlainFile_Base {
 
-    public PlainFile() {
+    protected PlainFile() {
         super();
     }
 
-    public PlainFile(String name, String permission, Manager manager, User owner, Directory parent, String content) {
-        this.initFile(name, permission, manager, owner, parent);
+    public PlainFile(String name, User owner, Directory parent, String content) {
+        this.initFile(name, owner.getUmask(), owner, parent);
         this.setContent(content);
     }
 
@@ -59,7 +59,6 @@ public class PlainFile extends PlainFile_Base {
 	public void remove(){
 		setParent(null);
 		setOwner(null);
-		setManager(null);
 		deleteDomainObject();
 	}
 

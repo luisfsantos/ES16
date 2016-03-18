@@ -9,36 +9,16 @@ import java.util.regex.Pattern;
 
 public abstract class File extends File_Base {
 
-	public File() {
-		super();
-	}
-
-	protected void initFile(String name, String permission, Manager manager, User owner, Directory parent) {
-		this.setManager(manager);
+	
+	protected void initFile(String name, String permission, User owner, Directory parent) {
 		this.setOwner(owner);
 		this.setParent(parent);
 		this.setName(name);
 		this.setPermissions(permission);
-		this.setId(manager.getNextIdCounter());
+		this.setId(owner.getManager().getNextIdCounter());
 		this.setLastModified(new DateTime());
 	}
 
-
-	public Directory createDirectory(String name, Manager manager, User owner) {
-		throw new CannotCreateNewFileException(getFileType());
-	}
-
-	public App createApp(String name, Manager manager, User owner, String content) {
-		throw new CannotCreateNewFileException(getFileType());
-	}
-
-	public Link createLink(String name, Manager manager, User owner, String content) {
-		throw new CannotCreateNewFileException(getFileType());
-	}
-
-	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
-		throw new CannotCreateNewFileException(getFileType());
-	}
 
 	@Override
 	public void setPermissions(String permission) throws InvalidPermissionException {
@@ -112,7 +92,6 @@ public abstract class File extends File_Base {
 			parentDir.verifyFileNameDir(name);
 			parentDir.addFile(this);
 
-			setManager(manager);
 		} catch (UnsupportedEncodingException e) {
 			throw new ImportDocumentException("UnsupportedEncodingException");
 		}

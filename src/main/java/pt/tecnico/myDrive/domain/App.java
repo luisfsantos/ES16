@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class App extends App_Base {
 
-    public App(String name, String permission, Manager manager, User owner, Directory parent, String content) {
-    	this.initFile(name, permission, manager, owner, parent);
+    public App(String name, User owner, Directory parent, String content) {
+    	this.initFile(name, owner.getUmask(), owner, parent);
     	this.setContent(content);
     }
 

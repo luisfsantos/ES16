@@ -16,8 +16,10 @@ import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.domain.App;
 import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.File;
+import pt.tecnico.myDrive.domain.Link;
 
 
 public class Main {
@@ -41,18 +43,8 @@ public class Main {
 	
     @Atomic
     public static void setup() {	
-    	String lista = "";
-    	for (User u: Manager.getInstance().getUserSet()) {
-    		lista += u.getUsername()+ "\n";
+    	log.trace("Manager: " + Manager.getInstance());
     	}
-    	Manager.getInstance().getHomeDirectory().createPlainFile("README", lista);
-    	Manager.getInstance().getHomeDirectory().getFileByName("README").showContent();
-    	Manager.getInstance().getRootDirectory().createDirectory("usr").createDirectory("local").createDirectory("bin");
-    	Manager.getInstance().getRootDirectory().lookup("/usr/local/bin").remove();
-    	xmlPrint();
-    	Manager.getInstance().getRootDirectory().lookup("/home/README").remove();
-    	Manager.getInstance().getHomeDirectory().showContent();
-    }
 
 
 
@@ -83,6 +75,7 @@ public class Main {
 		}
 	}
 
+	/* C
     @Atomic
     public static void xmlPrint() {
         log.trace("[Main:xmlPrint] " + FenixFramework.getDomainRoot());
@@ -91,5 +84,6 @@ public class Main {
 		try { xmlOutput.output(doc, new PrintStream(System.out));
 		} catch (IOException e) { System.out.println(e); }
     }
+    C */
     
 }

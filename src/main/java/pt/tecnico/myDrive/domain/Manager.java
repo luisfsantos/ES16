@@ -22,16 +22,11 @@ import java.util.List;
 
 public class Manager extends Manager_Base {
 	static final Logger log = LogManager.getRootLogger();
-	private Directory rootDirectory;
 	
 	// manager use Singleton design pattern
     public static Manager getInstance() {
     	Manager manager = FenixFramework.getDomainRoot().getManager();
     	if (manager != null) {
-    		for (File file: manager.getFileSet()) {
-        		if (file.getName().equals("/"))
-        			manager.rootDirectory = (Directory)file;
-        	}
     		return manager;
     	}
     	return new Manager();
@@ -42,23 +37,15 @@ public class Manager extends Manager_Base {
     	this.setRoot(FenixFramework.getDomainRoot());
         this.setIdCounter(0);
         
-        User superUser = new User("root", "***", "Super User", "rwxdr-x-", null);
-        this.addUser(superUser);
-        		
-        File startHome = new Directory("/", "rwxdr-x-", this, superUser, null);
-        startHome.setParent((Directory)startHome);
-        this.rootDirectory = (Directory)startHome;
-        
-        Directory home = startHome.createDirectory("home", this, superUser);
-        Directory rootHome = home.createDirectory("root", this, superUser);
+        SuperUser superUser = new SuperUser(this); 
+        this.setSuperUser(superUser);
+        RootDirectory rootDirectory = new RootDirectory(this, superUser);
+        this.setRootDirectory(rootDirectory);
+        Directory homeDirectory = new Directory("home", superUser, rootDirectory);
+        Directory rootHome = new Directory("root", superUser, homeDirectory);
         superUser.setHome(rootHome);
-        
     }
 	
-        
-    public Directory getRootDirectory() {
-		return rootDirectory;
-	}
 
 
 	public User getUserByUsername(String username) {
@@ -78,69 +65,7 @@ public class Manager extends Manager_Base {
     public void addUser(User newUser) {
     	super.addUser(newUser);
     }
-    
-    
-    public User createNewUser(String username){
-    	return this.createNewUser(username, username, username, "rwxd----");
-    }
-    
-    
-    // miss exceptions
-    public User createNewUser(String username, String password, String name, String umask){
-    	User newUser = new User(username, password, name, umask, null);
-    	Directory userHome = this.getHomeDirectory().createDirectory(username, this, newUser);
-    	newUser.setHome(userHome);
-    	this.addUser(newUser);
-
-		return newUser;
-    }
-    
-    
-    /* C
-    public void createNewUser(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException{      
-    	
-        this.validateUsername(username);
-
-    	User newUser = new User(username);
-    	this.addUser(newUser);
-    	newUser.setManager(this);
-    }
-    
-    public boolean validateUsername(String username) throws UserAlreadyExistsException,EmptyUsernameException, InvalidUsernameException{
         
-        if (this.hasUser(username)) {
-            throw new UserAlreadyExistsException(username);
-        }
-        
-        boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);    
-
-        if (username.isEmpty()) throw new EmptyUsernameException();
-        else if (!isAlphanumeric) throw new InvalidUsernameException();
-    }
-	C */ 
-    
-    
-    public File getFileById(int id) {
-    	for (File file: this.getFileSet()) {
-    		if (file.getId().equals(id))
-    			return file;
-    	}
-    	return null;
-    }
-    
-    public boolean hasFile(int id) {
-    	return this.getFileById(id) != null;
-    }
- 
-    
-
-    @Override 
-    public void addFile(File newFile) throws FileAlreadyExistsException {
-    	if (this.hasFile(newFile.getId())) {
-    		throw new FileAlreadyExistsException(newFile.getId());
-    	}
-    	super.addFile(newFile);
-    }
     
     public int getNextIdCounter() {
     	int currCounter = this.getIdCounter();
@@ -149,18 +74,16 @@ public class Manager extends Manager_Base {
     }
     
     
+    
     public Directory getHomeDirectory() {
-		for (File h: rootDirectory.getFileSet()) {
-			if (h.getName().equals("home")) {
-				return (Directory) h;
-			}
-		}
-		return null;
-	}
-
-    //public Directory lookUpDir(String pathname){};
-
-
+    	for (File f: this.getRootDirectory().getFileSet() ) {
+    		if (f.getName().equals("home")) {
+    			return (Directory)f;
+    		}
+    	}
+    	return null;
+    }
+    
 
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
 		for(Element userNode : myDriveElement.getChildren("user")) {
@@ -184,7 +107,7 @@ public class Manager extends Manager_Base {
 			new App(this,appNode);
 		}
 	}
-
+	/* C
     public Document xmlExport() {
         Element element = new Element("myDrive");
         Document doc = new Document(element);
@@ -208,6 +131,9 @@ public class Manager extends Manager_Base {
         
         return doc;
     }
+    C */
+	
+	
 
 	public Directory createAbsolutePath(String path) {
 		if(!path.startsWith("/")) {
@@ -217,17 +143,16 @@ public class Manager extends Manager_Base {
 
 		return createAbsolutePath(startDir, path.substring(1));
 	}
+	
 
 	private Directory createAbsolutePath(Directory dir, String path) {
 		Directory nextDir;
 		int first = path.indexOf('/');
-		User root = getUserByUsername("root");
 
 		if(first == -1) {
-			if (!dir.hasFile(path)) return dir.createDirectory(path, this, root);
+			if (!dir.hasFile(path)) return new Directory(path,  this.getSuperUser(), dir);
 			else return (Directory) dir.getFileByName(path);
 		}
-
 		String dirName = path.substring(0, first);
 		String nextPath =  path.substring(first + 1);
 
@@ -235,8 +160,9 @@ public class Manager extends Manager_Base {
 			nextDir = (Directory) dir.getFileByName(dirName);
 			return createAbsolutePath(nextDir, nextPath);
 		} else {
-			nextDir = dir.createDirectory(dirName, this, root);
+			nextDir = new Directory(dirName,  this.getSuperUser(), dir);
 			return createAbsolutePath(nextDir, nextPath);
 		}
 	}
+
 }

@@ -7,65 +7,17 @@ import java.util.*;
 
 public class Directory extends Directory_Base {
 	
-	public Directory(String name, String permission, Manager manager, User owner, Directory parent) {
-		this.initFile(name, permission, manager, owner, parent);
+	protected Directory() {
+		super();
+	}
+	
+	public Directory(String name, User owner, Directory parent) {
+		this.initFile(name, owner.getUmask(), owner, parent);
 	}
 
 	public Directory(Manager manager, Element dirNode) {
 		this.xmlImport(manager, dirNode);
 	}
-
-
-	@Override
-	public Directory createDirectory(String name, Manager manager, User owner) {
-		this.verifyFileNameDir(name);
-		Directory dir = new Directory(name, owner.getUmask(), manager, owner, this);
-		this.addFile(dir);
-		return dir;
-	}
-	
-	public Directory createDirectory(String name) {
-		return this.createDirectory(name, this.getManager(), this.getOwner());
-	}
-
-	@Override
-	public App createApp(String name, Manager manager, User owner, String content) {
-		this.verifyFileNameDir(name);
-		App app = new App(name, owner.getUmask(), manager, owner, this, content);
-		this.addFile(app);
-		return app;
-	}
-	
-	public App createApp(String name, String content) {
-		return this.createApp(name, this.getManager(), this.getOwner(), content);
-	}
-
-	@Override
-	public Link createLink(String name, Manager manager, User owner, String content) {
-		this.verifyFileNameDir(name);
-		Link link = new Link(name, owner.getUmask(), manager, owner, this, content);
-		this.addFile(link);
-		return link;
-	}
-	
-	public Link createLink(String name, String content) {
-		return this.createLink(name, this.getManager(), this.getOwner(), content);
-	}
-
-
-	@Override
-	public PlainFile createPlainFile(String name, Manager manager, User owner, String content) {
-		this.verifyFileNameDir(name);
-		PlainFile plainFile = new PlainFile(name, owner.getUmask(), manager, owner, this, content);
-		this.addFile(plainFile);
-		return plainFile;
-	}
-	
-
-	public PlainFile createPlainFile(String name, String content) {
-		return this.createPlainFile(name, this.getManager(), this.getOwner(), content);
-	}
-
 
 
 	public void verifyFileNameDir(String name) throws FileAlreadyExistsInDirectoryException, InvalidFileNameException{ //CHANGE EXCEPTION NAME
@@ -182,7 +134,6 @@ public void remove() throws NotEmptyDirectoryException {
 	public void rmv() {
 		setParent(null);
 		setOwner(null);
-		setManager(null);
 		deleteDomainObject();	
 		
 	}

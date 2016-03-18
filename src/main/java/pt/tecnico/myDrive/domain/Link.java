@@ -7,8 +7,8 @@ import java.io.UnsupportedEncodingException;
 
 public class Link extends Link_Base {
     
-    public Link(String name, String permission, Manager manager, User owner, Directory parent, String content) {
-        this.initFile(name, permission, manager, owner, parent);
+    public Link(String name, User owner, Directory parent, String content) {
+        this.initFile(name, owner.getUmask(), owner, parent);
         this.setContent(content);
     }
 

@@ -7,10 +7,22 @@ import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
 
 public class User extends User_Base {
-
-    public User() {
-        super();
-    }
+	
+	protected User() {
+		super();
+	}
+	
+	
+	public User(Manager manager, String username){
+		this.validateUsername(username);
+		this.initUser(manager, username, username, username, "rwxd----");
+	}
+	
+	
+	public User(Manager manager, String username, String password, String name, String umask){
+		this.validateUsername(username);
+		this.initUser(manager, username, password, name, umask);
+	}
 
 	public User(Manager manager, Element userNode) {
 		String username = userNode.getAttributeValue("username");
@@ -25,25 +37,19 @@ public class User extends User_Base {
 			throw new ImportDocumentException("UnsupportedEncoding");
 		}
 
-		initUser(username, username, username, "rwxd----", null);
+		initUser(manager, username, username, username, "rwxd----");
 		setManager(manager);
 		xmlImport(userNode);
 	}
 	
-	public User(String username, String password, String name, String umask, Directory home){
-		super();
-		this.initUser(username, password, name, umask, home);
-	}
-
 	
-
-	private void initUser(String username, String password, String name, String umask, Directory home) {
-		this.validateUsername(username);
-		this.setHome(home);
+	protected void initUser(Manager manager, String username, String password, String name, String umask) {
+		this.setManager(manager);
+		this.setUmask(umask);
+		this.setHome(new Directory(username, this, this.getManager().getHomeDirectory()));
 		this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
-		this.setUmask(umask);
 	}
 	
 
@@ -152,6 +158,7 @@ public class User extends User_Base {
 			if (password != null) setPassword(new String(password.getBytes("UTF-8")));
 			if (name != null) setName(new String(name.getBytes("UTF-8")));
 			if (mask != null) setUmask(new String(mask.getBytes("UTF-8")));
+			/* C
 			if (home != null && !home.equals("/home/" + getUsername())) {
 				home = new String(home.getBytes("UTF-8"));
 				int last = home.lastIndexOf('/');
@@ -164,6 +171,7 @@ public class User extends User_Base {
 				Directory homeDir = getManager().getHomeDirectory().createDirectory(getUsername(), getManager(), this);
 				super.setHome(homeDir);
 			}
+			C */
 		} catch (UnsupportedEncodingException e) {
 			throw new ImportDocumentException("UnsupportedEncodingException");
 		}
