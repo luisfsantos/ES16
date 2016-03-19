@@ -12,6 +12,7 @@ public class Directory extends Directory_Base {
 	}
 	
 	public Directory(String name, User owner, Directory parent) {
+		verifyFileNameDir(name);
 		this.initFile(name, owner.getUmask(), owner, parent);
 	}
 
