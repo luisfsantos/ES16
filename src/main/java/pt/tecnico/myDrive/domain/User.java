@@ -158,20 +158,20 @@ public class User extends User_Base {
 			if (password != null) setPassword(new String(password.getBytes("UTF-8")));
 			if (name != null) setName(new String(name.getBytes("UTF-8")));
 			if (mask != null) setUmask(new String(mask.getBytes("UTF-8")));
-			/* C
+			
 			if (home != null && !home.equals("/home/" + getUsername())) {
 				home = new String(home.getBytes("UTF-8"));
 				int last = home.lastIndexOf('/');
 				String parentPath = home.substring(0, last);
 				String dirName = home.substring(last + 1);
 				Directory parentDir = super.getManager().createAbsolutePath(parentPath);
-				Directory homeDir = parentDir.createDirectory(dirName, super.getManager(), this);
+				Directory homeDir = new Directory(dirName, this, parentDir);
 				super.setHome(homeDir);
 			} else {
-				Directory homeDir = getManager().getHomeDirectory().createDirectory(getUsername(), getManager(), this);
+				Directory homeDir = new Directory(getUsername(), this, getManager().getHomeDirectory());
 				super.setHome(homeDir);
 			}
-			C */
+			
 		} catch (UnsupportedEncodingException e) {
 			throw new ImportDocumentException("UnsupportedEncodingException");
 		}
