@@ -13,6 +13,12 @@ public class App extends App_Base {
     	this.initFile(name, owner.getUmask(), owner, parent);
     	this.setContent(content);
     }
+    
+    
+    public App(String name, Directory parent, String content) {
+    	this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
+    	this.setContent(content);
+    }
 
     public App(Manager manager, Element appNode) throws UnsupportedEncodingException {
         try {

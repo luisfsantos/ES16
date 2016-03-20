@@ -11,6 +11,11 @@ public class Link extends Link_Base {
         this.initFile(name, owner.getUmask(), owner, parent);
         this.setContent(content);
     }
+    
+    public Link(String name, Directory parent, String content) {
+        this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
+        this.setContent(content);
+    }
 
     public Link(Manager manager, Element linkNode) throws UnsupportedEncodingException {
         try {

@@ -15,6 +15,12 @@ public class Directory extends Directory_Base {
 		verifyFileNameDir(name);
 		this.initFile(name, owner.getUmask(), owner, parent);
 	}
+	
+	public Directory(String name, Directory parent) {
+		verifyFileNameDir(name);
+		this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
+	}
+	
 
 	public Directory(Manager manager, Element dirNode) {
 		this.xmlImport(manager, dirNode);

@@ -18,6 +18,11 @@ public class PlainFile extends PlainFile_Base {
         this.initFile(name, owner.getUmask(), owner, parent);
         this.setContent(content);
     }
+    
+    public PlainFile(String name, Directory parent, String content) {
+        this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
+        this.setContent(content);
+    }
 
     public PlainFile(Manager manager, Element plainNode) throws UnsupportedEncodingException {
         try {
