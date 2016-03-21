@@ -107,31 +107,20 @@ public class Manager extends Manager_Base {
 			new App(this,appNode);
 		}
 	}
-	/* C
+	
     public Document xmlExport() {
-        Element element = new Element("myDrive");
-        Document doc = new Document(element);
-        List<File> files = new ArrayList<File>(getFileSet());
+        Element myDrive = new Element("myDrive");
+        Document doc = new Document(myDrive);
         
         for (User u: getUserSet())
         	if (!u.getUsername().equals("root"))
-        		element.addContent(u.xmlExport());
-
-        Collections.sort(files, new Comparator<File>() {
-        	public int compare(File f1, File f2) {
-        		return (f1.getId() < f2.getId() ? -1 : (f1.getId() == f2.getId() ? 0 : 1));
-        	}
-        });
+        		myDrive.addContent(u.xmlExport());
         
-        for (File f: files)
-        	if (!(f.getAbsolutePath().equals("/") ||
-        		f.getAbsolutePath().equals("/home") ||
-        		f.getAbsolutePath().equals("/home/root")))
-        		element.addContent(f.xmlExport());
+        getRootDirectory().xmlExport(myDrive);
         
         return doc;
     }
-    C */
+    
 	
 	
 

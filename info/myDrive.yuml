@@ -1,17 +1,22 @@
 [Manager| Integer idCounter;]
 [User| String username; String password; String name; String umask;]
 [File| Integer id; String name; String permissions; DateTime lastModified;]
+[User]^-[SuperUser]
+[SuperUser]
 [File]^-[PlainFile]
 [PlainFile| String content;]
 [File]^-[Directory]
 [Directory]
+[Directory]^-[RootDirectory]
+[RootDirectory]
 [PlainFile]^-[Link]
 [Link]
 [PlainFile]^-[App]
 [App]
 [.pt.ist.fenixframework.DomainRoot]0..1 root - manager 0..1[Manager] // DomainRootHasManagerApplication
-[Manager]1 manager - user 1..*[User] // ManagerHasUsers
-[Manager]1 manager - file 1..*[File] // ManagerHasFiles
+[Manager]1 manager - user *[User] // ManagerHasUsers
+[Manager]  - superUser 1[SuperUser] // ManagerHasSuperUser
+[Manager]1 manager - rootDirectory 1[RootDirectory] // ManagerHasRootDirectory
 [User]1 owner - file *[File] // UserHasFiles
 [User]  - home 1[Directory] // UserHasHome
 [File]* file - parent 1[Directory] // DirectoryContainsFiles

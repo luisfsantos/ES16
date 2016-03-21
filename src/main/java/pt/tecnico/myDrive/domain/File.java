@@ -60,6 +60,8 @@ public abstract class File extends File_Base {
 
 		return element;
 	}
+	
+	public void xmlExport(Element myDrive) {}
 
 	public void xmlImport(Manager manager, Element fileNode) {
 		String path = fileNode.getChildText("path");

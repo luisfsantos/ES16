@@ -44,6 +44,8 @@ public class Main {
     @Atomic
     public static void setup() {	
     	log.trace("Manager: " + Manager.getInstance());
+    	Manager.getInstance().getHomeDirectory().showContent();
+    	xmlPrint();
     	}
 
 
@@ -75,7 +77,6 @@ public class Main {
 		}
 	}
 
-	/* C
     @Atomic
     public static void xmlPrint() {
         log.trace("[Main:xmlPrint] " + FenixFramework.getDomainRoot());
@@ -84,6 +85,5 @@ public class Main {
 		try { xmlOutput.output(doc, new PrintStream(System.out));
 		} catch (IOException e) { System.out.println(e); }
     }
-    C */
     
 }

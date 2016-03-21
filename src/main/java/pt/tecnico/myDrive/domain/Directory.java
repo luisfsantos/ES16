@@ -105,12 +105,26 @@ public class Directory extends Directory_Base {
 		for (File f: files)
 			System.out.println(f.toString());
     }
-
+	
+	@Override
 	public Element xmlExport() {
 		Element dirElement = super.xmlExport();
 		dirElement.setName("dir");
-
 		return dirElement;
+	}
+	
+	@Override
+	public void xmlExport(Element myDrive) {
+		if (!getFileSet().isEmpty()) {
+			for(File f: getFileSet()) {
+				if (f.getId() > 2)
+					myDrive.addContent(f.xmlExport());	
+			}
+			for(File f: getFileSet()) { //why does the fileSet have itself...?
+				if (f!=this)
+					f.xmlExport(myDrive);
+			}
+		}	
 	}
 
 	@Override
