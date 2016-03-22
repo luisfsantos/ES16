@@ -49,7 +49,7 @@ public class User extends User_Base {
 			int last = home.lastIndexOf('/');
 			String parentPath = home.substring(0, last);
 			String dirName = home.substring(last + 1);
-			Directory parentDir = manager.createAbsolutePath(parentPath);
+			Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(), parentPath);
 			Directory homeDir = new Directory(dirName, this, parentDir);
 			setHome(homeDir);
 		} else {

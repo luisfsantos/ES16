@@ -120,38 +120,4 @@ public class Manager extends Manager_Base {
         
         return doc;
     }
-    
-	
-	
-
-	public Directory createAbsolutePath(String path) {
-		if(!path.startsWith("/")) {
-			throw new InvalidPathException(path);
-		}
-		Directory startDir = getRootDirectory();
-
-		return createAbsolutePath(startDir, path.substring(1));
-	}
-	
-
-	private Directory createAbsolutePath(Directory dir, String path) {
-		Directory nextDir;
-		int first = path.indexOf('/');
-
-		if(first == -1) {
-			if (!dir.hasFile(path)) return new Directory(path,  this.getSuperUser(), dir);
-			else return (Directory) dir.getFileByName(path);
-		}
-		String dirName = path.substring(0, first);
-		String nextPath =  path.substring(first + 1);
-
-		if(dir.hasFile(dirName)) {
-			nextDir = (Directory) dir.getFileByName(dirName);
-			return createAbsolutePath(nextDir, nextPath);
-		} else {
-			nextDir = new Directory(dirName,  this.getSuperUser(), dir);
-			return createAbsolutePath(nextDir, nextPath);
-		}
-	}
-
 }

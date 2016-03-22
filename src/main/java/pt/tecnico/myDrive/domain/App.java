@@ -21,13 +21,9 @@ public class App extends App_Base {
     }
 
     public App(Manager manager, Element appNode) throws UnsupportedEncodingException {
-        try {
-            String method = new String(appNode.getChildText("method").getBytes("UTF-8"));
-            setContent(method);
-            this.xmlImport(manager, appNode);
-        } catch (UnsupportedEncodingException e) {
-            throw new ImportDocumentException("UnsupportedEncodingException");
-        }
+		String method = new String(appNode.getChildText("method").getBytes("UTF-8"));
+		setContent(method);
+		this.xmlImport(manager, appNode);
     }
 
     @Override
