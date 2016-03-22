@@ -13,32 +13,50 @@ public class User extends User_Base {
 	}
 	
 	
-	public User(Manager manager, String username){
+	public User(Manager manager, String username) {
 		this.validateUsername(username);
 		this.initUser(manager, username, username, username, "rwxd----");
 	}
 	
 	
-	public User(Manager manager, String username, String password, String name, String umask){
+	public User(Manager manager, String username, String password, String name, String umask) {
 		this.validateUsername(username);
 		this.initUser(manager, username, password, name, umask);
 	}
 
 	public User(Manager manager, Element userNode) throws UnsupportedEncodingException {
 		String username = userNode.getAttributeValue("username");
+		String password = userNode.getChildText("password");
+		String name = userNode.getChildText("name");
+		String mask = userNode.getChildText("mask");
+		String home = userNode.getChildText("home");
 
-		if (username == null) {
-			throw new ImportDocumentException("Missing username value");
-		}
+		if (username != null) validateUsername(username);
+		else throw new ImportDocumentException("Missing username value");
 
-		username = new String(username.getBytes("UTF-8"));
+		password = (password != null) ? new String(password.getBytes("UTF-8")) : username;
+		name = (name != null) ? new String(name.getBytes("UTF-8")) : username;
+		mask = (mask != null) ? new String(mask.getBytes("UTF-8")) : "rwxd----";
 
-		initUser(manager, username, username, username, "rwxd----");
 		setManager(manager);
-		xmlImport(userNode);
+		setUsername(username);
+		setPassword(new String(password.getBytes("UTF-8")));
+		setName(new String(name.getBytes("UTF-8")));
+		setUmask(new String(mask.getBytes("UTF-8")));
+
+		if (home != null) {
+			home = new String(home.getBytes("UTF-8"));
+			int last = home.lastIndexOf('/');
+			String parentPath = home.substring(0, last);
+			String dirName = home.substring(last + 1);
+			Directory parentDir = manager.createAbsolutePath(parentPath);
+			Directory homeDir = new Directory(dirName, this, parentDir);
+			setHome(homeDir);
+		} else {
+			setHome(new Directory(username, this, manager.getHomeDirectory()));
+		}
 	}
-	
-	
+
 	protected void initUser(Manager manager, String username, String password, String name, String umask) {
 		this.setManager(manager);
 		this.setUmask(umask);
@@ -142,34 +160,5 @@ public class User extends User_Base {
 		userElement.addContent(maskElement);
 
 		return userElement;
-	}
-
-	public void xmlImport(Element userElement) {
-		String password = userElement.getChildText("password");
-		String name = userElement.getChildText("name");
-		String mask = userElement.getChildText("mask");
-		String home = userElement.getChildText("home");
-
-		try {
-			if (password != null) setPassword(new String(password.getBytes("UTF-8")));
-			if (name != null) setName(new String(name.getBytes("UTF-8")));
-			if (mask != null) setUmask(new String(mask.getBytes("UTF-8")));
-			
-			if (home != null && !home.equals("/home/" + getUsername())) {
-				home = new String(home.getBytes("UTF-8"));
-				int last = home.lastIndexOf('/');
-				String parentPath = home.substring(0, last);
-				String dirName = home.substring(last + 1);
-				Directory parentDir = super.getManager().createAbsolutePath(parentPath);
-				Directory homeDir = new Directory(dirName, this, parentDir);
-				super.setHome(homeDir);
-			} else {
-				Directory homeDir = new Directory(getUsername(), this, getManager().getHomeDirectory());
-				super.setHome(homeDir);
-			}
-			
-		} catch (UnsupportedEncodingException e) {
-			throw new ImportDocumentException("UnsupportedEncodingException");
-		}
 	}
 }
