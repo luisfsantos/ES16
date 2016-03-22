@@ -24,18 +24,14 @@ public class User extends User_Base {
 		this.initUser(manager, username, password, name, umask);
 	}
 
-	public User(Manager manager, Element userNode) {
+	public User(Manager manager, Element userNode) throws UnsupportedEncodingException {
 		String username = userNode.getAttributeValue("username");
 
 		if (username == null) {
 			throw new ImportDocumentException("Missing username value");
 		}
 
-		try {
-			username = new String(username.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new ImportDocumentException("UnsupportedEncoding");
-		}
+		username = new String(username.getBytes("UTF-8"));
 
 		initUser(manager, username, username, username, "rwxd----");
 		setManager(manager);
@@ -86,7 +82,7 @@ public class User extends User_Base {
 	}
 
 	public boolean hasPermission(File file, Mask mask){
-		if(this.getUsername() == "root") return true;
+		if(this.getUsername().equals("root")) return true;
 		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
 		else { return allHasPermission(file, mask);}
 	}
@@ -122,7 +118,7 @@ public class User extends User_Base {
 	}
 
 	public boolean equals(User user){
-		return this.getUsername() == user.getUsername();
+		return this.getUsername().equals(user.getUsername());
 	}
 
 	public Element xmlExport() {
