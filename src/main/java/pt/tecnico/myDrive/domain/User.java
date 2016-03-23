@@ -100,7 +100,6 @@ public class User extends User_Base {
 	}
 
 	public boolean hasPermission(File file, Mask mask){
-		if(this.getUsername().equals("root")) return true;
 		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
 		else { return allHasPermission(file, mask);}
 	}
