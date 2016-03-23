@@ -9,4 +9,8 @@ public class SuperUser extends SuperUser_Base {
 		this.setName("Super User");
 		this.setUmask("rwxdr-x-");
     }
+
+	public boolean hasPermission(File file, Mask mask){
+		return true;
+	}
 }
