@@ -105,7 +105,7 @@ public class User extends User_Base {
 		else { return allHasPermission(file, mask);}
 	}
 
-	public boolean ownerHasPermission(File file, Mask mask){
+	private boolean ownerHasPermission(File file, Mask mask){
 		switch(mask){
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(0);
@@ -120,7 +120,7 @@ public class User extends User_Base {
 		}
 	}
 
-	public boolean allHasPermission(File file, Mask mask){
+	private boolean allHasPermission(File file, Mask mask){
 		switch(mask){
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(4);
