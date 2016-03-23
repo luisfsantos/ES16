@@ -14,13 +14,11 @@ public class User extends User_Base {
 	
 	
 	public User(Manager manager, String username){
-		this.validateUsername(username);
 		this.initUser(manager, username, username, username, "rwxd----");
 	}
 	
 	
 	public User(Manager manager, String username, String password, String name, String umask){
-		this.validateUsername(username);
 		this.initUser(manager, username, password, name, umask);
 	}
 
@@ -44,27 +42,31 @@ public class User extends User_Base {
 	
 	
 	protected void initUser(Manager manager, String username, String password, String name, String umask) {
+		
+		this.setUsername(username);
 		this.setManager(manager);
 		this.setUmask(umask);
 		this.setHome(new Directory(username, this, this.getManager().getHomeDirectory()));
-		this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
 	}
-	
-
-	public void validateUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException {
-		if (Manager.getInstance().hasUser(username)) {
-			throw new UserAlreadyExistsException(username);
-	    }
 		
-        boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);    
-
-        if (username.isEmpty()) throw new EmptyUsernameException();
-        else if (!isAlphanumeric) throw new InvalidUsernameException(username);
-		
+	protected void setRootUsername(String username){
+		super.setUsername(username);
 	}
 	
+	
+	@Override
+	public void setUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException{
+		
+        boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);
+        
+		if (Manager.getInstance().hasUser(username)) throw new UserAlreadyExistsException(username);	
+		if (username.isEmpty()) throw new EmptyUsernameException();
+        if (!isAlphanumeric) throw new InvalidUsernameException(username);
+        
+        super.setUsername(username);
+	}
 	
 	@Override
 	public void setManager(Manager manager) {
