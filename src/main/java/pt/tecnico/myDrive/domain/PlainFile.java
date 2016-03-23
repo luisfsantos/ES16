@@ -43,23 +43,6 @@ public class PlainFile extends PlainFile_Base {
     		throw new IsNotDirOrLinkException(this.getName());
     	}
     }
-
-    public void showContent() {
-        if(super.getContent() == null)
-            System.out.println("");
-        else
-            System.out.println(super.getContent());
-    }
-
-    @Override
-    public int getSize() {
-        return getContent().length();
-    }
-
-    @Override
-    public String getFileType() {
-        return "plain-file";
-    }
     
 	public void remove(){
 		setParent(null);

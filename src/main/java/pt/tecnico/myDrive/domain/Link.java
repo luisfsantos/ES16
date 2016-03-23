@@ -26,11 +26,6 @@ public class Link extends Link_Base {
             throw new ImportDocumentException("UnsupportedEncodingException");
         }
     }
-
-    @Override
-    public String getFileType() {
-        return "link";
-    }
     
     @Override
 	public Element xmlExport() {

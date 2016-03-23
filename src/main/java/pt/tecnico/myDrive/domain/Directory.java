@@ -88,23 +88,6 @@ public class Directory extends Directory_Base {
 
 		return null;
 	}
-
-	@Override
-	public void showContent() {
-		List<File> files = new ArrayList<File>(getFileSet());
-
-		Collections.sort(files, new Comparator<File>() {
-			public int compare(File f1, File f2) {
-				return f1.getName().compareToIgnoreCase(f2.getName());
-			}
-		});
-
-		System.out.println(this.toString("."));
-		System.out.println(getParent().toString(".."));
-
-		for (File f: files)
-			System.out.println(f.toString());
-    }
 	
 	@Override
 	public Element xmlExport() {
@@ -126,26 +109,6 @@ public class Directory extends Directory_Base {
 			}
 		}	
 	}
-
-	@Override
-	public String getFileType() {
-		return "dir";
-	}
-
-	@Override
-	public int getSize() {
-		return getFileSet().size() + 2;
-	}
-
-	public String toString(String name) {
-		return getFileType() +
-				" " + getPermissions() +
-				" " + getSize() +
-				" " + getOwner().getUsername() +
-				" " + getId() +
-				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
-				" " + name;
-	}
 	
 public void remove() throws NotEmptyDirectoryException {
 		if (this.getFileSet().size() == 0) this.rmv();
@@ -157,5 +120,17 @@ public void remove() throws NotEmptyDirectoryException {
 		setOwner(null);
 		deleteDomainObject();	
 		
+	}
+
+	public List<File> getOrderByNameFileList() {
+		List<File> files = new ArrayList<File>(getFileSet());
+
+		Collections.sort(files, new Comparator<File>() {
+			public int compare(File f1, File f2) {
+				return f1.getName().compareToIgnoreCase(f2.getName());
+			}
+		});
+
+		return files;
 	}
 }

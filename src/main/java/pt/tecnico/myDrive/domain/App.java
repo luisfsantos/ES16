@@ -29,11 +29,6 @@ public class App extends App_Base {
             throw new ImportDocumentException("UnsupportedEncodingException");
         }
     }
-
-    @Override
-    public String getFileType() {
-        return "app";
-    }
     
     @Override
 	public Element xmlExport() {

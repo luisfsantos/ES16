@@ -99,23 +99,7 @@ public abstract class File extends File_Base {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return getFileType() +
-				" " + getPermissions() +
-				" " + getSize() +
-				" " + getOwner().getUsername() +
-				" " + getId() +
-				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
-				" " + getName();
-	}
-
-	public abstract String getFileType();
-	public abstract int getSize();
-
-
 	public void remove(){}
-	public abstract void showContent();
 	public abstract File lookup(String path);
 
 }

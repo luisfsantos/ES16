@@ -2,6 +2,7 @@ package pt.tecnico.myDrive;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
@@ -44,9 +45,18 @@ public class Main {
     @Atomic
     public static void setup() {	
     	log.trace("Manager: " + Manager.getInstance());
-    	Manager.getInstance().getHomeDirectory().showContent();
+		lsDir();
     	xmlPrint();
-    	}
+	}
+
+	public static void lsDir() {
+		List<File> files = Manager.getInstance().getHomeDirectory().getOrderByNameFileList();
+		System.out.println(".");
+		System.out.println("..");
+		for (File f : files) {
+			System.out.println(f.getName());
+		}
+	}
 
 
 
