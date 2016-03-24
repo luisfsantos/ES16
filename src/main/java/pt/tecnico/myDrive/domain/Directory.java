@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Directory extends Directory_Base {
@@ -22,7 +23,7 @@ public class Directory extends Directory_Base {
 	}
 	
 
-	public Directory(Manager manager, Element dirNode) {
+	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
 		this.xmlImport(manager, dirNode);
 	}
 
@@ -110,10 +111,10 @@ public class Directory extends Directory_Base {
 		}	
 	}
 	
-public void remove() throws NotEmptyDirectoryException {
-		if (this.getFileSet().size() == 0) this.rmv();
-		else throw new NotEmptyDirectoryException(this.getName());
-	}
+	public void remove() throws NotEmptyDirectoryException {
+			if (this.getFileSet().size() == 0) this.rmv();
+			else throw new NotEmptyDirectoryException(this.getName());
+		}
 	
 	public void rmv() {
 		setParent(null);
@@ -133,4 +134,33 @@ public void remove() throws NotEmptyDirectoryException {
 
 		return files;
 	}
+
+	protected Directory createPath(User owner, String path) {
+		if(path.startsWith("/")) path = path.substring(1);
+
+		return createPath(owner, path, this);
+	}
+
+
+	private Directory createPath(User owner, String path, Directory dir) {
+		Directory nextDir;
+		int first = path.indexOf('/');
+
+		if(first == -1) {
+			if (!dir.hasFile(path)) return new Directory(path,  owner, dir);
+			else return (Directory) dir.getFileByName(path);
+		}
+		String dirName = path.substring(0, first);
+		String nextPath =  path.substring(first + 1);
+
+		if(dir.hasFile(dirName)) {
+			nextDir = (Directory) dir.getFileByName(dirName);
+			return createPath(owner, nextPath, nextDir);
+		} else {
+			nextDir = new Directory(dirName,  owner, dir);
+			return createPath(owner, nextPath, nextDir);
+		}
+	}
 }
+
+

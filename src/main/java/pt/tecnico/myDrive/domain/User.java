@@ -14,57 +14,69 @@ public class User extends User_Base {
 	
 	
 	public User(Manager manager, String username){
-		this.validateUsername(username);
 		this.initUser(manager, username, username, username, "rwxd----");
 	}
 	
 	
 	public User(Manager manager, String username, String password, String name, String umask){
-		this.validateUsername(username);
 		this.initUser(manager, username, password, name, umask);
 	}
 
-	public User(Manager manager, Element userNode) {
+	public User(Manager manager, Element userNode) throws UnsupportedEncodingException {
 		String username = userNode.getAttributeValue("username");
+		String password = userNode.getChildText("password");
+		String name = userNode.getChildText("name");
+		String mask = userNode.getChildText("mask");
+		String home = userNode.getChildText("home");
 
-		if (username == null) {
-			throw new ImportDocumentException("Missing username value");
-		}
+		password = (password != null) ? new String(password.getBytes("UTF-8")) : username;
+		name = (name != null) ? new String(name.getBytes("UTF-8")) : username;
+		mask = (mask != null) ? new String(mask.getBytes("UTF-8")) : "rwxd----";
 
-		try {
-			username = new String(username.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new ImportDocumentException("UnsupportedEncoding");
-		}
-
-		initUser(manager, username, username, username, "rwxd----");
+		setUsername(username);
 		setManager(manager);
-		xmlImport(userNode);
+		setPassword(new String(password.getBytes("UTF-8")));
+		setName(new String(name.getBytes("UTF-8")));
+		setUmask(new String(mask.getBytes("UTF-8")));
+
+		if (home != null) {
+			home = new String(home.getBytes("UTF-8"));
+			int last = home.lastIndexOf('/');
+			String parentPath = home.substring(0, last);
+			String dirName = home.substring(last + 1);
+			Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(), parentPath);
+			Directory homeDir = new Directory(dirName, this, parentDir);
+			setHome(homeDir);
+		} else {
+			setHome(new Directory(username, this, manager.getHomeDirectory()));
+		}
 	}
-	
-	
+
 	protected void initUser(Manager manager, String username, String password, String name, String umask) {
+		this.setUsername(username);
 		this.setManager(manager);
 		this.setUmask(umask);
 		this.setHome(new Directory(username, this, this.getManager().getHomeDirectory()));
-		this.setUsername(username);
 		this.setPassword(password);
 		this.setName(name);
 	}
-	
 
-	public void validateUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException {
-		if (Manager.getInstance().hasUser(username)) {
-			throw new UserAlreadyExistsException(username);
-	    }
-		
-        boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);    
-
-        if (username.isEmpty()) throw new EmptyUsernameException();
-        else if (!isAlphanumeric) throw new InvalidUsernameException(username);
-		
+	protected void setRootUsername(String username){
+		super.setUsername(username);
 	}
-	
+
+
+	@Override
+	public void setUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException{
+		
+        boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);
+
+		if (Manager.getInstance().hasUser(username)) throw new UserAlreadyExistsException(username);
+		if (username.isEmpty()) throw new EmptyUsernameException();
+        if (!isAlphanumeric) throw new InvalidUsernameException(username);
+
+        super.setUsername(username);
+	}
 	
 	@Override
 	public void setManager(Manager manager) {
@@ -86,7 +98,7 @@ public class User extends User_Base {
 	}
 
 	public boolean hasPermission(File file, Mask mask){
-		if(this.getUsername() == "root") return true;
+		if(this.getUsername().equals("root")) return true;
 		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
 		else { return allHasPermission(file, mask);}
 	}
@@ -122,7 +134,7 @@ public class User extends User_Base {
 	}
 
 	public boolean equals(User user){
-		return this.getUsername() == user.getUsername();
+		return this.getUsername().equals(user.getUsername());
 	}
 
 	public Element xmlExport() {
@@ -146,34 +158,5 @@ public class User extends User_Base {
 		userElement.addContent(maskElement);
 
 		return userElement;
-	}
-
-	public void xmlImport(Element userElement) {
-		String password = userElement.getChildText("password");
-		String name = userElement.getChildText("name");
-		String mask = userElement.getChildText("mask");
-		String home = userElement.getChildText("home");
-
-		try {
-			if (password != null) setPassword(new String(password.getBytes("UTF-8")));
-			if (name != null) setName(new String(name.getBytes("UTF-8")));
-			if (mask != null) setUmask(new String(mask.getBytes("UTF-8")));
-			
-			if (home != null && !home.equals("/home/" + getUsername())) {
-				home = new String(home.getBytes("UTF-8"));
-				int last = home.lastIndexOf('/');
-				String parentPath = home.substring(0, last);
-				String dirName = home.substring(last + 1);
-				Directory parentDir = super.getManager().createAbsolutePath(parentPath);
-				Directory homeDir = new Directory(dirName, this, parentDir);
-				super.setHome(homeDir);
-			} else {
-				Directory homeDir = new Directory(getUsername(), this, getManager().getHomeDirectory());
-				super.setHome(homeDir);
-			}
-			
-		} catch (UnsupportedEncodingException e) {
-			throw new ImportDocumentException("UnsupportedEncodingException");
-		}
 	}
 }
