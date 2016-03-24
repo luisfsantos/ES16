@@ -19,6 +19,14 @@ public abstract class File extends File_Base {
 		this.setLastModified(new DateTime());
 	}
 
+	@Override
+	public void setOwner(User user) {
+		if(Manager.getInstance().hasUser(user.getUsername())) {
+			super.setOwner(user);
+		} else {
+			throw new UserDoesNotExistException(user.getUsername());
+		}
+	}
 
 	@Override
 	public void setPermissions(String permission) throws InvalidPermissionException {
