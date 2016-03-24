@@ -33,8 +33,8 @@ public class User extends User_Base {
 		name = (name != null) ? new String(name.getBytes("UTF-8")) : username;
 		mask = (mask != null) ? new String(mask.getBytes("UTF-8")) : "rwxd----";
 
-		setManager(manager);
 		setUsername(username);
+		setManager(manager);
 		setPassword(new String(password.getBytes("UTF-8")));
 		setName(new String(name.getBytes("UTF-8")));
 		setUmask(new String(mask.getBytes("UTF-8")));
@@ -53,7 +53,6 @@ public class User extends User_Base {
 	}
 
 	protected void initUser(Manager manager, String username, String password, String name, String umask) {
-
 		this.setUsername(username);
 		this.setManager(manager);
 		this.setUmask(umask);
