@@ -98,14 +98,12 @@ public class User extends User_Base {
 	}
 
 	public boolean hasPermission(File file, Mask mask){
-		if(this.equals(file.getOwner())) {
-			return ownerHasPermission(file, mask);
-		} else {
-			return allHasPermission(file, mask);
-		}
+		if(this.getUsername().equals("root")) return true;
+		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
+		else { return allHasPermission(file, mask);}
 	}
 
-	private boolean ownerHasPermission(File file, Mask mask){
+	public boolean ownerHasPermission(File file, Mask mask){
 		switch(mask){
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(0);
@@ -120,7 +118,7 @@ public class User extends User_Base {
 		}
 	}
 
-	private boolean allHasPermission(File file, Mask mask){
+	public boolean allHasPermission(File file, Mask mask){
 		switch(mask){
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(4);
