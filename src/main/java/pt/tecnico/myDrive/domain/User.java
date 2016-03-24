@@ -61,11 +61,6 @@ public class User extends User_Base {
 		this.setName(name);
 	}
 
-	protected void setRootUsername(String username){
-		super.setUsername(username);
-	}
-
-
 	@Override
 	public void setUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException{
 		
@@ -98,12 +93,14 @@ public class User extends User_Base {
 	}
 
 	public boolean hasPermission(File file, Mask mask){
-		if(this.getUsername().equals("root")) return true;
-		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
-		else { return allHasPermission(file, mask);}
+		if(this.equals(file.getOwner())) {
+			return ownerHasPermission(file, mask);
+		} else {
+			return allHasPermission(file, mask);
+		}
 	}
 
-	public boolean ownerHasPermission(File file, Mask mask){
+	private boolean ownerHasPermission(File file, Mask mask){
 		switch(mask){
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(0);
@@ -118,7 +115,7 @@ public class User extends User_Base {
 		}
 	}
 
-	public boolean allHasPermission(File file, Mask mask){
+	private boolean allHasPermission(File file, Mask mask){
 		switch(mask){
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(4);
