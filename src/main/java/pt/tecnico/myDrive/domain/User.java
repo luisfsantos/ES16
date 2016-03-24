@@ -61,11 +61,6 @@ public class User extends User_Base {
 		this.setName(name);
 	}
 
-	protected void setRootUsername(String username){
-		super.setUsername(username);
-	}
-
-
 	@Override
 	public void setUsername(String username) throws UserAlreadyExistsException, EmptyUsernameException, InvalidUsernameException{
 		
