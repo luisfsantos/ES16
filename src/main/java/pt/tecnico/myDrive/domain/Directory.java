@@ -12,12 +12,10 @@ public class Directory extends Directory_Base {
 	}
 	
 	public Directory(String name, User owner, Directory parent) {
-		verifyFileNameDir(name);
 		this.initFile(name, owner.getUmask(), owner, parent);
 	}
 	
 	public Directory(String name, Directory parent) {
-		verifyFileNameDir(name);
 		this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
 	}
 	
@@ -25,17 +23,6 @@ public class Directory extends Directory_Base {
 	public Directory(Manager manager, Element dirNode) {
 		this.xmlImport(manager, dirNode);
 	}
-
-
-	public void verifyFileNameDir(String name) throws FileAlreadyExistsInDirectoryException, InvalidFileNameException{ //CHANGE EXCEPTION NAME
-		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
-			throw new InvalidFileNameException(name);
-		for (File f : this.getFileSet()) {
-			if(f.getName().equals(name))
-				throw new FileAlreadyExistsInDirectoryException(name, this.getName());
-		}
-	}
-	
 
 	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
 		if (name.equals("."))

@@ -11,13 +11,36 @@ public abstract class File extends File_Base {
 
 	
 	protected void initFile(String name, String permission, User owner, Directory parent) {
-		this.setOwner(owner);
 		this.setParent(parent);
 		this.setName(name);
+		this.setOwner(owner);
 		this.setPermissions(permission);
 		this.setId(owner.getManager().getNextIdCounter());
 		this.setLastModified(new DateTime());
 	}
+
+	protected void setRootDirName(String username){
+		super.setName(username);
+	}
+	
+	
+	@Override
+	public void setName(String name){
+		
+		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
+			throw new InvalidFileNameException(name);
+		
+		for (File f : getParent().getFileSet()) {
+			if(f.getName() != null){
+				if(f.getName().equals(name)){
+					throw new FileAlreadyExistsInDirectoryException(name, this.getParent().getName());
+				}
+			}
+		}
+		super.setName(name);
+		this.setLastModified(new DateTime());	
+	}
+	
 
 
 	@Override
@@ -91,7 +114,7 @@ public abstract class File extends File_Base {
 			setId(manager.getNextIdCounter());
 
 			Directory parentDir = manager.createAbsolutePath(new String(path.getBytes("UTF-8")));
-			parentDir.verifyFileNameDir(name);
+			//parentDir.verifyFileNameDir(name);
 			parentDir.addFile(this);
 
 		} catch (UnsupportedEncodingException e) {

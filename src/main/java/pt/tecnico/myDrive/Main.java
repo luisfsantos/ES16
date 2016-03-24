@@ -45,12 +45,18 @@ public class Main {
     public static void setup() {	
     	log.trace("Manager: " + Manager.getInstance());
     	Manager.getInstance().getHomeDirectory().showContent();
-	
-	   	//User user1 = new User(Manager.getInstance(), "DAVID");
-    	//User user3 = new User(Manager.getInstance(), "couve");
-    	//user1.setUsername("couve");
-    	//User user5 = new User(Manager.getInstance(), "amanha%988912342asda");
-    	
+	    	
+    	/*DAVID
+	   	User user1 = new User(Manager.getInstance(), "DAVID");
+    	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata");
+    	PlainFile file2 = new PlainFile("BLA", user1, Manager.getInstance().getHomeDirectory(), "batata");
+	   	Manager.getInstance().getHomeDirectory().showContent();
+	   	Manager.getInstance().getRootDirectory().lookup("/home/DAVID").showContent();
+	   	file1.setName("\0");
+	   	Manager.getInstance().getHomeDirectory().showContent();
+	   	System.out.println(file1.getLastModified());
+	   	DAVID*/
+	   	
     	xmlPrint();
     }
 
