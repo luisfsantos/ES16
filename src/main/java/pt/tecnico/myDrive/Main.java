@@ -15,12 +15,8 @@ import org.apache.logging.log4j.Logger;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
-import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
-import pt.tecnico.myDrive.domain.App;
-import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.File;
-import pt.tecnico.myDrive.domain.Link;
 
 
 public class Main {
@@ -58,9 +54,6 @@ public class Main {
 		}
 	}
 
-
-
-
 	@Atomic
 	public static void print() {
 		log.trace("Print: " + FenixFramework.getDomainRoot());
@@ -93,7 +86,7 @@ public class Main {
 		Document doc = Manager.getInstance().xmlExport();
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		try { xmlOutput.output(doc, new PrintStream(System.out));
-		} catch (IOException e) { System.out.println(e); }
+		} catch (IOException e) { System.out.println(e.getMessage()); }
     }
     
 }
