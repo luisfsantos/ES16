@@ -22,11 +22,6 @@ public class Link extends Link_Base {
         setContent(value);
         this.xmlImport(manager, linkNode);
     }
-
-    @Override
-    public String getFileType() {
-        return "link";
-    }
     
     @Override
 	public Element xmlExport() {

@@ -25,11 +25,6 @@ public class App extends App_Base {
 		setContent(method);
 		this.xmlImport(manager, appNode);
     }
-
-    @Override
-    public String getFileType() {
-        return "app";
-    }
     
     @Override
 	public Element xmlExport() {

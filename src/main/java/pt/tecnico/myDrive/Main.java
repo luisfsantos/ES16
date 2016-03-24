@@ -2,6 +2,7 @@ package pt.tecnico.myDrive;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
@@ -14,12 +15,8 @@ import org.apache.logging.log4j.Logger;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
-import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
-import pt.tecnico.myDrive.domain.App;
-import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.File;
-import pt.tecnico.myDrive.domain.Link;
 
 
 public class Main {
@@ -44,18 +41,18 @@ public class Main {
     @Atomic
     public static void setup() {	
     	log.trace("Manager: " + Manager.getInstance());
-    	Manager.getInstance().getHomeDirectory().showContent();
-	
-	   	//User user1 = new User(Manager.getInstance(), "DAVID");
-    	//User user3 = new User(Manager.getInstance(), "couve");
-    	//user1.setUsername("couve");
-    	//User user5 = new User(Manager.getInstance(), "amanha%988912342asda");
-    	
+		lsDir();
     	xmlPrint();
-    }
+	}
 
-
-
+	public static void lsDir() {
+		List<File> files = Manager.getInstance().getHomeDirectory().getOrderByNameFileList();
+		System.out.println(".");
+		System.out.println("..");
+		for (File f : files) {
+			System.out.println(f.getName());
+		}
+	}
 
 	@Atomic
 	public static void print() {
@@ -89,7 +86,7 @@ public class Main {
 		Document doc = Manager.getInstance().xmlExport();
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		try { xmlOutput.output(doc, new PrintStream(System.out));
-		} catch (IOException e) { System.out.println(e); }
+		} catch (IOException e) { System.out.println(e.getMessage()); }
     }
     
 }
