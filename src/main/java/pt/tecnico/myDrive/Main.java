@@ -45,8 +45,14 @@ public class Main {
     public static void setup() {	
     	log.trace("Manager: " + Manager.getInstance());
     	Manager.getInstance().getHomeDirectory().showContent();
+	
+	   	//User user1 = new User(Manager.getInstance(), "DAVID");
+    	//User user3 = new User(Manager.getInstance(), "couve");
+    	//user1.setUsername("couve");
+    	//User user5 = new User(Manager.getInstance(), "amanha%988912342asda");
+    	
     	xmlPrint();
-    	}
+    }
 
 
 
