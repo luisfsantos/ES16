@@ -2,6 +2,7 @@ package pt.tecnico.myDrive;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
@@ -14,12 +15,9 @@ import org.apache.logging.log4j.Logger;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
-import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
-import pt.tecnico.myDrive.domain.App;
-import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.File;
-import pt.tecnico.myDrive.domain.Link;
+import pt.tecnico.myDrive.domain.PlainFile;
 
 
 public class Main {
@@ -44,8 +42,10 @@ public class Main {
     @Atomic
     public static void setup() {	
     	log.trace("Manager: " + Manager.getInstance());
-    	Manager.getInstance().getHomeDirectory().showContent();
-	    	
+	    
+    	User user1 = new User(Manager.getInstance(), "DAVID");
+    	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata");
+    	
     	/*DAVID
 	   	User user1 = new User(Manager.getInstance(), "DAVID");
     	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata");
@@ -57,11 +57,19 @@ public class Main {
 	   	System.out.println(file1.getLastModified());
 	   	DAVID*/
 	   	
+		lsDir();
+
     	xmlPrint();
-    }
+	}
 
-
-
+	public static void lsDir() {
+		List<File> files = Manager.getInstance().getHomeDirectory().getOrderByNameFileList();
+		System.out.println(".");
+		System.out.println("..");
+		for (File f : files) {
+			System.out.println(f.getName());
+		}
+	}
 
 	@Atomic
 	public static void print() {
@@ -95,7 +103,7 @@ public class Main {
 		Document doc = Manager.getInstance().xmlExport();
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		try { xmlOutput.output(doc, new PrintStream(System.out));
-		} catch (IOException e) { System.out.println(e); }
+		} catch (IOException e) { System.out.println(e.getMessage()); }
     }
     
 }

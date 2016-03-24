@@ -25,13 +25,9 @@ public class PlainFile extends PlainFile_Base {
     }
 
     public PlainFile(Manager manager, Element plainNode) throws UnsupportedEncodingException {
-        try {
-            String contents = new String(plainNode.getChildText("contents").getBytes("UTF-8"));
-            setContent(contents);
-            this.xmlImport(manager, plainNode);
-        } catch (UnsupportedEncodingException e) {
-            throw new ImportDocumentException("UnsupportedEncodingException");
-        }
+        String contents = new String(plainNode.getChildText("contents").getBytes("UTF-8"));
+        setContent(contents);
+        this.xmlImport(manager, plainNode);
     }
 
     public File lookup(String path) throws IsNotDirOrLinkException{
@@ -42,23 +38,6 @@ public class PlainFile extends PlainFile_Base {
     	else {
     		throw new IsNotDirOrLinkException(this.getName());
     	}
-    }
-
-    public void showContent() {
-        if(super.getContent() == null)
-            System.out.println("");
-        else
-            System.out.println(super.getContent());
-    }
-
-    @Override
-    public int getSize() {
-        return getContent().length();
-    }
-
-    @Override
-    public String getFileType() {
-        return "plain-file";
     }
     
 	public void remove(){

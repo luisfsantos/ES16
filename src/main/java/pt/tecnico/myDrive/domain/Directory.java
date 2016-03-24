@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Directory extends Directory_Base {
@@ -20,7 +21,7 @@ public class Directory extends Directory_Base {
 	}
 	
 
-	public Directory(Manager manager, Element dirNode) {
+	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
 		this.xmlImport(manager, dirNode);
 	}
 
@@ -75,23 +76,6 @@ public class Directory extends Directory_Base {
 
 		return null;
 	}
-
-	@Override
-	public void showContent() {
-		List<File> files = new ArrayList<File>(getFileSet());
-
-		Collections.sort(files, new Comparator<File>() {
-			public int compare(File f1, File f2) {
-				return f1.getName().compareToIgnoreCase(f2.getName());
-			}
-		});
-
-		System.out.println(this.toString("."));
-		System.out.println(getParent().toString(".."));
-
-		for (File f: files)
-			System.out.println(f.toString());
-    }
 	
 	@Override
 	public Element xmlExport() {
@@ -113,31 +97,11 @@ public class Directory extends Directory_Base {
 			}
 		}	
 	}
-
-	@Override
-	public String getFileType() {
-		return "dir";
-	}
-
-	@Override
-	public int getSize() {
-		return getFileSet().size() + 2;
-	}
-
-	public String toString(String name) {
-		return getFileType() +
-				" " + getPermissions() +
-				" " + getSize() +
-				" " + getOwner().getUsername() +
-				" " + getId() +
-				" " + getLastModified().toString("dd/MM/YYYY-HH:mm:ss") +
-				" " + name;
-	}
 	
-public void remove() throws NotEmptyDirectoryException {
-		if (this.getFileSet().size() == 0) this.rmv();
-		else throw new NotEmptyDirectoryException(this.getName());
-	}
+	public void remove() throws NotEmptyDirectoryException {
+			if (this.getFileSet().size() == 0) this.rmv();
+			else throw new NotEmptyDirectoryException(this.getName());
+		}
 	
 	public void rmv() {
 		setParent(null);
@@ -145,4 +109,45 @@ public void remove() throws NotEmptyDirectoryException {
 		deleteDomainObject();	
 		
 	}
+
+	public List<File> getOrderByNameFileList() {
+		List<File> files = new ArrayList<File>(getFileSet());
+
+		Collections.sort(files, new Comparator<File>() {
+			public int compare(File f1, File f2) {
+				return f1.getName().compareToIgnoreCase(f2.getName());
+			}
+		});
+
+		return files;
+	}
+
+	protected Directory createPath(User owner, String path) {
+		if(path.startsWith("/")) path = path.substring(1);
+
+		return createPath(owner, path, this);
+	}
+
+
+	private Directory createPath(User owner, String path, Directory dir) {
+		Directory nextDir;
+		int first = path.indexOf('/');
+
+		if(first == -1) {
+			if (!dir.hasFile(path)) return new Directory(path,  owner, dir);
+			else return (Directory) dir.getFileByName(path);
+		}
+		String dirName = path.substring(0, first);
+		String nextPath =  path.substring(first + 1);
+
+		if(dir.hasFile(dirName)) {
+			nextDir = (Directory) dir.getFileByName(dirName);
+			return createPath(owner, nextPath, nextDir);
+		} else {
+			nextDir = new Directory(dirName,  owner, dir);
+			return createPath(owner, nextPath, nextDir);
+		}
+	}
 }
+
+

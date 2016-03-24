@@ -18,18 +18,9 @@ public class Link extends Link_Base {
     }
 
     public Link(Manager manager, Element linkNode) throws UnsupportedEncodingException {
-        try {
-            String value = new String(linkNode.getChildText("value").getBytes("UTF-8"));
-            setContent(value);
-            this.xmlImport(manager, linkNode);
-        } catch (UnsupportedEncodingException e) {
-            throw new ImportDocumentException("UnsupportedEncodingException");
-        }
-    }
-
-    @Override
-    public String getFileType() {
-        return "link";
+        String value = new String(linkNode.getChildText("value").getBytes("UTF-8"));
+        setContent(value);
+        this.xmlImport(manager, linkNode);
     }
     
     @Override
