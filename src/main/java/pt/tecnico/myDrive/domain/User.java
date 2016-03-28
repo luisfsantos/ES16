@@ -96,6 +96,19 @@ public class User extends User_Base {
 		}
 		super.setUmask(permission);
 	}
+	
+	@Override
+	public void setHome(Directory home) {
+		if (home == null) {
+			super.setHome(null);
+		} else {
+			if (hasPermission(home, Mask.READ) && hasPermission(home, Mask.WRITE)) {
+				super.setHome(home);
+			} else {
+				throw new InvalidPermissionException(home.getPermissions());
+			}
+		}
+	}
 
 	public boolean hasPermission(File file, Mask mask){
 		if(this.getUsername().equals("root")) return true;
