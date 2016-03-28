@@ -78,6 +78,11 @@ public class Directory extends Directory_Base {
 	}
 	
 	@Override
+	public void setHomeOwner(User homeOwner) {
+		homeOwner.setHome(this);
+	}
+	
+	@Override
 	public Element xmlExport() {
 		Element dirElement = super.xmlExport();
 		dirElement.setName("dir");
@@ -91,7 +96,7 @@ public class Directory extends Directory_Base {
 				if (f.getId() > 2)
 					myDrive.addContent(f.xmlExport());	
 			}
-			for(File f: getFileSet()) { //why does the fileSet have itself...?
+			for(File f: getFileSet()) {
 				if (f!=this)
 					f.xmlExport(myDrive);
 			}
