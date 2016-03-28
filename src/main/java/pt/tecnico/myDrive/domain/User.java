@@ -161,11 +161,13 @@ public class User extends User_Base {
 		Element nameElement = new Element("name");
 		nameElement.setText(getName());
 		userElement.addContent(nameElement);
-
-		Element homeElement = new Element("home");
-		homeElement.setText(getHome().getAbsolutePath());
-		userElement.addContent(homeElement);
-
+		
+		if (getHome() != null) {
+			Element homeElement = new Element("home");
+			homeElement.setText(getHome().getAbsolutePath());
+			userElement.addContent(homeElement);
+		}
+		
 		Element maskElement = new Element("mask");
 		maskElement.setText(getUmask());
 		userElement.addContent(maskElement);

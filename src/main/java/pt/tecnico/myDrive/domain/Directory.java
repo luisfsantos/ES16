@@ -90,7 +90,7 @@ public class Directory extends Directory_Base {
 	}
 	
 	@Override
-	public void xmlExport(Element myDrive) {
+	protected void xmlExport(Element myDrive) {
 		if (!getFileSet().isEmpty()) {
 			for(File f: getFileSet()) {
 				if (f.getId() > 2)
