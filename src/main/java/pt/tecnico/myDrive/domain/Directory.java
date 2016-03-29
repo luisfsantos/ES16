@@ -98,17 +98,17 @@ public class Directory extends Directory_Base {
 		}	
 	}
 	
+	@Override
 	public void remove() throws NotEmptyDirectoryException {
-			if (this.getFileSet().size() == 0) this.rmv();
-			else throw new NotEmptyDirectoryException(this.getName());
-		}
-	
-	public void rmv() {
-		setParent(null);
-		setOwner(null);
-		deleteDomainObject();	
 		
+		if (this.getFileSet().size() == 0){ 
+			super.remove();
+		}
+		else{ 
+			throw new NotEmptyDirectoryException(this.getName());
+		}
 	}
+	
 
 	public List<File> getOrderByNameFileList() {
 		List<File> files = new ArrayList<File>(getFileSet());

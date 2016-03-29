@@ -18,6 +18,8 @@ import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.domain.File;
 import pt.tecnico.myDrive.domain.PlainFile;
+import pt.tecnico.myDrive.domain.Directory;
+import pt.tecnico.myDrive.domain.App;
 
 
 public class Main {
@@ -42,11 +44,25 @@ public class Main {
     @Atomic
     public static void setup() {	
     	log.trace("Manager: " + Manager.getInstance());
-	    
+    	lsDir();
+
     	User user1 = new User(Manager.getInstance(), "DAVID");
-    	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata");
+    	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata"); 	
+    	App app1 = new App("APPME", user1, Manager.getInstance().getHomeDirectory(), "batata");    	
     	
-    	/*DAVID
+    	
+    	System.out.println("========================================================");
+    	lsDir();
+    	
+    	/*
+    	file1.remove();
+    	app1.remove();
+    	Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
+
+    	System.out.println("========================================================");
+    	lsDir(); */
+      	
+        /*DAVID
 	   	User user1 = new User(Manager.getInstance(), "DAVID");
     	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata");
     	PlainFile file2 = new PlainFile("BLA", user1, Manager.getInstance().getHomeDirectory(), "batata");
@@ -57,9 +73,9 @@ public class Main {
 	   	System.out.println(file1.getLastModified());
 	   	DAVID*/
 	   	
-		lsDir();
+		
 
-    	xmlPrint();
+    	//xmlPrint();
 	}
 
 	public static void lsDir() {

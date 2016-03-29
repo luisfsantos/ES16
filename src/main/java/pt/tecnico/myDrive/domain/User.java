@@ -12,7 +12,6 @@ public class User extends User_Base {
 		super();
 	}
 	
-	
 	public User(Manager manager, String username){
 		this.initUser(manager, username, username, username, "rwxd----");
 	}

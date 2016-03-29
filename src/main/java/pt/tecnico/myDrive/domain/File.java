@@ -32,16 +32,19 @@ public abstract class File extends File_Base {
 			throw new InvalidFileNameException(name);
 		
 		for (File f : getParent().getFileSet()) {
-			if(f.getName() != null){
-				if(f.getName().equals(name)){
-					throw new FileAlreadyExistsInDirectoryException(name, this.getParent().getName());
-				}
+			if(!f.equals(this) && f.getName().equals(name)){
+				throw new FileAlreadyExistsInDirectoryException(name, this.getParent().getName());
 			}
 		}
+		
 		super.setName(name);
 		this.setLastModified(new DateTime());	
 	}
 	
+	protected void removeOwner(){
+		getOwner().setHome(null);
+		super.setOwner(null);
+	}
 
 
 	@Override
@@ -128,7 +131,12 @@ public abstract class File extends File_Base {
 		parentDir.addFile(this);
 	}
 
-	public void remove(){}
+	public void remove(){
+		setParent(null);
+		removeOwner();
+		deleteDomainObject();
+	}
+	
 	public abstract File lookup(String path);
 
 }

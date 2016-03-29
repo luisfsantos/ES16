@@ -39,12 +39,6 @@ public class PlainFile extends PlainFile_Base {
     		throw new IsNotDirOrLinkException(this.getName());
     	}
     }
-    
-	public void remove(){
-		setParent(null);
-		setOwner(null);
-		deleteDomainObject();
-	}
 
 	@Override
 	public Element xmlExport() {
