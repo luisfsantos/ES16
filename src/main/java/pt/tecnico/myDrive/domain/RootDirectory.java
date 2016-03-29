@@ -21,4 +21,9 @@ public class RootDirectory extends RootDirectory_Base {
 		throw new CannotSetRootDirNameException();    			
 	}
     
+    @Override
+    public String getAbsolutePath() {
+    	return getName();
+    }
+    
 }
