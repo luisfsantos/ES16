@@ -100,12 +100,12 @@ public class User extends User_Base {
 	@Override
 	public void setHome(Directory home) {
 		if (home == null) {
-			super.setHome(null);
+			throw new InvalidHomeDirectory("null");
 		} else {
-			if (hasPermission(home, Mask.READ) && hasPermission(home, Mask.WRITE)) {
+			if (this.equals(home.getOwner())) {
 				super.setHome(home);
 			} else {
-				throw new InvalidPermissionException(home.getPermissions());
+				throw new InvalidHomeDirectory(home.getName());
 			}
 		}
 	}
