@@ -78,7 +78,9 @@ relation UserHasFiles {
 }
 
 relation UserHasHome {
-	User playsRole;
+	User playsRole homeOwner {
+	multiplicity 0..1;
+	}
 	Directory playsRole home {
 	multiplicity 1;
 	}
