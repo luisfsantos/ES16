@@ -6,7 +6,7 @@ import pt.tecnico.myDrive.exception.CannotSetRootDirNameException;
 
 public class RootDirectory extends RootDirectory_Base {
     
-    public RootDirectory(Manager manager, SuperUser superUser) {
+    public RootDirectory(Manager manager, SuperUser superUser, DummyObject dummy) {
     	this.setParent(this);
     	this.setRootDirName("/");
 		this.setOwner(superUser);

@@ -8,7 +8,7 @@ public class SuperUser extends SuperUser_Base {
 
 	static final Logger log = LogManager.getRootLogger();
 
-    public SuperUser(Manager manager) {
+    public SuperUser(Manager manager, DummyObject dummy) {
     	this.setManager(manager);
 		this.setRootUsername("root");
 		this.setPassword("***");

@@ -38,9 +38,10 @@ public class Manager extends Manager_Base {
     	this.setRoot(FenixFramework.getDomainRoot());
         super.setIdCounter(0);
         
-        SuperUser superUser = new SuperUser(this); 
+        DummyObject dummy = new DummyObject();
+        SuperUser superUser = new SuperUser(this, dummy); 
         this.setSuperUser(superUser);
-        RootDirectory rootDirectory = new RootDirectory(this, superUser);
+        RootDirectory rootDirectory = new RootDirectory(this, superUser, dummy);
         this.setRootDirectory(rootDirectory);
         Directory homeDirectory = new Directory("home", superUser, rootDirectory);
         Directory rootHome = new Directory("root", superUser, homeDirectory);
