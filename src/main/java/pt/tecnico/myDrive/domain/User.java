@@ -96,6 +96,7 @@ public class User extends User_Base {
 		super.setUmask(permission);
 	}
 	
+
 	
 	public int getNextIdCounter() {
 		int currCounter = this.getManager().getIdCounter();
@@ -103,6 +104,20 @@ public class User extends User_Base {
     	return currCounter;
 	}
 	
+
+	@Override
+	public void setHome(Directory home) {
+		if (home == null) {
+			throw new InvalidHomeDirectoryException("null");
+		} else {
+			if (this.equals(home.getOwner())) {
+				super.setHome(home);
+			} else {
+				throw new InvalidHomeDirectoryException(home.getName());
+			}
+		}
+	}
+
 
 	public boolean hasPermission(File file, Mask mask){
 		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
@@ -154,11 +169,13 @@ public class User extends User_Base {
 		Element nameElement = new Element("name");
 		nameElement.setText(getName());
 		userElement.addContent(nameElement);
-
-		Element homeElement = new Element("home");
-		homeElement.setText(getHome().getAbsolutePath());
-		userElement.addContent(homeElement);
-
+		
+		if (getHome() != null) {
+			Element homeElement = new Element("home");
+			homeElement.setText(getHome().getAbsolutePath());
+			userElement.addContent(homeElement);
+		}
+		
 		Element maskElement = new Element("mask");
 		maskElement.setText(getUmask());
 		userElement.addContent(maskElement);

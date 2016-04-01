@@ -96,7 +96,7 @@ public abstract class File extends File_Base {
 		return element;
 	}
 	
-	public void xmlExport(Element myDrive) {}
+	protected void xmlExport(Element myDrive) {}
 
 	public void xmlImport(Manager manager, Element fileNode) throws UnsupportedEncodingException {
 		String path = fileNode.getChildText("path");
