@@ -7,7 +7,7 @@ import pt.tecnico.myDrive.exception.RootDirectoryCannotBeModified;
 public class RootDirectory extends RootDirectory_Base {
     
     public RootDirectory(Manager manager, SuperUser superUser, DummyObject dummy) {
-    	this.initRootDirectory(this, superUser);
+    	this.initRootDirectory(superUser);
     }
     
     @Override
@@ -29,6 +29,11 @@ public class RootDirectory extends RootDirectory_Base {
 	public void setId(Integer id){
 		throw new RootDirectoryCannotBeModified();    			
 	}
+    
+    @Override
+    public Directory getParent(){
+    	return this;
+    }
     
     @Override
     public String getAbsolutePath() {
