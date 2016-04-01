@@ -2,7 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pt.tecnico.myDrive.exception.CannotSetRootUsernameException;
+import pt.tecnico.myDrive.exception.SuperUserCannotBeModified;
 
 public class SuperUser extends SuperUser_Base {
 
@@ -18,7 +18,7 @@ public class SuperUser extends SuperUser_Base {
 
     @Override
 	public void setUsername(String username){
-		throw new CannotSetRootUsernameException();
+		throw new SuperUserCannotBeModified();
 	}
 
 	public boolean hasPermission(File file, Mask mask){
