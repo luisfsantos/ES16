@@ -68,12 +68,6 @@ public class Manager extends Manager_Base {
     }
         
     
-    public int getNextIdCounter() {
-    	int currCounter = this.getIdCounter();
-    	this.setIdCounter(currCounter+1);
-    	return currCounter;
-    }
-    
     
     @Override
     public void setIdCounter(Integer newCounter) {

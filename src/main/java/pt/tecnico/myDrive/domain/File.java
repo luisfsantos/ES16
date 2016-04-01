@@ -15,7 +15,7 @@ public abstract class File extends File_Base {
 		this.setName(name);
 		this.setOwner(owner);
 		this.setPermissions(permission);
-		this.setId(owner.getManager().getNextIdCounter());
+		this.setId(owner.getNextIdCounter());
 		this.setLastModified(new DateTime());
 	}
 
@@ -116,13 +116,13 @@ public abstract class File extends File_Base {
 				throw new UserDoesNotExistException(owner);
 			}
 			setOwner(ownerUser);
+			setId(ownerUser.getNextIdCounter());
 		}
 
 		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
 		else setPermissions("rwxd----");
 
 		setLastModified(new DateTime());
-		setId(manager.getNextIdCounter());
 
 		Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(),
 				new String(path.getBytes("UTF-8")));

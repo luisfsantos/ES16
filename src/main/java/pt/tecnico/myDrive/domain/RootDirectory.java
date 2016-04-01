@@ -11,9 +11,8 @@ public class RootDirectory extends RootDirectory_Base {
     	this.setRootDirName("/");
 		this.setOwner(superUser);
 		this.setPermissions("rwxdr-x-");
-		this.setId(manager.getNextIdCounter());
+		this.setId(superUser.getNextIdCounter());
 		this.setLastModified(new DateTime());
-		
     }
     
     @Override

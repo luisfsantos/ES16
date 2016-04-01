@@ -95,6 +95,14 @@ public class User extends User_Base {
 		}
 		super.setUmask(permission);
 	}
+	
+	
+	public int getNextIdCounter() {
+		int currCounter = this.getManager().getIdCounter();
+    	this.getManager().setIdCounter(currCounter+1);
+    	return currCounter;
+	}
+	
 
 	public boolean hasPermission(File file, Mask mask){
 		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
