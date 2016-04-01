@@ -8,6 +8,7 @@ import org.jdom2.Element;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.InvalidIdCounter;
 import pt.tecnico.myDrive.exception.InvalidPathException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
@@ -35,7 +36,7 @@ public class Manager extends Manager_Base {
     private Manager() {
 
     	this.setRoot(FenixFramework.getDomainRoot());
-        this.setIdCounter(0);
+        super.setIdCounter(0);
         
         SuperUser superUser = new SuperUser(this); 
         this.setSuperUser(superUser);
@@ -71,6 +72,16 @@ public class Manager extends Manager_Base {
     	int currCounter = this.getIdCounter();
     	this.setIdCounter(currCounter+1);
     	return currCounter;
+    }
+    
+    
+    @Override
+    public void setIdCounter(Integer newCounter) {
+    	if (newCounter < this.getIdCounter() ) {
+    		throw new InvalidIdCounter(newCounter);
+    	} else {
+    		super.setIdCounter(newCounter);
+    	}
     }
     
     
