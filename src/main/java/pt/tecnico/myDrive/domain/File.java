@@ -20,8 +20,13 @@ public abstract class File extends File_Base {
 	}
 
 
-	protected void setRootDirName(String username){
-		super.setName(username);
+	protected void initRootDirectory(Directory parent, SuperUser superUser){
+    	super.setParent(parent);
+    	super.setName("/");
+		super.setOwner(superUser);
+		super.setPermissions("rwxdr-x-");
+		super.setId(superUser.getNextIdCounter());
+		super.setLastModified(new DateTime());
 	}
 	
 	

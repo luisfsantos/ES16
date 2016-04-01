@@ -60,12 +60,12 @@ public class User extends User_Base {
 		this.setName(name);
 	}
 
-	protected void initSuperUser(String username, String password, String name, String umask, Manager manager){
-		super.setUsername(username);
+	protected void initSuperUser( Manager manager){
+		super.setUsername("root");
     	super.setManager(manager);
-		super.setPassword(password);
-		super.setName(name);
-		super.setUmask(umask);
+		super.setPassword("***");
+		super.setName("Super User");
+		super.setUmask("rwxdr-x-");
 	}
 
 

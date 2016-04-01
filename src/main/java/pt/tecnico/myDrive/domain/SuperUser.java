@@ -9,7 +9,7 @@ public class SuperUser extends SuperUser_Base {
 	static final Logger log = LogManager.getRootLogger();
 
     public SuperUser(Manager manager, DummyObject dummy) {
-    	this.initSuperUser("root", "***", "Super User", "rwxdr-x-", manager);
+    	this.initSuperUser(manager);
     }
 
     @Override
