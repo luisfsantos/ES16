@@ -9,17 +9,34 @@ public class SuperUser extends SuperUser_Base {
 	static final Logger log = LogManager.getRootLogger();
 
     public SuperUser(Manager manager, DummyObject dummy) {
-    	this.setManager(manager);
-		this.setRootUsername("root");
-		this.setPassword("***");
-		this.setName("Super User");
-		this.setUmask("rwxdr-x-");
+    	this.initSuperUser("root", "***", "Super User", "rwxdr-x-", manager);
     }
 
     @Override
 	public void setUsername(String username){
 		throw new SuperUserCannotBeModified();
 	}
+    
+    @Override
+	public void setPassword(String password){
+		throw new SuperUserCannotBeModified();
+	}
+    
+    @Override
+	public void setName(String name){
+		throw new SuperUserCannotBeModified();
+	}
+    
+    @Override
+	public void setUmask(String umask){
+		throw new SuperUserCannotBeModified();
+	}
+    
+    @Override
+	public void setManager(Manager manager){
+		throw new SuperUserCannotBeModified();
+	}
+    
 
 	public boolean hasPermission(File file, Mask mask){
 		return true;
