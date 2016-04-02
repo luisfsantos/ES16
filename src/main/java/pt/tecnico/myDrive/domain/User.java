@@ -47,7 +47,8 @@ public class User extends User_Base {
 			Directory homeDir = new Directory(dirName, this, parentDir);
 			setHome(homeDir);
 		} else {
-			setHome(new Directory(username, this, manager.getHomeDirectory()));
+			Directory homeDir = (Directory) manager.getRootDirectory().lookup("home");
+			setHome(new Directory(username, this, homeDir));
 		}
 	}
 
@@ -55,7 +56,8 @@ public class User extends User_Base {
 		this.setUsername(username);
 		this.setManager(manager);
 		this.setUmask(umask);
-		this.setHome(new Directory(username, this, this.getManager().getHomeDirectory()));
+		Directory home = (Directory) this.getManager().getRootDirectory().lookup("home");
+		this.setHome(new Directory(username, this, home));
 		this.setPassword(password);
 		this.setName(name);
 	}

@@ -80,17 +80,8 @@ public class Manager extends Manager_Base {
     }
     
     
+ 
     
-    public Directory getHomeDirectory() {
-    	for (File f: this.getRootDirectory().getFileSet() ) {
-    		if (f.getName().equals("home")) {
-    			return (Directory)f;
-    		}
-    	}
-    	return null;
-    }
-    
-
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
 		for(Element userNode : myDriveElement.getChildren("user")) {
 			new User(this, userNode);
