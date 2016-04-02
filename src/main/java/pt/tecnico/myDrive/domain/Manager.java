@@ -7,6 +7,7 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.FenixFramework;
+import pt.tecnico.myDrive.exception.AccessDeniedToGetLoginSetException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidIdCounter;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 
 
@@ -95,7 +97,10 @@ public class Manager extends Manager_Base {
     	}
     }
     
-    
+    @Override
+    public Set <Login> getLoginSet() {
+    	throw new AccessDeniedToGetLoginSetException();
+    }
     
  
     

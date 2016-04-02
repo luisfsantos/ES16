@@ -68,6 +68,7 @@ public class Main {
     	log.trace("token = " + login.validateToken(new Long(11122)) );
     	log.trace("password of David = " + user1.validatePassword("DAVID"));
     	
+
     	/*
     	file1.remove();
     	app1.remove();
