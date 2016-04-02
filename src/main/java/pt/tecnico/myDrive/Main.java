@@ -17,6 +17,7 @@ import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.domain.File;
+import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.App;
@@ -59,6 +60,12 @@ public class Main {
     	log.trace(home.getName());
     	log.trace(home.getFileSet().size());
     	log.trace(Manager.getInstance().getRootDirectory().lookup("home/root").getName());
+    	
+    	Login login = new Login("DAVID", "DAVID");
+    	log.trace("-------Login------");
+    	log.trace("currUser = " + login.getCurrentUser().getName());
+    	log.trace("currDir = " + login.getCurrentDir().getName());
+    	log.trace("token = " + login.getToken() );
     	
     	/*
     	file1.remove();
