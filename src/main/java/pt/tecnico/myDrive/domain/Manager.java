@@ -48,7 +48,13 @@ public class Manager extends Manager_Base {
         superUser.setHome(rootHome);
     }
 	
-
+    /*
+    public Login getLoginByToken(long token) {
+    	for (Login login: super.getLoginSet()) {
+    		if (login.)
+    	}
+    }
+	*/
 
 	public User getUserByUsername(String username) {
     	for (User user: this.getUserSet()) {
@@ -78,6 +84,7 @@ public class Manager extends Manager_Base {
     		super.setIdCounter(newCounter);
     	}
     }
+    
     
     
  

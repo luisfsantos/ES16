@@ -5,15 +5,16 @@ import java.util.Random;
 
 import org.joda.time.DateTime;
 
+import pt.tecnico.myDrive.exception.AccessDeniedToGetTokenException;
 import pt.tecnico.myDrive.exception.InvalidUsernameOrPasswordException;
 
 public class Login extends Login_Base {
     
+	
     public Login(String username, String password) {
         this.validateAccount(username, password);
     	// TODO remove inactive sessions
-    	
-    	long token = new BigInteger(64, new Random()).longValue();
+    	Long token = new BigInteger(64, new Random()).longValue();
     	// TODO verify if token already exists
     	this.setToken(token);
     	this.setLastActivity(new DateTime());
@@ -27,6 +28,16 @@ public class Login extends Login_Base {
     	if ( user == null || !user.validatePassword(password)) {
     		throw new InvalidUsernameOrPasswordException();
     	}
+    }
+    
+    
+    @Override 
+    public Long getToken() {
+    	throw new AccessDeniedToGetTokenException();
+    }
+    
+    public boolean validateToken(Long token){
+    	return super.getToken().equals(token);
     }
     
 }
