@@ -66,7 +66,7 @@ public class Main {
     	log.trace("currUser = " + login.getCurrentUser().getName());
     	log.trace("currDir = " + login.getCurrentDir().getName());
     	log.trace("token = " + login.getToken() );
-    	log.trace("password of David = " + user1.validatePassword("DAVID2"));
+    	log.trace("password of David = " + user1.validatePassword("DAVID"));
     	
     	/*
     	file1.remove();

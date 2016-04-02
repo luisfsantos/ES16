@@ -5,10 +5,12 @@ import java.util.Random;
 
 import org.joda.time.DateTime;
 
+import pt.tecnico.myDrive.exception.InvalidUsernameOrPasswordException;
+
 public class Login extends Login_Base {
     
     public Login(String username, String password) {
-        // TODO validade account
+        this.validateAccount(username, password);
     	// TODO remove inactive sessions
     	
     	long token = new BigInteger(64, new Random()).longValue();
@@ -18,6 +20,13 @@ public class Login extends Login_Base {
     	this.setManager(Manager.getInstance());
     	this.setCurrentUser(Manager.getInstance().getUserByUsername(username));
     	this.setCurrentDir(Manager.getInstance().getUserByUsername(username).getHome());
+    }
+    
+    private void validateAccount(String username, String password) {
+    	User user = Manager.getInstance().getUserByUsername(username);
+    	if ( user == null || !user.validatePassword(password)) {
+    		throw new InvalidUsernameOrPasswordException();
+    	}
     }
     
 }
