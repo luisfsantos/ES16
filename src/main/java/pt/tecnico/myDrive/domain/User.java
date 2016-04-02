@@ -102,13 +102,6 @@ public class User extends User_Base {
 		super.setUmask(permission);
 	}
 	
-
-	
-	public int getNextIdCounter() {
-		int currCounter = this.getManager().getIdCounter();
-    	this.getManager().setIdCounter(currCounter+1);
-    	return currCounter;
-	}
 	
 
 	@Override
@@ -122,6 +115,18 @@ public class User extends User_Base {
 				throw new InvalidHomeDirectoryException(home.getName());
 			}
 		}
+	}
+	
+	@Override
+	public String getPassword() {
+		throw new AccessDeniedToGetPassword();
+	}
+	
+	
+	public int getNextIdCounter() {
+		int currCounter = this.getManager().getIdCounter();
+    	this.getManager().setIdCounter(currCounter+1);
+    	return currCounter;
 	}
 
 
