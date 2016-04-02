@@ -119,7 +119,7 @@ public class User extends User_Base {
 	
 	@Override
 	public String getPassword() {
-		throw new AccessDeniedToGetPassword();
+		throw new AccessDeniedToGetPasswordException();
 	}
 	
 	

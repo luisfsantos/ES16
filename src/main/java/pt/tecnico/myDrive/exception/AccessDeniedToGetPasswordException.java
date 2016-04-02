@@ -1,10 +1,10 @@
 package pt.tecnico.myDrive.exception;
 
-public class AccessDeniedToGetPassword extends MyDriveException {
+public class AccessDeniedToGetPasswordException extends MyDriveException {
 	
 	private static final long serialVersionUID = 1L;
 
-	public AccessDeniedToGetPassword(){ }
+	public AccessDeniedToGetPasswordException(){ }
 	
 	
 	@Override
