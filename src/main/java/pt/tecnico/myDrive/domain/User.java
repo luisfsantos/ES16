@@ -123,6 +123,11 @@ public class User extends User_Base {
 	}
 	
 	
+	public boolean validatePassword(String password){
+		return super.getPassword().equals(password);
+	}
+	
+	
 	public int getNextIdCounter() {
 		int currCounter = this.getManager().getIdCounter();
     	this.getManager().setIdCounter(currCounter+1);
