@@ -131,6 +131,8 @@
 
         <version.slf4j.api>1.7.7</version.slf4j.api>
         <version.ch.qos.logback.logback.classic>1.1.2</version.ch.qos.logback.logback.classic>
+        
+        <version.junit>4.12</version.junit>
 
         <version.org.jdom.jdom>2.0.5</version.org.jdom.jdom>
     </properties>
@@ -262,6 +264,12 @@
             <groupId>pt.ist</groupId>
             <artifactId>fenix-framework-backend-${fenix.framework.backend}-runtime</artifactId>
             <version>${version.pt.ist.fenix.framework}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
