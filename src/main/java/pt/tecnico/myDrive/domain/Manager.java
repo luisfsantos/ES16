@@ -4,12 +4,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.FenixFramework;
+import pt.tecnico.myDrive.exception.AccessDeniedToGetLoginSetException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidIdCounter;
 import pt.tecnico.myDrive.exception.InvalidPathException;
+import pt.tecnico.myDrive.exception.InvalidTokenException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
 import java.io.UnsupportedEncodingException;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 
 
@@ -48,7 +52,21 @@ public class Manager extends Manager_Base {
         superUser.setHome(rootHome);
     }
 	
-
+    
+    public Login getLoginByToken(long token) {
+    	DateTime now = new DateTime();
+    	for (Login login: super.getLoginSet()) {
+    		if (login.validateToken(token)){
+    			if (login.getLastActivity().isBefore(now.minusHours(2))){
+    				throw new InvalidTokenException();
+    			} else {
+    				return login;
+    			}
+    		}
+    	}
+    	throw new InvalidTokenException();
+    }
+	
 
 	public User getUserByUsername(String username) {
     	for (User user: this.getUserSet()) {
@@ -79,6 +97,10 @@ public class Manager extends Manager_Base {
     	}
     }
     
+    @Override
+    public Set <Login> getLoginSet() {
+    	throw new AccessDeniedToGetLoginSetException();
+    }
     
  
     

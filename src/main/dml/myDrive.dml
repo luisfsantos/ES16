@@ -4,6 +4,11 @@ class Manager {
 	Integer idCounter;
 }
 
+class Login {
+	DateTime lastActivity;
+	Long token;
+}
+
 class User {
 	String username;
 	String password;
@@ -42,6 +47,7 @@ relation DomainRootHasManagerApplication {
 	}
 } 
 
+
 relation ManagerHasUsers {
 	Manager playsRole manager {
 	multiplicity 1;
@@ -67,6 +73,30 @@ relation ManagerHasRootDirectory {
 	}
 }
 
+
+relation ManagerHasLogins {
+	Manager playsRole manager {
+	multiplicity 1;
+	}
+	Login playsRole login {
+	multiplicity *;
+	}
+}
+
+
+relation LoginHasCurrentUser {
+	Login playsRole;
+	User playsRole currentUser {
+	multiplicity 1;
+	} 
+}
+
+relation LoginHasCurrentDir {
+	Login playsRole;
+	Directory playsRole currentDir {
+	multiplicity 1;
+	} 
+}
 
 relation UserHasFiles {
 	User playsRole owner {
