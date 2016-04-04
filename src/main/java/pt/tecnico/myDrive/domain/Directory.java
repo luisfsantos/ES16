@@ -106,7 +106,13 @@ public class Directory extends Directory_Base {
 	@Override
 	public void remove() throws IsHomeDirectoryException {
 		
-		if (this.getHomeOwner() == null && this.getFileSet().size() == 0) { 
+		if (this.getHomeOwner() == null) {
+			if(!this.getFileSet().isEmpty()) { 
+				for(File f: this.getFileSet()){
+					f.remove();
+				}
+			}
+			
 			super.remove();
 		}
 		else{ 

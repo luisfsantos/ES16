@@ -51,7 +51,10 @@ public class Main {
     	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
     	App app1 = new App("APPME", user1, home, "batata");    	
-    	
+    	Directory dir1 = new Directory("bin", user1, home);
+    	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
+    	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
+    	App app2 = new App("binapp", user1, dir1, "batata");  
     	
     	System.out.println("========================================================");
     	lsDir();
@@ -69,10 +72,10 @@ public class Main {
     	log.trace("password of David = " + user1.validatePassword("DAVID"));
     	
 
-    	
-    	file1.remove();
-    	app1.remove();
-    	Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
+    	dir1.remove();
+    	//file1.remove();
+    	//app1.remove();
+    	//Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
 
     	System.out.println("========================================================");
     	lsDir(); 
