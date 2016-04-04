@@ -69,13 +69,13 @@ public class Main {
     	log.trace("password of David = " + user1.validatePassword("DAVID"));
     	
 
-    	/*
+    	
     	file1.remove();
     	app1.remove();
     	Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
 
     	System.out.println("========================================================");
-    	lsDir(); */
+    	lsDir(); 
       	
         /*DAVID
 	   	User user1 = new User(Manager.getInstance(), "DAVID");

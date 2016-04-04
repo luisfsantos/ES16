@@ -104,13 +104,13 @@ public class Directory extends Directory_Base {
 	}
 	
 	@Override
-	public void remove() throws NotEmptyDirectoryException {
+	public void remove() throws IsHomeDirectoryException {
 		
-		if (this.getFileSet().size() == 0){ 
+		if (this.getHomeOwner() == null && this.getFileSet().size() == 0) { 
 			super.remove();
 		}
 		else{ 
-			throw new NotEmptyDirectoryException(this.getName());
+			throw new IsHomeDirectoryException(this.getName());
 		}
 	}
 	

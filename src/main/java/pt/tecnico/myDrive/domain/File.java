@@ -47,7 +47,6 @@ public abstract class File extends File_Base {
 	}
 	
 	protected void removeOwner(){
-		getOwner().setHome(null);
 		super.setOwner(null);
 	}
 
