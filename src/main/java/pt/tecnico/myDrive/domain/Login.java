@@ -30,12 +30,12 @@ public class Login extends Login_Base {
     	}
     }
     
-    
+    /*
     @Override 
     public Long getToken() {
     	throw new AccessDeniedToGetTokenException();
     }
-    
+    */
     public boolean validateToken(Long token){
     	return super.getToken().equals(token);
     }

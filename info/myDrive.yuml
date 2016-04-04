@@ -1,4 +1,5 @@
 [Manager| Integer idCounter;]
+[Login| DateTime lastActivity; Long token;]
 [User| String username; String password; String name; String umask;]
 [File| Integer id; String name; String permissions; DateTime lastModified;]
 [User]^-[SuperUser]
@@ -17,6 +18,9 @@
 [Manager]1 manager - user *[User] // ManagerHasUsers
 [Manager]  - superUser 1[SuperUser] // ManagerHasSuperUser
 [Manager]1 manager - rootDirectory 1[RootDirectory] // ManagerHasRootDirectory
+[Manager]1 manager - login *[Login] // ManagerHasLogins
+[Login]  - currentUser 1[User] // LoginHasCurrentUser
+[Login]  - currentDir 1[Directory] // LoginHasCurrentDir
 [User]1 owner - file *[File] // UserHasFiles
 [User]0..1 homeOwner - home 1[Directory] // UserHasHome
 [File]* file - parent 1[Directory] // DirectoryContainsFiles
