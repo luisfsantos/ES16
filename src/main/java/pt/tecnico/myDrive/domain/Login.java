@@ -33,7 +33,9 @@ public class Login extends Login_Base {
     
     @Override 
     public Long getToken() {
-    	throw new AccessDeniedToGetTokenException();
+		//TODO
+    	//throw new AccessDeniedToGetTokenException();
+		return 1L;
     }
     
     public boolean validateToken(Long token){
