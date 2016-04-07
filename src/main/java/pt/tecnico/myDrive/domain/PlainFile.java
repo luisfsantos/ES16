@@ -31,13 +31,7 @@ public class PlainFile extends PlainFile_Base {
     }
 
     public File lookup(String path) throws IsNotDirOrLinkException{
-    	
-    	if (path.indexOf('/') == -1){
-    		return this;
-    	}
-    	else {
     		throw new IsNotDirOrLinkException(this.getName());
-    	}
     }
 
 	@Override
