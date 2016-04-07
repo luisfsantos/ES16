@@ -11,6 +11,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import pt.tecnico.myDrive.domain.Manager;
+import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.Link;
@@ -26,7 +27,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 	@Override
 	protected void populate() {
 		Manager m = Manager.getInstance();
-		
+		new User(m, "lads");
 		Login l = new Login("root", "***");
 		token = l.getToken();
 		
@@ -34,6 +35,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		new Directory("myhome", home);
 	}
 	
+	// 1
 	@Test
 	public void successNewDirectory() {
 		CreateFileService service = new CreateFileService(token, name, "dir", null);
@@ -42,6 +44,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		assertThat(home.getFileByName(name), instanceOf(Directory.class));
 	}
 	
+	// 2
 	@Test
 	public void successNewPlainFile() {
 		CreateFileService service = new CreateFileService(token, name, "plain", null);
@@ -50,6 +53,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		assertThat(home.getFileByName(name), instanceOf(PlainFile.class));
 	}
 	
+	// 3
 	@Test
 	public void successNewApp() {
 		CreateFileService service = new CreateFileService(token, name, "app", null);
@@ -58,24 +62,29 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		assertThat(home.getFileByName(name), instanceOf(App.class));
 	}
 	
+	// 4
 	@Test
 	public void successNewLink() {
-		CreateFileService service = new CreateFileService(token, name, "link", null);
+		CreateFileService service = new CreateFileService(token, name, "link", "/home");
 		service.execute();
 		assertEquals("Link not created" , true, home.hasFile(name));
 		assertThat(home.getFileByName(name), instanceOf(Link.class));
 	}
 
+	// 5
 	@Test(expected = MyDriveException.class) //TODO will depend on actual exception for wrong file type
 	public void noFileType() {
 		CreateFileService service = new CreateFileService(token, name, null, null);
 		service.execute();
 	}
 	
+	// 7
 	@Test(expected = MyDriveException.class) //TODO will depend on actual exception for wrong file type
-	public void noSession() {
-		final long noSessionToken = new BigInteger(64, new Random()).longValue();
-		CreateFileService service = new CreateFileService(noSessionToken, name, "dir", null);
+	public void noPermission() {
+		Login l = new Login("lads", "lads");
+		Long ladsToken = l.getToken();
+		l.setCurrentDir(home);
+		CreateFileService service = new CreateFileService(ladsToken, name, "dir", null);
 		service.execute();
 	}
 }
