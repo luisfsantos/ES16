@@ -60,6 +60,7 @@ public abstract class File extends File_Base {
 		}
 	}
 
+	public abstract String read(User user);
 
 	@Override
 	public void setPermissions(String permission) throws InvalidPermissionException {
