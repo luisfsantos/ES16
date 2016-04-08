@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.jdom2.Element;
+import org.joda.time.DateTime;
 
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
@@ -39,6 +40,12 @@ public class PlainFile extends PlainFile_Base {
     @Override
     public String getContent(){
     	throw new AccessDeniedException("read", super.getName());
+    }
+    
+    @Override
+    public void setContent(String content){
+    	super.setContent(content);
+    	this.setLastModified(new DateTime());
     }
     
     public String read(User user) {

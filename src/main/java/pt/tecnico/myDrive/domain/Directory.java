@@ -1,6 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import org.joda.time.DateTime;
+
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
@@ -87,6 +89,12 @@ public class Directory extends Directory_Base {
 		homeOwner.setHome(this);
 	}
 	
+	@Override 
+	public void addFile(File file){
+		super.addFile(file);
+		this.setLastModified(new DateTime());
+	}
+	
 	@Override
 	public void addLogin(Login login){
 		throw new AccessDeniedToManipulateLoginException();
@@ -106,7 +114,6 @@ public class Directory extends Directory_Base {
 					f.remove();
 				}
 			}
-			
 			super.remove();
 		}
 		else{ 

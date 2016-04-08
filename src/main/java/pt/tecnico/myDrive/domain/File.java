@@ -45,11 +45,13 @@ public abstract class File extends File_Base {
 		super.setName(name);
 		this.setLastModified(new DateTime());	
 	}
-	
-	protected void removeOwner(){
-		super.setOwner(null);
-	}
 
+	
+	@Override
+	public void setParent(Directory parent){
+		parent.addFile(this);
+	}
+	
 
 	@Override
 	public void setOwner(User user) {
@@ -69,6 +71,7 @@ public abstract class File extends File_Base {
 		if (!isPermissionString)
 			throw new InvalidPermissionException(permission);
 		super.setPermissions(permission);
+		this.setLastModified(new DateTime());
 	}
 
 	public String getAbsolutePath() {
@@ -135,8 +138,8 @@ public abstract class File extends File_Base {
 	}
 
 	public void remove(){
-		setParent(null);
-		removeOwner();
+		super.setParent(null);
+		super.setOwner(null);
 		deleteDomainObject();
 	}
 	
