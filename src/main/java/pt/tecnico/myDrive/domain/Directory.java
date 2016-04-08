@@ -88,6 +88,16 @@ public class Directory extends Directory_Base {
 	}
 	
 	@Override
+	public void addLogin(Login login){
+		throw new AccessDeniedToManipulateLoginException();
+	}
+	
+	@Override
+	public Set <Login> getLoginSet(){
+		throw new AccessDeniedToManipulateLoginException();
+	}
+	
+	@Override
 	public void remove() throws IsHomeDirectoryException {
 		
 		if (this.getHomeOwner() == null) {

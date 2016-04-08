@@ -4,6 +4,7 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class User extends User_Base {
@@ -118,8 +119,18 @@ public class User extends User_Base {
 	}
 	
 	@Override
+	public void addLogin(Login login){
+		throw new AccessDeniedToManipulateLoginException();
+	}
+	
+	@Override
 	public String getPassword() {
 		throw new AccessDeniedToGetPasswordException();
+	}
+	
+	@Override
+	public Set <Login> getLoginSet(){
+		throw new AccessDeniedToManipulateLoginException();
 	}
 	
 	
