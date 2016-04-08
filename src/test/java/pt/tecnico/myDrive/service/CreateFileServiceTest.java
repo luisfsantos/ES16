@@ -17,21 +17,26 @@ import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.InvalidFileNameException;
+import pt.tecnico.myDrive.exception.IsNotJavaFullyQualifiedNameException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class CreateFileServiceTest extends AbstractServiceTest {
 	private Long rootToken;
 	private Directory home;
+	private Directory rootHome;
 	private String name = "newFile";
+	private User root;
 	@Override
 	protected void populate() {
 		Manager m = Manager.getInstance();
 		new User(m, "lads");
 		Login l = new Login("root", "***");
+		root = l.getCurrentUser();
 		rootToken = l.getToken();
 		
 		home = (Directory) m.getRootDirectory().getFileByName("home");
-		new Directory("myhome", home);
+		rootHome = (Directory) home.getFileByName("root");
+		new Directory("myhome", rootHome);
 	}
 	
 	// 1
@@ -39,8 +44,8 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 	public void successNewDirectory() {
 		CreateFileService service = new CreateFileService(rootToken, name, "dir", null);
 		service.execute();
-		assertEquals("Directory not created" , true, home.hasFile(name));
-		assertThat(home.getFileByName(name), instanceOf(Directory.class));
+		assertEquals("Directory not created" , true, rootHome.hasFile(name));
+		assertThat(rootHome.getFileByName(name), instanceOf(Directory.class));
 	}
 	
 	// 2
@@ -48,8 +53,8 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 	public void successNewPlainFile() {
 		CreateFileService service = new CreateFileService(rootToken, name, "plain", null);
 		service.execute();
-		assertEquals("Plain File not created" , true, home.hasFile(name));
-		assertThat(home.getFileByName(name), instanceOf(PlainFile.class));
+		assertEquals("Plain File not created" , true, rootHome.hasFile(name));
+		assertThat(rootHome.getFileByName(name), instanceOf(PlainFile.class));
 	}
 	
 	// 3
@@ -57,8 +62,8 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 	public void successNewApp() {
 		CreateFileService service = new CreateFileService(rootToken, name, "app", null);
 		service.execute();
-		assertEquals("App not created" , true, home.hasFile(name));
-		assertThat(home.getFileByName(name), instanceOf(App.class));
+		assertEquals("App not created" , true, rootHome.hasFile(name));
+		assertThat(rootHome.getFileByName(name), instanceOf(App.class));
 	}
 	
 	// 4
@@ -66,8 +71,8 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 	public void successNewLink() {
 		CreateFileService service = new CreateFileService(rootToken, name, "link", "/home");
 		service.execute();
-		assertEquals("Link not created" , true, home.hasFile(name));
-		assertThat(home.getFileByName(name), instanceOf(Link.class));
+		assertEquals("Link not created" , true, rootHome.hasFile(name));
+		assertThat(rootHome.getFileByName(name), instanceOf(Link.class));
 	}
 
 	// 5
@@ -154,27 +159,76 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 	// 17
 	@Test
 	public void largestName() {
-		final String largeName = "8aSeWJuGBGfj8iyoW6sVDGlZnnqUUaHncp1HJv0I7fwMe483wepNeJR0A26K42yqzq1XpO3w2tM1ZZ8TN8rsnkNgnYTPwFDJlzEBqhnrIMY4FTfOhBDE4vhqInIPiAV1Er4xOHA4q45c9R6j411Ojt4wXPlm2RKKQaibLKrmmZUst0CrvUmBPvxpTu9vQnZ93YBChUU8scUWoZTYfKhpaXoo0gvbPoW4UuE5l049Ohuc0lkx5bKD3aSlz5sDTkzJNCMmBGXKHQGrsRMLojk5jis1rbXgDWIeQi42VGYPBsyPfRDMqhXkagBQLA7EhSaBO3yWeh8seG1qX7X1WquBYobluNZMoBSzz6saxBjwCWVheFejejJaBVcFVEWwPhHjrjtlPUEv5zaK7fj7qkAcEjWsB3XUmstUCaLuM8vzaGJTP0E3s1aC4u8nuw1yFKpBCqmlYCyvFxDVSy3sPvp8DOBjbq1GIHCtWl7XHsgyiaMYif5Qc00LZ0JyRxYLyvC8a9zE5loGLsuelry7cjle1fuJyI3PPAV8FIoujQufeN6q9WWrS5cu9xEfBcPhBlLtmrCjmcna1e2tc6xQ7szJTq6Ckvlc0xaGLBKUCx4VGljiSPrpgchwaIi011THafV9qbll4MACqESWmPfGxb7U3avong2UAK0SU6P1uayTNcaJzpGfn54nhnFfTBEYAF3q4A9aHEzoYzpe5uTwWzaQbvBO4f8ccogn8t4SIYo9EFOACNAUNiAUXashTRfGLoUXIeqg8GKAhUwUG4aMoyQTrOWx3tsEs9xIv8Py0muDlKVvVOt6kHa6ERL0zUmSIKeoDyE7EoayLhnCiqMrl9e1KKCxkYIfKXVsTaXkH1cu407WqOlburrQqM4JaNbDMEK8u0i8ilZVTLSXWMV5bEOYipMcjvjOFrs6zzyOyDWJbXQhvmhmbHUW2VDC8hyJ1qR8UWLeBrbaLEBxxLj938GYX9mwHRYKws9M7TugjxkNaclvhgxip7KsB9cE3HGaAKvh";
+		final String largeName = "PzSMsyGKBUrvsDTcAiQcfCmnuxhbRvmIjrlPenASYECmvvWRvVzuePazCnVlDXjHbilmjDvwRuXKnCWouRvSsjFleEHLzZiSDWNeObLwTjbLUGajEUbDiAhnqeDPWlYQaWlNMjtSgqopTfSPoNirhxzahJyZczRCKOScjFYwcoThEwZksyuYtONWlfOAgUOfsxiEWwTRETzhxOblTxJkTwIKGHZBeWxTnLPXUsiYAVZNSyMCeitBWXpwBpsXprHLyDeaCXZGvETZYNHjfRmlkakVUTrROhlHXKslpLGmPIyIRcfgCHGkGKRZWamMZhvInEqnkYeUVtGVmhItvKJAgDssEUMoVENzaZEojCYxuLylMRIDcCjfPzeIwnMwsCLCIuCWAIJRwewlmrDiYaMjQUQzwiECPSiqBlZniXIQNHefgEfDMosFIinBSAFGuOBnNcFEZwEBoAPIEwskAYosmEBFpkmKrLqIutIfOffDmafPhLKngkLrNSDMSpcKgeLVeUFpUhhtojNBHUDtmiBsFysuzZhTmNhDAVQWmTuLGcYvnDAMxpaQhPuAqRyqhTwVNnUSKzIByApbjAHEzgFBhBexljDDIWfIWOmlJuiDSEvQNyzawODwfPGPpEoMUmVRFwOPltTfQMeLzoqveuqwwqMkwzNqfGXZHaJAcrgFmwBRFWyOFqQbvQKsKEZmmvybTaaESpXvDMnHeWBjYfkQYIeArZQebLTZKbsxxqNNkHpCHDRCBYFNBWeZLDOmbDFvkeDVCZjJsgixaZSZmGQIVUzpSehLnPwnMqUWIDiMxJLszSqibowDDGiLYJWmloTPYbnIICYeFiKnKHAhvUweNyiSiTWrmeHFIYoIRycimLilwRsfmqNSlzjEollkSoyjNfOHgsQNzRJsSAcwJSqqFvuYfaBgbqGvOSWRnhCTLnglgyGEhEqXrCUqiDMnzZyfaYUfosTNVHjhIRZVCrnTNjplcUUcfsQvxroPpPZnRLQTqEhlVlsFm";
 		CreateFileService service = new CreateFileService(rootToken, largeName, "dir", null);
 		service.execute();
-		assertEquals("File with 1024 characters not created" , true, home.hasFile(largeName));
-		assertThat(home.getFileByName(largeName), instanceOf(Directory.class));
+		assertEquals("File with full path 1024 (11 + 1013) characters not created" , true, rootHome.hasFile(largeName));
+		assertThat(rootHome.getFileByName(largeName), instanceOf(Directory.class));
 		
 	}
 	
 	// 18
 	@Test (expected = InvalidFileNameException.class)
 	public void nameTooLarge() {
-		final String largeName = "a8aSeWJuGBGfj8iyoW6sVDGlZnnqUUaHncp1HJv0I7fwMe483wepNeJR0A26K42yqzq1XpO3w2tM1ZZ8TN8rsnkNgnYTPwFDJlzEBqhnrIMY4FTfOhBDE4vhqInIPiAV1Er4xOHA4q45c9R6j411Ojt4wXPlm2RKKQaibLKrmmZUst0CrvUmBPvxpTu9vQnZ93YBChUU8scUWoZTYfKhpaXoo0gvbPoW4UuE5l049Ohuc0lkx5bKD3aSlz5sDTkzJNCMmBGXKHQGrsRMLojk5jis1rbXgDWIeQi42VGYPBsyPfRDMqhXkagBQLA7EhSaBO3yWeh8seG1qX7X1WquBYobluNZMoBSzz6saxBjwCWVheFejejJaBVcFVEWwPhHjrjtlPUEv5zaK7fj7qkAcEjWsB3XUmstUCaLuM8vzaGJTP0E3s1aC4u8nuw1yFKpBCqmlYCyvFxDVSy3sPvp8DOBjbq1GIHCtWl7XHsgyiaMYif5Qc00LZ0JyRxYLyvC8a9zE5loGLsuelry7cjle1fuJyI3PPAV8FIoujQufeN6q9WWrS5cu9xEfBcPhBlLtmrCjmcna1e2tc6xQ7szJTq6Ckvlc0xaGLBKUCx4VGljiSPrpgchwaIi011THafV9qbll4MACqESWmPfGxb7U3avong2UAK0SU6P1uayTNcaJzpGfn54nhnFfTBEYAF3q4A9aHEzoYzpe5uTwWzaQbvBO4f8ccogn8t4SIYo9EFOACNAUNiAUXashTRfGLoUXIeqg8GKAhUwUG4aMoyQTrOWx3tsEs9xIv8Py0muDlKVvVOt6kHa6ERL0zUmSIKeoDyE7EoayLhnCiqMrl9e1KKCxkYIfKXVsTaXkH1cu407WqOlburrQqM4JaNbDMEK8u0i8ilZVTLSXWMV5bEOYipMcjvjOFrs6zzyOyDWJbXQhvmhmbHUW2VDC8hyJ1qR8UWLeBrbaLEBxxLj938GYX9mwHRYKws9M7TugjxkNaclvhgxip7KsB9cE3HGaAKvh";
+		final String largeName = "aPzSMsyGKBUrvsDTcAiQcfCmnuxhbRvmIjrlPenASYECmvvWRvVzuePazCnVlDXjHbilmjDvwRuXKnCWouRvSsjFleEHLzZiSDWNeObLwTjbLUGajEUbDiAhnqeDPWlYQaWlNMjtSgqopTfSPoNirhxzahJyZczRCKOScjFYwcoThEwZksyuYtONWlfOAgUOfsxiEWwTRETzhxOblTxJkTwIKGHZBeWxTnLPXUsiYAVZNSyMCeitBWXpwBpsXprHLyDeaCXZGvETZYNHjfRmlkakVUTrROhlHXKslpLGmPIyIRcfgCHGkGKRZWamMZhvInEqnkYeUVtGVmhItvKJAgDssEUMoVENzaZEojCYxuLylMRIDcCjfPzeIwnMwsCLCIuCWAIJRwewlmrDiYaMjQUQzwiECPSiqBlZniXIQNHefgEfDMosFIinBSAFGuOBnNcFEZwEBoAPIEwskAYosmEBFpkmKrLqIutIfOffDmafPhLKngkLrNSDMSpcKgeLVeUFpUhhtojNBHUDtmiBsFysuzZhTmNhDAVQWmTuLGcYvnDAMxpaQhPuAqRyqhTwVNnUSKzIByApbjAHEzgFBhBexljDDIWfIWOmlJuiDSEvQNyzawODwfPGPpEoMUmVRFwOPltTfQMeLzoqveuqwwqMkwzNqfGXZHaJAcrgFmwBRFWyOFqQbvQKsKEZmmvybTaaESpXvDMnHeWBjYfkQYIeArZQebLTZKbsxxqNNkHpCHDRCBYFNBWeZLDOmbDFvkeDVCZjJsgixaZSZmGQIVUzpSehLnPwnMqUWIDiMxJLszSqibowDDGiLYJWmloTPYbnIICYeFiKnKHAhvUweNyiSiTWrmeHFIYoIRycimLilwRsfmqNSlzjEollkSoyjNfOHgsQNzRJsSAcwJSqqFvuYfaBgbqGvOSWRnhCTLnglgyGEhEqXrCUqiDMnzZyfaYUfosTNVHjhIRZVCrnTNjplcUUcfsQvxroPpPZnRLQTqEhlVlsFm";
 		CreateFileService service = new CreateFileService(rootToken, largeName, "dir", null);
 		service.execute();
 	}
 	
-	// 18
+	// 19
 	@Test (expected = MyDriveException.class) //TODO give right exception
 	public void contentInDirectoryCreation() {
 		final String content = "foo";
 		CreateFileService service = new CreateFileService(rootToken, name, "dir", content);
+		service.execute();
+	}
+	
+	// 20
+	@Test
+	public void contentInPlainFileCreation() {
+		final String content = "foo";
+		CreateFileService service = new CreateFileService(rootToken, name, "plain", content);
+		service.execute();
+		assertEquals("Plain File not created" , true, rootHome.hasFile(name));
+		assertThat(rootHome.getFileByName(name), instanceOf(PlainFile.class));
+		assertEquals("Content differs from input", content, rootHome.getFileByName(name).read(root));
+	}
+	
+	// 21
+	@Test (expected = IsNotJavaFullyQualifiedNameException.class)
+	public void invalidContentApp() {
+		final String content = "foo";
+		CreateFileService service = new CreateFileService(rootToken, name, "app", content);
+		service.execute();
+	}
+	
+	// 22
+	@Test
+	public void fullyQualifiedNameInApp() {
+		final String content = "pt.tecnico.myDrive.Apps.print(String[] output)";
+		CreateFileService service = new CreateFileService(rootToken, name, "app", content);
+		service.execute();
+		assertEquals("App not created" , true, rootHome.hasFile(name));
+		assertThat(rootHome.getFileByName(name), instanceOf(App.class));
+		assertEquals("Content differs from input", content, rootHome.getFileByName(name).read(root));
+	}
+	
+	// 23
+	@Test
+	public void fullyQualifiedNameInAppToMain() {
+		final String content = "pt.tecnico.myDrive.Apps";
+		CreateFileService service = new CreateFileService(rootToken, name, "app", content);
+		service.execute();
+		assertEquals("App not created" , true, rootHome.hasFile(name));
+		assertThat(rootHome.getFileByName(name), instanceOf(App.class));
+		assertEquals("Content differs from input", content, rootHome.getFileByName(name).read(root));
+	}
+	
+	// 24
+	@Test (expected = IsNotJavaFullyQualifiedNameException.class)
+	public void notJavaFullyQualifiedNameApp() {
+		final String content = "pt.tecnico.myDrive..";
+		CreateFileService service = new CreateFileService(rootToken, name, "app", content);
 		service.execute();
 	}
 		
