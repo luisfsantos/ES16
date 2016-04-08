@@ -5,7 +5,7 @@ import java.util.Random;
 
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.AccessDeniedToGetTokenException;
+import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
 import pt.tecnico.myDrive.exception.InvalidUsernameOrPasswordException;
 
 public class Login extends Login_Base {
@@ -16,10 +16,10 @@ public class Login extends Login_Base {
     	// TODO remove inactive sessions
     	Long token = new BigInteger(64, new Random()).longValue();
     	// TODO verify if token already exists
-    	this.setToken(token);
+    	super.setToken(token);
     	this.setLastActivity(new DateTime());
-    	this.setManager(Manager.getInstance());
-    	this.setCurrentUser(Manager.getInstance().getUserByUsername(username));
+    	super.setManager(Manager.getInstance());
+    	super.setCurrentUser(Manager.getInstance().getUserByUsername(username));
     	this.setCurrentDir(Manager.getInstance().getUserByUsername(username).getHome());
     }
     
@@ -31,13 +31,23 @@ public class Login extends Login_Base {
     }
     
     
-    @Override 
-    public Long getToken() {
-    	throw new AccessDeniedToGetTokenException();
-    }
-    
     public boolean validateToken(Long token){
     	return super.getToken().equals(token);
+    }
+    
+    @Override
+    public void setToken(Long token){
+    	throw new AccessDeniedToManipulateLoginException();
+    }
+    
+    @Override
+    public void setManager(Manager manager){
+    	throw new AccessDeniedToManipulateLoginException();
+    }
+    
+    @Override
+    public void setCurrentUser(User user){
+    	throw new AccessDeniedToManipulateLoginException();
     }
     
 }
