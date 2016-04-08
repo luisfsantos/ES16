@@ -15,7 +15,9 @@ public class Login extends Login_Base {
         this.validateAccount(username, password);
     	Manager.getInstance().removeInactiveLogins();
     	Long token = new BigInteger(64, new Random()).longValue();
-    	// TODO verify if token already exists
+    	while (Manager.getInstance().tokenAlreadyExist(token)){
+    		token = new BigInteger(64, new Random()).longValue();
+    	}
     	super.setToken(token);
     	this.setLastActivity(new DateTime());
     	super.setManager(Manager.getInstance());

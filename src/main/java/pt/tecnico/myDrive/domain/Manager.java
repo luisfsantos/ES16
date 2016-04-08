@@ -75,6 +75,15 @@ public class Manager extends Manager_Base {
 			} 
     	}
     }
+    
+    public boolean tokenAlreadyExist(Long token){
+    	for (Login login: super.getLoginSet()){
+    		if (login.validateToken(token)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 	
 
 	public User getUserByUsername(String username) {
