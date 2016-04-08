@@ -7,7 +7,7 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.exception.AccessDeniedToGetLoginSetException;
+import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidIdCounter;
@@ -99,7 +99,7 @@ public class Manager extends Manager_Base {
     
     @Override
     public Set <Login> getLoginSet() {
-    	throw new AccessDeniedToGetLoginSetException();
+    	throw new AccessDeniedToManipulateLoginException();
     }
     
  
