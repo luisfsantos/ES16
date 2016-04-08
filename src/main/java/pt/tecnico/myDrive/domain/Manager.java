@@ -66,6 +66,15 @@ public class Manager extends Manager_Base {
     	}
     	throw new InvalidTokenException();
     }
+    
+    public void removeInactiveLogins() {
+    	DateTime now = new DateTime();
+    	for (Login login: super.getLoginSet()) {
+			if (login.getLastActivity().isBefore(now.minusHours(2))){
+				login.remove();
+			} 
+    	}
+    }
 	
 
 	public User getUserByUsername(String username) {

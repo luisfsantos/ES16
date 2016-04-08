@@ -13,7 +13,7 @@ public class Login extends Login_Base {
 	
     public Login(String username, String password) {
         this.validateAccount(username, password);
-    	// TODO remove inactive sessions
+    	Manager.getInstance().removeInactiveLogins();
     	Long token = new BigInteger(64, new Random()).longValue();
     	// TODO verify if token already exists
     	super.setToken(token);
@@ -49,5 +49,12 @@ public class Login extends Login_Base {
     public void setCurrentUser(User user){
     	throw new AccessDeniedToManipulateLoginException();
     }
+    
+    public void remove(){
+		super.setManager(null);
+		super.setCurrentUser(null);
+		super.setCurrentDir(null);
+		deleteDomainObject();
+	}
     
 }

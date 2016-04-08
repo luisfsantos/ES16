@@ -68,8 +68,15 @@ public class Main {
     	log.trace("-------Login------");
     	log.trace("currUser = " + login.getCurrentUser().getName());
     	log.trace("currDir = " + login.getCurrentDir().getName());
-    	log.trace("token = " + login.validateToken(new Long(11122)) );
+    	log.trace("token = " + login.getToken() );
     	log.trace("password of David = " + user1.validatePassword("DAVID"));
+    	login.setLastActivity(login.getLastActivity().minusHours(3));
+    	
+    	new User(Manager.getInstance(), "ddd");
+    	Login login2 = new Login("ddd", "ddd");
+    	log.trace("token2 = " + login2.getToken());
+    	Manager.getInstance().removeInactiveLogins();
+    	
     	
 
     	dir1.remove();
