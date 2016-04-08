@@ -47,7 +47,6 @@ public abstract class File extends File_Base {
 	}
 	
 	protected void removeOwner(){
-		getOwner().setHome(null);
 		super.setOwner(null);
 	}
 
@@ -61,6 +60,7 @@ public abstract class File extends File_Base {
 		}
 	}
 
+	public abstract String read(User user);
 
 	@Override
 	public void setPermissions(String permission) throws InvalidPermissionException {

@@ -24,6 +24,11 @@ public class Directory extends Directory_Base {
 	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
 		this.xmlImport(manager, dirNode);
 	}
+	
+	@Override
+	public Set<File> getFile() {
+		throw new AccessDeniedException("read", super.getName());
+	}
 
 	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
 		if (name.equals("."))
@@ -83,48 +88,42 @@ public class Directory extends Directory_Base {
 	}
 	
 	@Override
-	public Element xmlExport() {
-		Element dirElement = super.xmlExport();
-		dirElement.setName("dir");
-		return dirElement;
-	}
-	
-	@Override
-	protected void xmlExport(Element myDrive) {
-		if (!getFileSet().isEmpty()) {
-			for(File f: getFileSet()) {
-				if (f.getId() > 2)
-					myDrive.addContent(f.xmlExport());	
-			}
-			for(File f: getFileSet()) {
-				if (f!=this)
-					f.xmlExport(myDrive);
-			}
-		}	
-	}
-	
-	@Override
-	public void remove() throws NotEmptyDirectoryException {
+	public void remove() throws IsHomeDirectoryException {
 		
-		if (this.getFileSet().size() == 0){ 
+		if (this.getHomeOwner() == null) {
+			if(!this.getFileSet().isEmpty()) { 
+				for(File f: this.getFileSet()){
+					f.remove();
+				}
+			}
+			
 			super.remove();
 		}
 		else{ 
-			throw new NotEmptyDirectoryException(this.getName());
+			throw new IsHomeDirectoryException(this.getName());
 		}
 	}
 	
+	@Override
+	public String read(User user) {
+		throw new CannotReadException("A directory cannot be read");
+	}
 
-	public List<File> getOrderByNameFileList() {
-		List<File> files = new ArrayList<File>(getFileSet());
+	public List<File> getOrderByNameFileList(User user) {
+		if (user.hasPermission(this, Mask.READ)) {
+			List<File> files = new ArrayList<File>(super.getFileSet());
 
-		Collections.sort(files, new Comparator<File>() {
-			public int compare(File f1, File f2) {
-				return f1.getName().compareToIgnoreCase(f2.getName());
-			}
-		});
+			Collections.sort(files, new Comparator<File>() {
+				public int compare(File f1, File f2) {
+					return f1.getName().compareToIgnoreCase(f2.getName());
+				}
+			});
 
-		return files;
+			return files;
+		} else {
+			throw new AccessDeniedException("list directory contents", super.getName());
+		}
+		
 	}
 
 	protected Directory createPath(User owner, String path) {
@@ -152,6 +151,27 @@ public class Directory extends Directory_Base {
 			nextDir = new Directory(dirName,  owner, dir);
 			return createPath(owner, nextPath, nextDir);
 		}
+	}
+	
+	@Override
+	public Element xmlExport() {
+		Element dirElement = super.xmlExport();
+		dirElement.setName("dir");
+		return dirElement;
+	}
+	
+	@Override
+	protected void xmlExport(Element myDrive) {
+		if (!getFileSet().isEmpty()) {
+			for(File f: getFileSet()) {
+				if (f.getId() > 2)
+					myDrive.addContent(f.xmlExport());	
+			}
+			for(File f: getFileSet()) {
+				if (f!=this)
+					f.xmlExport(myDrive);
+			}
+		}	
 	}
 }
 
