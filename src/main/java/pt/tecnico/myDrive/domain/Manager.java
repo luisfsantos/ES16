@@ -7,7 +7,7 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.exception.AccessDeniedToGetLoginSetException;
+import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidIdCounter;
@@ -66,6 +66,24 @@ public class Manager extends Manager_Base {
     	}
     	throw new InvalidTokenException();
     }
+    
+    public void removeInactiveLogins() {
+    	DateTime now = new DateTime();
+    	for (Login login: super.getLoginSet()) {
+			if (login.getLastActivity().isBefore(now.minusHours(2))){
+				login.remove();
+			} 
+    	}
+    }
+    
+    public boolean tokenAlreadyExist(Long token){
+    	for (Login login: super.getLoginSet()){
+    		if (login.validateToken(token)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 	
 
 	public User getUserByUsername(String username) {
@@ -99,7 +117,7 @@ public class Manager extends Manager_Base {
     
     @Override
     public Set <Login> getLoginSet() {
-    	throw new AccessDeniedToGetLoginSetException();
+    	throw new AccessDeniedToManipulateLoginException();
     }
     
  

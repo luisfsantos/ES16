@@ -85,14 +85,18 @@ relation ManagerHasLogins {
 
 
 relation LoginHasCurrentUser {
-	Login playsRole;
+	Login playsRole login {
+	multiplicity *;
+	}
 	User playsRole currentUser {
 	multiplicity 1;
 	} 
 }
 
 relation LoginHasCurrentDir {
-	Login playsRole;
+	Login playsRole login {
+	multiplicity *;
+	}
 	Directory playsRole currentDir {
 	multiplicity 1;
 	} 
