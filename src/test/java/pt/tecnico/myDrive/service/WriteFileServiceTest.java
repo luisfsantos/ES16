@@ -18,16 +18,18 @@ import pt.tecnico.myDrive.exception.InvalidPermissionException;
 public class WriteFileServiceTest extends AbstractServiceTest {
 	
 	private long token;
-	private Directory home;	
-	
+	private Directory home;
+
 	@Override
 	protected void populate() {
 		Manager manager = Manager.getInstance();
-		
+		Directory rootDir = manager.getRootDirectory();
+		home = (Directory) rootDir.lookup("home");
+
 		Login l = new Login("root", "***");
+		l.setCurrentDir(home);
 		token = l.getToken();
-		home = (Directory) manager.getRootDirectory().getFileByName("home");
-				
+
 		new PlainFile("validplain", home ,"valid");
 		new App("validapp", home ,"pt.tecnico.myDrive.User");
 		new Link("validlink", home ,"/");
@@ -40,9 +42,9 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 		User usertest = new User(Manager.getInstance(), "usertest");
 		Login testLogin = new Login(usertest.getUsername(), usertest.getUsername());
 		testLogin.setCurrentDir(home);
-		long invalidtoken = testLogin.getToken();
+		long nopermtoken = testLogin.getToken();
 		
-		WriteFileService service = new WriteFileService(invalidtoken, "validplain", "");
+		WriteFileService service = new WriteFileService(nopermtoken, "validplain", "");
 		service.execute();	
 	}
 
@@ -65,28 +67,28 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 		WriteFileService service = new WriteFileService(token, "notexists", "/home");
 		service.execute();
 	}
-	
-	/*
+
 	@Test
 	public void successEmptyWritePlain(){
 		WriteFileService service = new WriteFileService(token, "validplain", "");
 		service.execute();
 		
-		PlainFile pfile = (PlainFile) home.getFileByName("validplain");
-		
+		PlainFile pfile = (PlainFile)home.lookup("validplain");
+
 		assertEquals("Empty write not executed", pfile.getContent(), "");
 	}
-	
+
+
 	@Test
 	public void successWritePlain(){
 		WriteFileService service = new WriteFileService(token, "validplain", "mydrive");
 		service.execute();
 		
-		PlainFile pfile = (PlainFile) home.getFileByName("validplain");
+		PlainFile pfile = (PlainFile)home.lookup("validplain");
 		
 		assertEquals("Write not executed", pfile.getContent(), "mydrive");
 	}
-	
+	/*
 	@Test
 	public void insuccessEmptyWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "");
