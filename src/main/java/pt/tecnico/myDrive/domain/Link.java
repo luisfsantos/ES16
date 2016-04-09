@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.CannotWriteException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -32,4 +33,9 @@ public class Link extends Link_Base {
 		
 		return linkElement;
 	}
+
+    @Override
+    public void write(User u, String content){
+        throw new CannotWriteException("Cannot write in a Link");
+    }
 }

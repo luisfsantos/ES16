@@ -52,7 +52,7 @@ public class PlainFile extends PlainFile_Base {
 		return plainElement;
 	}
 
-	
+	public void write(User u, String content){};
 }
 
 

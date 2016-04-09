@@ -159,6 +159,10 @@ public class Directory extends Directory_Base {
 			return createPath(owner, nextPath, nextDir);
 		}
 	}
+
+	public void write(User u, String content){
+		throw new CannotWriteException("Cannot write in a Directory");
+	}
 }
 
 
