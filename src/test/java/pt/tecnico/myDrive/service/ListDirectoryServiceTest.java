@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 
-public class ListDirectoryTest extends AbstractServiceTest{
+public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 
 	private Login login;
 
@@ -84,19 +84,4 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		assertEquals("Dimension of first element is 2",2,result.get(0).getDimension());
 		assertEquals("Username of first element is Thor","Thor",result.get(0).getUsername());
 	}
-
-
-
-	/*This should be for all tests
-
-    @Test(expected = ExpiredTokenException.class) 
-    public void invalidListDirectoryWithWrongPathToken() {
-        final int token = 100;
-        final String path = "/home";
-        ListDirectoryService service = new ListDirectoryService(login.getToken());
-        service.execute();
-    }
-    */
-
-
 }
