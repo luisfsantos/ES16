@@ -6,10 +6,10 @@ import java.util.Random;
 import org.junit.Test;
 
 import pt.tecnico.myDrive.domain.*;
-import pt.tecnico.myDrive.exception.CannotSetContentToLinkException;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.InvalidContentException;
 import pt.tecnico.myDrive.exception.InvalidPermissionException;
+import pt.tecnico.myDrive.exception.InvalidSetContentException;
 
 import static org.junit.Assert.*;
 
@@ -102,9 +102,9 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 		WriteFileService service = new WriteFileService(token, "validapp", "");
 		service.execute();
 		
-		App appfile = (App) home.lookup("validapp");
-
-		assertNotEquals("Write executed successfully", appfile.getContent(), "");
+//		App appfile = (App) home.lookup("validapp");
+//
+//		assertNotEquals("Write executed successfully", appfile.getContent(), "");
 
 	}
 
@@ -114,9 +114,9 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 		WriteFileService service = new WriteFileService(token, "validapp", "pt..tecnico.myDrive.domain.App");
 		service.execute();
 		
-		App appfile = (App) home.lookup("validapp");
-		
-		assertNotEquals("Write executed successfully", appfile.getContent(), "pt..tecnico.myDrive.domain.App");
+//		App appfile = (App) home.lookup("validapp");
+//
+//		assertNotEquals("Write executed successfully", appfile.getContent(), "pt..tecnico.myDrive.domain.App");
 	
 	}
 
@@ -133,15 +133,23 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 	}
 
 	//TEST 10
-	@Test(expected=CannotSetContentToLinkException.class)
+	@Test(expected=InvalidSetContentException.class)
 	public void insuccessWriteLink(){
 		WriteFileService service = new WriteFileService(token, "validlink", "/home");
 		service.execute();
 		
-		Link linkfile = (Link) home.lookup("validlink");
-		
-		assertNotEquals("Write executed successfully", linkfile.getContent(), "/home");
+//		Link linkfile = (Link) home.lookup("validlink");
+//
+//		assertNotEquals("Write executed successfully", linkfile.getContent(), "/home");
 	
+	}
+
+	//TEST 11
+	@Test(expected=InvalidSetContentException.class)
+	public void insuccessWriteDir(){
+		WriteFileService service = new WriteFileService(token, "root", "/home");
+		service.execute();
+
 	}
 
 }

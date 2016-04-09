@@ -3,13 +3,13 @@ package pt.tecnico.myDrive.exception;
 /**
  * Created by david on 09-04-2016.
  */
-public class CannotSetContentToLinkException extends MyDriveException{
+public class InvalidSetContentException extends MyDriveException{
     private static final long serialVersionUID = 1L;
 
-    public CannotSetContentToLinkException(){}
+    public InvalidSetContentException(){}
 
     @Override
     public String getMessage() {
-        return "The content of a Link cannot be modified";
+        return "The content of a Directory or Link cannot be set";
     }
 }
