@@ -26,9 +26,7 @@ public class WriteFileService extends MyDriveService{
 
 		if (login.validateToken(token)){
 			File f = login.getCurrentDir().getFileByName(filename);
-			f.write(user,content);  //polymorph
+			f.write(user,content);
 		}
 	}
-}
-	
 }
