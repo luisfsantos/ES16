@@ -25,7 +25,7 @@ public class Directory extends Directory_Base {
 		this.xmlImport(manager, dirNode);
 	}
 
-	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
+	private File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
 		if (name.equals("."))
 			return this;
 		if (name.equals(".."))
