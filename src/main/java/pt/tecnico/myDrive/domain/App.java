@@ -40,7 +40,6 @@ public class App extends App_Base {
 
 	@Override
 	public void setContent(String content) {
-		System.out.println("YOOOOOOOOOOOOOOOOOOO:"+ content + "\n");
 
 		String[] reservedWords = {"import","true", "null"};
 
@@ -57,23 +56,16 @@ public class App extends App_Base {
 			}
 		}
 
-		if (content.equals("")){
-			System.out.println("HEYYYYYYYY\n");
-			isJavaFullyQualifiedName = false;
-		}
-
 		if (!isJavaFullyQualifiedName || containsReservedWords) {
 			throw new InvalidContentException(this.getName(),content);  //IsNotJavaFullyQualifiedNameException(content);
 		}
-
 		super.setContent(content);
 	}
 
 	@Override
 	public void write(User u, String content){
-		System.out.println("writing:" + content+"\n");
 		if (u.hasPermission(this, Mask.WRITE)) {
-			super.setContent(content);
+			setContent(content);
 		}
 		else {
 			throw new InvalidPermissionException("Write in App"); //not sure about argument

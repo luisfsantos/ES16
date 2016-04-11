@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 
 
 public class WriteFileServiceTest extends AbstractServiceTest {
-	
+
 	private long token;
 	private Directory home;
 
@@ -31,7 +31,7 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 		new PlainFile("validplain", home ,"valid");
 		new App("validapp", home ,"pt.tecnico.myDrive.domain.User");
 		new Link("validlink", home ,"/");
-		
+
 	}
 
 	//TEST 1
@@ -44,7 +44,7 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 		long nopermtoken = testLogin.getToken();
 		
 		WriteFileService service = new WriteFileService(nopermtoken, "validplain", "");
-		service.execute();	
+		service.execute();
 
 	}
 
@@ -95,7 +95,6 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 		assertEquals("Write not executed", pfile.getContent(), "mydrive");
 
 	}
-
 	//TEST 7
 	@Test(expected=InvalidContentException.class)
 	public void insuccessEmptyWriteApp(){
@@ -113,11 +112,11 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 	public void insuccessWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "pt..tecnico.myDrive.domain.App");
 		service.execute();
-		
+
 //		App appfile = (App) home.lookup("validapp");
 //
 //		assertNotEquals("Write executed successfully", appfile.getContent(), "pt..tecnico.myDrive.domain.App");
-	
+
 	}
 
 	//TEST 9
