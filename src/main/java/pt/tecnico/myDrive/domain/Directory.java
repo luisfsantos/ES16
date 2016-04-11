@@ -217,21 +217,5 @@ public class Directory extends Directory_Base {
 			}
 		}	
 	}
-
-	public String changeDirectory(Login login,String newDir){
-		User u = login.getCurrentUser();
-		File file = this.lookup(newDir, u);
-		if (file instanceof Directory) {
-			if (u.hasPermission(file, Mask.READ)) {
-				login.setCurrentDir((Directory) file);
-			} else {
-				throw new InvalidPermissionException("Read in Current Directory");
-			}
-		throw new IsNotDirOrLinkException(newDir);
-		}
-
-		return file.getName();
-	}
 }
-
 
