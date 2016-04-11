@@ -1,6 +1,7 @@
 package pt.tecnico.myDrive.service;
 
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ChangeDirectoryService extends TokenValidationService{
 
@@ -14,7 +15,8 @@ public class ChangeDirectoryService extends TokenValidationService{
         this.path = path;
     }
 
-    public final void dispatch() {
+    @Override
+    protected void dispatch() throws MyDriveException {
         Manager manager = Manager.getInstance();
         Login login = manager.getLoginByToken(token);
 
