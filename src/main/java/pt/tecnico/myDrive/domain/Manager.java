@@ -7,6 +7,7 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.FenixFramework;
+import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
@@ -85,14 +86,33 @@ public class Manager extends Manager_Base {
     	return false;
     }
 	
-
-	public User getUserByUsername(String username) {
-    	for (User user: this.getUserSet()) {
+    private User getUserByUsername(String username) {
+    	for (User user: super.getUserSet()) {
     		if (user.getUsername().equals(username))
     			return user;
     	}
     	return null;
     }
+    
+
+	public User fetchUser(String username, String password) {
+    	for (User user: super.getUserSet()) {
+    		if (user.getUsername().equals(username) && user.validatePassword(password))
+    			return user;
+    	}
+    	return null;
+    }
+	
+	public User fetchUser(Element fileNode) throws UnsupportedEncodingException {
+		String owner = fileNode.getChildText("owner");
+		if(owner != null) {
+			return getUserByUsername(new String(owner.getBytes("UTF-8")));
+			}
+		else {
+			return super.getSuperUser();
+		}
+    }
+	
     
     public boolean hasUser(String username) {
     	return this.getUserByUsername(username) != null;
@@ -120,6 +140,16 @@ public class Manager extends Manager_Base {
     	throw new AccessDeniedToManipulateLoginException();
     }
     
+    
+	@Override
+	public Set<User> getUserSet() {
+		throw new AccessDeniedException("get user set", "manager");
+	}
+	
+	@Override
+	public SuperUser getSuperUser() {
+		throw new AccessDeniedException("get Super User", "manager");
+	}
  
     
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
@@ -157,4 +187,6 @@ public class Manager extends Manager_Base {
         
         return doc;
     }
+
+
 }

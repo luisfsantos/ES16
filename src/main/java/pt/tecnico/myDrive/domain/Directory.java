@@ -54,34 +54,61 @@ public class Directory extends Directory_Base {
 		return true;
 	}
 
-	public File lookup(String path) {
-		String name;
+	public File lookup(String path, User user) {
+		if(path.length() < 1024) {
+			return lookup(path, user, 1024);
+		} else {
+			throw new PathTooBigException();
+		}
+	}
 
-		while(path.endsWith("/"))
-			path = path.substring(0, path.lastIndexOf('/'));
+	private File lookup(String path, User user, int psize) {
+		if(user.hasPermission(this, Mask.EXEC)) {
+			String name;
 
-		if(path.startsWith("/")) {
-			if(this != getParent()) {
-				return getParent().lookup(path);
-			} else {
-				while(path.startsWith("/"))
-					path = path.substring(1);
+			while (path.endsWith("/")) {
+				path = path.substring(0, path.lastIndexOf('/'));
+				psize--;
+				if(psize < 0 )
+					throw new PathTooBigException();
 			}
-		}
-		
-		if(path.indexOf('/') == -1) {
-			name = path;
-			return getFileByName(name);
-		}
 
-		name = path.substring(0, path.indexOf("/", 1));
-		path = path.substring(path.indexOf("/", 1) + 1);
-		while(path.startsWith("/"))
-			path = path.substring(1);
-		if(hasFile(name))
-			return this.getFileByName(name).lookup(path);
+			if (path.startsWith("/")) {
+				if (this != getParent()) {
+					return getParent().lookup(path, user);
+				} else {
+					while (path.startsWith("/")) {
+						path = path.substring(1);
+						psize--;
+						if(psize < 0 )
+							throw new PathTooBigException();
+					}
+				}
+			}
 
-		return null;
+			if (path.indexOf('/') == -1) {
+				name = path;
+				psize -= path.length();
+				if(psize < 0 )
+					throw new PathTooBigException();
+				return getFileByName(name);
+			}
+
+			name = path.substring(0, path.indexOf("/", 1));
+			path = path.substring(path.indexOf("/", 1) + 1);
+			psize -= (name.length() + 1);
+			while (path.startsWith("/"))
+				path = path.substring(1);
+				psize--;
+				if(psize < 0 )
+					throw new PathTooBigException();
+			if (hasFile(name))
+				return this.getFileByName(name).lookup(path, user);
+
+			return null;
+		} else {
+			throw new AccessDeniedException("search", getName());
+		}
 	}
 	
 	@Override

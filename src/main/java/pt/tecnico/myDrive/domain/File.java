@@ -118,14 +118,14 @@ public abstract class File extends File_Base {
 
 		setName(new String(name.getBytes("UTF-8")));
 
-		if(owner != null) {
-			User ownerUser = manager.getUserByUsername(new String(owner.getBytes("UTF-8")));
-			if (ownerUser == null) {
-				throw new UserDoesNotExistException(owner);
-			}
-			setOwner(ownerUser);
-			setId(ownerUser.getNextIdCounter());
+		
+		User ownerUser = manager.fetchUser(fileNode);
+		if (ownerUser == null) {
+			throw new UserDoesNotExistException(owner);
 		}
+		setOwner(ownerUser);
+		setId(ownerUser.getNextIdCounter());
+		
 
 		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
 		else setPermissions("rwxd----");
@@ -143,7 +143,7 @@ public abstract class File extends File_Base {
 		deleteDomainObject();
 	}
 	
-	public abstract File lookup(String path);
+	public abstract File lookup(String path, User user);
 
 }
 
