@@ -55,7 +55,11 @@ public class Directory extends Directory_Base {
 	}
 
 	public File lookup(String path, User user) {
-		return lookup(path, user, 1024);
+		if(path.length() < 1024) {
+			return lookup(path, user, 1024);
+		} else {
+			return null; //FIXME
+		}
 	}
 
 	private File lookup(String path, User user, int msize) {
