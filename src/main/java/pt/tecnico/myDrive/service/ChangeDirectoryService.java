@@ -20,18 +20,16 @@ public class ChangeDirectoryService extends TokenValidationService{
     @Override
     protected void dispatch() throws MyDriveException {
         super.dispatch();
-        if (session.validateToken(token)) {
-            Directory currentDir = session.getCurrentDir();
-            User u = session.getCurrentUser();
-            File newDir= currentDir.lookup(path, u);
 
-            if (newDir instanceof Directory) {
-                session.setCurrentDir((Directory) newDir);
-                result = newDir.getAbsolutePath();
-            }
-            else throw new  IsNotDirOrLinkException(path);
+        Directory currentDir = session.getCurrentDir();
+        User u = session.getCurrentUser();
+        File newDir= currentDir.lookup(path, u);
+
+        if (newDir instanceof Directory) {
+            session.setCurrentDir((Directory) newDir);
+            result = newDir.getAbsolutePath();
         }
-
+        else throw new  IsNotDirOrLinkException(path);
     }
 
     public final String result(){
