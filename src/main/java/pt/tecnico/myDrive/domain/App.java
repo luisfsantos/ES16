@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.InvalidContentException;
 import pt.tecnico.myDrive.exception.InvalidPermissionException;
 import pt.tecnico.myDrive.exception.IsNotJavaFullyQualifiedNameException;
 
@@ -39,6 +40,8 @@ public class App extends App_Base {
 
 	@Override
 	public void setContent(String content) {
+		System.out.println("YOOOOOOOOOOOOOOOOOOO:"+ content + "\n");
+
 		String[] reservedWords = {"import","true", "null"};
 
 		boolean isJavaFullyQualifiedName =
@@ -54,19 +57,26 @@ public class App extends App_Base {
 			}
 		}
 
+		if (content.equals("")){
+			System.out.println("HEYYYYYYYY\n");
+			isJavaFullyQualifiedName = false;
+		}
+
 		if (!isJavaFullyQualifiedName || containsReservedWords) {
-			throw new IsNotJavaFullyQualifiedNameException(content);
+			throw new InvalidContentException(this.getName(),content);  //IsNotJavaFullyQualifiedNameException(content);
 		}
 
 		super.setContent(content);
 	}
+
 	@Override
 	public void write(User u, String content){
+		System.out.println("writing:" + content+"\n");
 		if (u.hasPermission(this, Mask.WRITE)) {
 			super.setContent(content);
 		}
 		else {
-			throw new InvalidPermissionException("Write"); //not sure about argument
+			throw new InvalidPermissionException("Write in App"); //not sure about argument
 		}
 	}
 }

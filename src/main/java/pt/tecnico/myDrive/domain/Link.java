@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.CannotWriteException;
+import pt.tecnico.myDrive.exception.InvalidSetContentException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -36,6 +37,6 @@ public class Link extends Link_Base {
 
     @Override
     public void write(User u, String content){
-        throw new CannotWriteException("Cannot write in a Link");
+        throw new InvalidSetContentException();
     }
 }

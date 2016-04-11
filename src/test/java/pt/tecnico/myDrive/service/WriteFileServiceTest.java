@@ -101,7 +101,7 @@ public class WriteFileServiceTest extends AbstractServiceTest {
 	public void insuccessEmptyWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "");
 		service.execute();
-		
+
 //		App appfile = (App) home.lookup("validapp");
 //
 //		assertNotEquals("Write executed successfully", appfile.getContent(), "");

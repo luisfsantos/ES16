@@ -25,7 +25,7 @@ public class WriteFileService extends MyDriveService{
 		User user = login.getCurrentUser();
 
 		if (login.validateToken(token)){
-			File f = login.getCurrentDir().getFileByName(filename);
+			File f = login.getCurrentDir().lookup(filename);
 			f.write(user,content);
 		}
 	}
