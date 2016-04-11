@@ -149,11 +149,13 @@ public class Manager extends Manager_Base {
 		throw new AccessDeniedException("get user set", "Manager");
 	}
 	
+	/*
+	 FIXME 
 	@Override
 	public SuperUser getSuperUser() {
 		throw new AccessDeniedException("get Super User", "Manager");
 	}
- 
+ 	*/
     
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
 		for(Element userNode : myDriveElement.getChildren("user")) {
