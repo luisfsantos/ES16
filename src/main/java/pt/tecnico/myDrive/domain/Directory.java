@@ -84,7 +84,7 @@ public class Directory extends Directory_Base {
 
 			return null;
 		} else {
-			return null;
+			throw new AccessDeniedException("search", getName());
 		}
 	}
 	
