@@ -21,13 +21,13 @@ public class Login extends Login_Base {
     	super.setToken(token);
     	this.setLastActivity(new DateTime());
     	super.setManager(Manager.getInstance());
-    	super.setCurrentUser(Manager.getInstance().getUserByUsername(username));
-    	this.setCurrentDir(Manager.getInstance().getUserByUsername(username).getHome());
+    	super.setCurrentUser(Manager.getInstance().fetchUser(username, password));
+    	this.setCurrentDir(Manager.getInstance().fetchUser(username, password).getHome());
     }
     
     private void validateAccount(String username, String password) {
-    	User user = Manager.getInstance().getUserByUsername(username);
-    	if ( user == null || !user.validatePassword(password)) {
+    	User user = Manager.getInstance().fetchUser(username, password);
+    	if ( user == null ) {
     		throw new InvalidUsernameOrPasswordException();
     	}
     }

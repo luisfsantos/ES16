@@ -44,8 +44,11 @@ public class Main {
 	
     @Atomic
     public static void setup() {	
+    	if (FenixFramework.getDomainRoot().getManager() != null) {
+    		return;
+    	}
     	log.trace("Manager: " + Manager.getInstance());
-    	User root = Manager.getInstance().getUserByUsername("root");
+    	User root = Manager.getInstance().fetchUser("root", "***");
     	lsDir(root);
     	User user1 = new User(Manager.getInstance(), "DAVID");
     	Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
