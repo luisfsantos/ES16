@@ -14,7 +14,7 @@ import pt.tecnico.myDrive.exception.InvalidSetContentException;
 import static org.junit.Assert.*;
 
 
-public class WriteFileServiceTest extends AbstractServiceTest {
+public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	private long token;
 	private Directory home;
