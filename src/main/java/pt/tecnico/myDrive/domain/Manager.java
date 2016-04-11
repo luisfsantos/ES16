@@ -146,12 +146,12 @@ public class Manager extends Manager_Base {
     
 	@Override
 	public Set<User> getUserSet() {
-		throw new AccessDeniedException("get user set", "manager");
+		throw new AccessDeniedException("get user set", "Manager");
 	}
 	
 	@Override
 	public SuperUser getSuperUser() {
-		throw new AccessDeniedException("get Super User", "manager");
+		throw new AccessDeniedException("get Super User", "Manager");
 	}
  
     
