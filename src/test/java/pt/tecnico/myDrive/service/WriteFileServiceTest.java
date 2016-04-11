@@ -9,7 +9,7 @@ import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.InvalidContentException;
 import pt.tecnico.myDrive.exception.InvalidPermissionException;
-import pt.tecnico.myDrive.exception.InvalidSetContentException;
+import pt.tecnico.myDrive.exception.InvalidWriteException;
 
 import static org.junit.Assert.*;
 
@@ -132,19 +132,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	}
 
 	//TEST 10
-	@Test(expected=InvalidSetContentException.class)
-	public void insuccessWriteLink(){
-		WriteFileService service = new WriteFileService(token, "validlink", "/home");
-		service.execute();
-		
-//		Link linkfile = (Link) home.lookup("validlink");
-//
-//		assertNotEquals("Write executed successfully", linkfile.getContent(), "/home");
-	
-	}
-
-	//TEST 11
-	@Test(expected=InvalidSetContentException.class)
+	@Test(expected=InvalidWriteException.class)
 	public void insuccessWriteDir(){
 		WriteFileService service = new WriteFileService(token, "root", "/home");
 		service.execute();

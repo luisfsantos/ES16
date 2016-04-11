@@ -160,8 +160,7 @@ public class Directory extends Directory_Base {
 		}
 	}
 
-	public void write(User u, String content){
-		throw new InvalidSetContentException();
+	public void write(User u, String content){throw new InvalidWriteException();
 	}
 }
 

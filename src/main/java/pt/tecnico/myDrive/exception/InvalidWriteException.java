@@ -3,13 +3,13 @@ package pt.tecnico.myDrive.exception;
 /**
  * Created by david on 09-04-2016.
  */
-public class InvalidSetContentException extends MyDriveException{
+public class InvalidWriteException extends MyDriveException{
     private static final long serialVersionUID = 1L;
 
-    public InvalidSetContentException(){}
+    public InvalidWriteException(){}
 
     @Override
     public String getMessage() {
-        return "The content of a Directory or Link cannot be set";
+        return "Can not write in a directory";
     }
 }

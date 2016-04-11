@@ -50,8 +50,8 @@ public class Main {
     	User user1 = new User(Manager.getInstance(), "DAVID");
     	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
-    	App app1 = new App("APPME", user1, home, "batata");    	
- 
+    	App app1 = new App("APPME", user1, home, "batata");
+
     	
     	System.out.println("========================================================");
     	lsDir();
