@@ -1,6 +1,8 @@
 package pt.tecnico.myDrive.service;
 
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.InvalidPermissionException;
+import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ChangeDirectoryService extends TokenValidationService{
@@ -17,13 +19,19 @@ public class ChangeDirectoryService extends TokenValidationService{
 
     @Override
     protected void dispatch() throws MyDriveException {
-        Manager manager = Manager.getInstance();
-        Login login = manager.getLoginByToken(token);
 
-        if (login.validateToken(token)) {
-            Directory currentDir = login.getCurrentDir();
-            result = currentDir.changeDirectory(login, path);
+        if (session.validateToken(token)) {
+            Directory currentDir = session.getCurrentDir();
+            User u = session.getCurrentUser();
+            File newDir= currentDir.lookup(path, u);
+
+            if (newDir instanceof Directory) {
+                session.setCurrentDir((Directory) newDir);
+                result = newDir.getName();
+            }
+            else throw new  IsNotDirOrLinkException(path);
         }
+
     }
 
     public final String result(){
