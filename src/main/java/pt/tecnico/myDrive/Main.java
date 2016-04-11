@@ -48,7 +48,7 @@ public class Main {
     	User root = Manager.getInstance().fetchUser("root", "***");
     	lsDir(root);
     	User user1 = new User(Manager.getInstance(), "DAVID");
-    	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
+    	Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
     	App app1 = new App("APPME", user1, home, "batata");    	
     	Directory dir1 = new Directory("bin", user1, home);
@@ -62,7 +62,7 @@ public class Main {
     	log.trace(Manager.getInstance().getRootDirectory().getName());
     	log.trace(home.getName());
     	log.trace(home.getFileSet().size());
-    	log.trace(Manager.getInstance().getRootDirectory().lookup("home/root").getName());
+    	log.trace(Manager.getInstance().getRootDirectory().lookup("home/root", root).getName());
     	
     	Login login = new Login("DAVID", "DAVID");
     	log.trace("-------Login------");
@@ -104,7 +104,7 @@ public class Main {
 	}
 
 	public static void lsDir(User user) {
-		Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
+		Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
 		List<File> files = home.getOrderByNameFileList(user);
 		System.out.println(".");
 		System.out.println("..");

@@ -33,7 +33,7 @@ public class PlainFile extends PlainFile_Base {
         this.xmlImport(manager, plainNode);
     }
 
-    public File lookup(String path) throws IsNotDirOrLinkException{
+    public File lookup(String path, User user) throws IsNotDirOrLinkException{
     		throw new IsNotDirOrLinkException(this.getName());
     }
     

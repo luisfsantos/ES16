@@ -143,7 +143,7 @@ public abstract class File extends File_Base {
 		deleteDomainObject();
 	}
 	
-	public abstract File lookup(String path);
+	public abstract File lookup(String path, User user);
 
 }
 
