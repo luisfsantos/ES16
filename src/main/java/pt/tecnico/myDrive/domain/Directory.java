@@ -62,27 +62,34 @@ public class Directory extends Directory_Base {
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
-			while (path.endsWith("/"))
+			while (path.endsWith("/")) {
 				path = path.substring(0, path.lastIndexOf('/'));
+				msize--;
+			}
 
 			if (path.startsWith("/")) {
 				if (this != getParent()) {
 					return getParent().lookup(path, user);
 				} else {
-					while (path.startsWith("/"))
+					while (path.startsWith("/")) {
 						path = path.substring(1);
+						msize--;
+					}
 				}
 			}
 
 			if (path.indexOf('/') == -1) {
 				name = path;
+				msize -= path.length();
 				return getFileByName(name);
 			}
 
 			name = path.substring(0, path.indexOf("/", 1));
 			path = path.substring(path.indexOf("/", 1) + 1);
+			msize -= (name.length() + 1);
 			while (path.startsWith("/"))
 				path = path.substring(1);
+				msize--;
 			if (hasFile(name))
 				return this.getFileByName(name).lookup(path, user);
 
