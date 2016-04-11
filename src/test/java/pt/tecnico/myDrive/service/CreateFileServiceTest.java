@@ -1,7 +1,6 @@
 package pt.tecnico.myDrive.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
@@ -20,7 +19,7 @@ import pt.tecnico.myDrive.exception.InvalidFileNameException;
 import pt.tecnico.myDrive.exception.IsNotJavaFullyQualifiedNameException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
-public class CreateFileServiceTest extends AbstractServiceTest {
+public class CreateFileServiceTest extends TokenValidationServiceTest {
 	private Long rootToken;
 	private Directory home;
 	private Directory rootHome;
@@ -76,14 +75,14 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 	}
 
 	// 5
-	@Test(expected = MyDriveException.class) //TODO will depend on actual exception for wrong file type
+	@Test(expected = MyDriveException.class)
 	public void noFileType() {
 		CreateFileService service = new CreateFileService(rootToken, name, null, null);
 		service.execute();
 	}
 	
 	// 7
-	@Test(expected = AccessDeniedException.class) //TODO will depend on actual exception no permission in creating
+	@Test(expected = AccessDeniedException.class)
 	public void noPermission() {
 		Login l = new Login("lads", "lads");
 		Long ladsToken = l.getToken();
@@ -126,21 +125,13 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 	
 	// 13
 	@Test (expected = InvalidFileNameException.class)
-	public void nameIsSpace() {
-		final String invalidName = " ";
-		CreateFileService service = new CreateFileService(rootToken, invalidName, "dir", null);
-		service.execute();
-	}
-	
-	// 14
-	@Test (expected = InvalidFileNameException.class)
 	public void forwarSlashInName() {
 		final String invalidName = "foo/bar";
 		CreateFileService service = new CreateFileService(rootToken, invalidName, "dir", null);
 		service.execute();
 	}
 	
-	// 15
+	// 14
 	@Test (expected = InvalidFileNameException.class)
 	public void nulTerminatorInName() {
 		final String invalidName = "foo\0";
@@ -148,7 +139,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		service.execute();
 	}
 	
-	// 16
+	// 15
 	@Test (expected = InvalidFileNameException.class)
 	public void nullName() {
 		final String invalidName = null;
@@ -156,7 +147,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		service.execute();
 	}
 	
-	// 17
+	// 16
 	@Test
 	public void largestName() {
 		final String largeName = "PzSMsyGKBUrvsDTcAiQcfCmnuxhbRvmIjrlPenASYECmvvWRvVzuePazCnVlDXjHbilmjDvwRuXKnCWouRvSsjFleEHLzZiSDWNeObLwTjbLUGajEUbDiAhnqeDPWlYQaWlNMjtSgqopTfSPoNirhxzahJyZczRCKOScjFYwcoThEwZksyuYtONWlfOAgUOfsxiEWwTRETzhxOblTxJkTwIKGHZBeWxTnLPXUsiYAVZNSyMCeitBWXpwBpsXprHLyDeaCXZGvETZYNHjfRmlkakVUTrROhlHXKslpLGmPIyIRcfgCHGkGKRZWamMZhvInEqnkYeUVtGVmhItvKJAgDssEUMoVENzaZEojCYxuLylMRIDcCjfPzeIwnMwsCLCIuCWAIJRwewlmrDiYaMjQUQzwiECPSiqBlZniXIQNHefgEfDMosFIinBSAFGuOBnNcFEZwEBoAPIEwskAYosmEBFpkmKrLqIutIfOffDmafPhLKngkLrNSDMSpcKgeLVeUFpUhhtojNBHUDtmiBsFysuzZhTmNhDAVQWmTuLGcYvnDAMxpaQhPuAqRyqhTwVNnUSKzIByApbjAHEzgFBhBexljDDIWfIWOmlJuiDSEvQNyzawODwfPGPpEoMUmVRFwOPltTfQMeLzoqveuqwwqMkwzNqfGXZHaJAcrgFmwBRFWyOFqQbvQKsKEZmmvybTaaESpXvDMnHeWBjYfkQYIeArZQebLTZKbsxxqNNkHpCHDRCBYFNBWeZLDOmbDFvkeDVCZjJsgixaZSZmGQIVUzpSehLnPwnMqUWIDiMxJLszSqibowDDGiLYJWmloTPYbnIICYeFiKnKHAhvUweNyiSiTWrmeHFIYoIRycimLilwRsfmqNSlzjEollkSoyjNfOHgsQNzRJsSAcwJSqqFvuYfaBgbqGvOSWRnhCTLnglgyGEhEqXrCUqiDMnzZyfaYUfosTNVHjhIRZVCrnTNjplcUUcfsQvxroPpPZnRLQTqEhlVlsFm";
@@ -167,7 +158,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		
 	}
 	
-	// 18
+	// 17
 	@Test (expected = InvalidFileNameException.class)
 	public void nameTooLarge() {
 		final String largeName = "aPzSMsyGKBUrvsDTcAiQcfCmnuxhbRvmIjrlPenASYECmvvWRvVzuePazCnVlDXjHbilmjDvwRuXKnCWouRvSsjFleEHLzZiSDWNeObLwTjbLUGajEUbDiAhnqeDPWlYQaWlNMjtSgqopTfSPoNirhxzahJyZczRCKOScjFYwcoThEwZksyuYtONWlfOAgUOfsxiEWwTRETzhxOblTxJkTwIKGHZBeWxTnLPXUsiYAVZNSyMCeitBWXpwBpsXprHLyDeaCXZGvETZYNHjfRmlkakVUTrROhlHXKslpLGmPIyIRcfgCHGkGKRZWamMZhvInEqnkYeUVtGVmhItvKJAgDssEUMoVENzaZEojCYxuLylMRIDcCjfPzeIwnMwsCLCIuCWAIJRwewlmrDiYaMjQUQzwiECPSiqBlZniXIQNHefgEfDMosFIinBSAFGuOBnNcFEZwEBoAPIEwskAYosmEBFpkmKrLqIutIfOffDmafPhLKngkLrNSDMSpcKgeLVeUFpUhhtojNBHUDtmiBsFysuzZhTmNhDAVQWmTuLGcYvnDAMxpaQhPuAqRyqhTwVNnUSKzIByApbjAHEzgFBhBexljDDIWfIWOmlJuiDSEvQNyzawODwfPGPpEoMUmVRFwOPltTfQMeLzoqveuqwwqMkwzNqfGXZHaJAcrgFmwBRFWyOFqQbvQKsKEZmmvybTaaESpXvDMnHeWBjYfkQYIeArZQebLTZKbsxxqNNkHpCHDRCBYFNBWeZLDOmbDFvkeDVCZjJsgixaZSZmGQIVUzpSehLnPwnMqUWIDiMxJLszSqibowDDGiLYJWmloTPYbnIICYeFiKnKHAhvUweNyiSiTWrmeHFIYoIRycimLilwRsfmqNSlzjEollkSoyjNfOHgsQNzRJsSAcwJSqqFvuYfaBgbqGvOSWRnhCTLnglgyGEhEqXrCUqiDMnzZyfaYUfosTNVHjhIRZVCrnTNjplcUUcfsQvxroPpPZnRLQTqEhlVlsFm";
@@ -175,7 +166,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		service.execute();
 	}
 	
-	// 19
+	// 18
 	@Test (expected = MyDriveException.class) //TODO give right exception
 	public void contentInDirectoryCreation() {
 		final String content = "foo";
@@ -183,7 +174,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		service.execute();
 	}
 	
-	// 20
+	// 19
 	@Test
 	public void contentInPlainFileCreation() {
 		final String content = "foo";
@@ -194,7 +185,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		assertEquals("Content differs from input", content, rootHome.getFileByName(name).read(root));
 	}
 	
-	// 21
+	// 20
 	@Test (expected = IsNotJavaFullyQualifiedNameException.class)
 	public void invalidContentApp() {
 		final String content = "foo";
@@ -202,10 +193,10 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		service.execute();
 	}
 	
-	// 22
+	// 21
 	@Test
 	public void fullyQualifiedNameInApp() {
-		final String content = "pt.tecnico.myDrive.Apps.print(String[] output)";
+		final String content = "pt.tecnico.myDrive.Apps.print";
 		CreateFileService service = new CreateFileService(rootToken, name, "app", content);
 		service.execute();
 		assertEquals("App not created" , true, rootHome.hasFile(name));
@@ -213,7 +204,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		assertEquals("Content differs from input", content, rootHome.getFileByName(name).read(root));
 	}
 	
-	// 23
+	// 22
 	@Test
 	public void fullyQualifiedNameInAppToMain() {
 		final String content = "pt.tecnico.myDrive.Apps";
@@ -224,7 +215,7 @@ public class CreateFileServiceTest extends AbstractServiceTest {
 		assertEquals("Content differs from input", content, rootHome.getFileByName(name).read(root));
 	}
 	
-	// 24
+	// 23
 	@Test (expected = IsNotJavaFullyQualifiedNameException.class)
 	public void notJavaFullyQualifiedNameApp() {
 		final String content = "pt.tecnico.myDrive..";
