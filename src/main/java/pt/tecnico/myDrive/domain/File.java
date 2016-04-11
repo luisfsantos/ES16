@@ -141,6 +141,5 @@ public abstract class File extends File_Base {
 	}
 	
 	public abstract File lookup(String path);
-
 }
 
