@@ -34,8 +34,8 @@ public class CreateFileServiceTest extends TokenValidationServiceTest {
 		rootToken = l.getToken();
 		
 		home = (Directory) m.getRootDirectory().getFileByName("home");
-		rootHome = (Directory) home.getFileByName("root");
-		new Directory("myhome", rootHome);
+		rootHome = (Directory) home.lookup("root", root);
+		new Directory("myhome", root, rootHome);
 	}
 	
 	// 1

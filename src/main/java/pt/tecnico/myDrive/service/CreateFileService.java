@@ -2,19 +2,15 @@ package pt.tecnico.myDrive.service;
 
 import pt.tecnico.myDrive.exception.MyDriveException;
 
-public class CreateFileService extends MyDriveService {
+public class CreateFileService extends TokenValidationService {
 	
-	private long token;
+	private Long token;
 	private String name; 
 	private String type; 
 	private String contents;
-
-	public CreateFileService() {
-		// TODO Auto-generated constructor stub
-	}
 	
-	public CreateFileService(long token, String name, String type, String contents) {
-		// TODO
+	public CreateFileService(Long token, String name, String type, String contents) {
+		super(token);
 	}
 
 	@Override

@@ -7,19 +7,19 @@ public class AccessDeniedException extends MyDriveException {
 	 */
 	private static final long serialVersionUID = 1659634118485567866L;
 	private String deniedOperation;
-	private String fileName;
+	private String name;
 
 	public AccessDeniedException(String deniedOp, String name) {
 		setDeniedOperation(deniedOp);
-		setFileName(name);
+		setName(name);
 	}
 
-	public String getFileName() {
-		return fileName;
+	public String getName() {
+		return name;
 	}
 
-	private void setFileName(String fileName) {
-		this.fileName = fileName;
+	private void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDeniedOperation() {
@@ -32,7 +32,7 @@ public class AccessDeniedException extends MyDriveException {
 	
 	@Override
 	public String getMessage() {
-		return "Cannot " + getDeniedOperation() + " " + getFileName() + ": invalid permissions";
+		return "Cannot " + getDeniedOperation() + " " + getName() + ": invalid permissions";
 	}
 
 }

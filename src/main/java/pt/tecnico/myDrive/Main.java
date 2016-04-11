@@ -44,11 +44,14 @@ public class Main {
 	
     @Atomic
     public static void setup() {	
+    	if (FenixFramework.getDomainRoot().getManager() != null) {
+    		return;
+    	}
     	log.trace("Manager: " + Manager.getInstance());
-    	User root = Manager.getInstance().getUserByUsername("root");
+    	User root = Manager.getInstance().fetchUser("root", "***");
     	lsDir(root);
     	User user1 = new User(Manager.getInstance(), "DAVID");
-    	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
+    	Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
     	App app1 = new App("APPME", user1, home, "batata");    	
     	Directory dir1 = new Directory("bin", user1, home);
@@ -62,14 +65,21 @@ public class Main {
     	log.trace(Manager.getInstance().getRootDirectory().getName());
     	log.trace(home.getName());
     	log.trace(home.getFileSet().size());
-    	log.trace(Manager.getInstance().getRootDirectory().lookup("home/root").getName());
+    	log.trace(Manager.getInstance().getRootDirectory().lookup("home/root", root).getName());
     	
     	Login login = new Login("DAVID", "DAVID");
     	log.trace("-------Login------");
     	log.trace("currUser = " + login.getCurrentUser().getName());
     	log.trace("currDir = " + login.getCurrentDir().getName());
-    	log.trace("token = " + login.validateToken(new Long(11122)) );
+    	log.trace("token = " + login.getToken() );
     	log.trace("password of David = " + user1.validatePassword("DAVID"));
+    	login.setLastActivity(login.getLastActivity().minusHours(3));
+    	
+    	new User(Manager.getInstance(), "ddd");
+    	Login login2 = new Login("ddd", "ddd");
+    	log.trace("token2 = " + login2.getToken());
+    	Manager.getInstance().removeInactiveLogins();
+    	
     	
 
     	dir1.remove();
@@ -97,7 +107,7 @@ public class Main {
 	}
 
 	public static void lsDir(User user) {
-		Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
+		Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
 		List<File> files = home.getOrderByNameFileList(user);
 		System.out.println(".");
 		System.out.println("..");

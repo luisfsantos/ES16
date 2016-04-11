@@ -4,6 +4,7 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class User extends User_Base {
@@ -47,7 +48,7 @@ public class User extends User_Base {
 			Directory homeDir = new Directory(dirName, this, parentDir);
 			setHome(homeDir);
 		} else {
-			Directory homeDir = (Directory) manager.getRootDirectory().lookup("home");
+			Directory homeDir = (Directory) manager.getRootDirectory().getFileByName("home");
 			setHome(new Directory(username, this, homeDir));
 		}
 	}
@@ -56,7 +57,7 @@ public class User extends User_Base {
 		this.setUsername(username);
 		this.setManager(manager);
 		this.setUmask(umask);
-		Directory home = (Directory) this.getManager().getRootDirectory().lookup("home");
+		Directory home = (Directory) this.getManager().getRootDirectory().getFileByName("home");
 		this.setHome(new Directory(username, this, home));
 		this.setPassword(password);
 		this.setName(name);
@@ -118,8 +119,18 @@ public class User extends User_Base {
 	}
 	
 	@Override
+	public void addLogin(Login login){
+		throw new AccessDeniedToManipulateLoginException();
+	}
+	
+	@Override
 	public String getPassword() {
 		throw new AccessDeniedToGetPasswordException();
+	}
+	
+	@Override
+	public Set <Login> getLoginSet(){
+		throw new AccessDeniedToManipulateLoginException();
 	}
 	
 	
