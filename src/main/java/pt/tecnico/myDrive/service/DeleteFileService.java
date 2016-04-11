@@ -2,12 +2,12 @@ package pt.tecnico.myDrive.service;
 
 import pt.tecnico.myDrive.exception.MyDriveException;
 
-public class DeleteFileService extends MyDriveService {
+public class DeleteFileService extends TokenValidationService {
 	
-	private Long token;
 	private String fileName;
 	
 	public DeleteFileService(Long token, String fileName) {
+		super(token);
 		// TODO
 	}
 	
