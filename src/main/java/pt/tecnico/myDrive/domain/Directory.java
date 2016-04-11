@@ -62,14 +62,14 @@ public class Directory extends Directory_Base {
 		}
 	}
 
-	private File lookup(String path, User user, int msize) {
+	private File lookup(String path, User user, int psize) {
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
 			while (path.endsWith("/")) {
 				path = path.substring(0, path.lastIndexOf('/'));
-				msize--;
-				if(msize < 0 )
+				psize--;
+				if(psize < 0 )
 					throw new PathTooBigException();
 			}
 
@@ -79,8 +79,8 @@ public class Directory extends Directory_Base {
 				} else {
 					while (path.startsWith("/")) {
 						path = path.substring(1);
-						msize--;
-						if(msize < 0 )
+						psize--;
+						if(psize < 0 )
 							throw new PathTooBigException();
 					}
 				}
@@ -88,19 +88,19 @@ public class Directory extends Directory_Base {
 
 			if (path.indexOf('/') == -1) {
 				name = path;
-				msize -= path.length();
-				if(msize < 0 )
+				psize -= path.length();
+				if(psize < 0 )
 					throw new PathTooBigException();
 				return getFileByName(name);
 			}
 
 			name = path.substring(0, path.indexOf("/", 1));
 			path = path.substring(path.indexOf("/", 1) + 1);
-			msize -= (name.length() + 1);
+			psize -= (name.length() + 1);
 			while (path.startsWith("/"))
 				path = path.substring(1);
-				msize--;
-				if(msize < 0 )
+				psize--;
+				if(psize < 0 )
 					throw new PathTooBigException();
 			if (hasFile(name))
 				return this.getFileByName(name).lookup(path, user);
