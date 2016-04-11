@@ -58,7 +58,7 @@ public class Directory extends Directory_Base {
 		if(path.length() < 1024) {
 			return lookup(path, user, 1024);
 		} else {
-			return null; //FIXME
+			throw new PathTooBigException();
 		}
 	}
 
@@ -69,6 +69,8 @@ public class Directory extends Directory_Base {
 			while (path.endsWith("/")) {
 				path = path.substring(0, path.lastIndexOf('/'));
 				msize--;
+				if(msize < 0 )
+					throw new PathTooBigException();
 			}
 
 			if (path.startsWith("/")) {
@@ -78,6 +80,8 @@ public class Directory extends Directory_Base {
 					while (path.startsWith("/")) {
 						path = path.substring(1);
 						msize--;
+						if(msize < 0 )
+							throw new PathTooBigException();
 					}
 				}
 			}
@@ -85,6 +89,8 @@ public class Directory extends Directory_Base {
 			if (path.indexOf('/') == -1) {
 				name = path;
 				msize -= path.length();
+				if(msize < 0 )
+					throw new PathTooBigException();
 				return getFileByName(name);
 			}
 
@@ -94,6 +100,8 @@ public class Directory extends Directory_Base {
 			while (path.startsWith("/"))
 				path = path.substring(1);
 				msize--;
+				if(msize < 0 )
+					throw new PathTooBigException();
 			if (hasFile(name))
 				return this.getFileByName(name).lookup(path, user);
 
