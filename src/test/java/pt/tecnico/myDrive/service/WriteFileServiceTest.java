@@ -18,20 +18,11 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	private Directory home;
 
 
-	String strA = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-	String strB = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" +
-			"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" +
-			"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" +
-			"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
-	String strC = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" +
-			"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" +
-			"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" +
-			"ccccccccccccccccccccccccccccccccccccccccccccc";
-	String Y25 = "yyyyyyyyyyyyyyyyyyy";
-	String Y26 = "yyyyyyyyyyyyyyyyyyyy";
+	String strA = "";
+	String strB = "";
+	String strC = "";
+	String Y19 = "yyyyyyyyyyyyyyyyyyy";
+	String Y20 = "yyyyyyyyyyyyyyyyyyyy";
 
 
 	@Override
@@ -48,23 +39,27 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		testLogin.setCurrentDir(home);
 		nopermtoken = testLogin.getToken();
 
+		int i;
+		for(i=0; i<333; i++){
+			strA += "a";
+			strB += "b";
+			strC += "c";
+		}
+
 		new PlainFile("validplain",home ,"valid");
 		new App("validapp", home ,"pt.tecnico.myDrive.domain.User");
 		new Link("validlink", home ,"/");
 
 
-		//333
 		Directory dirA = new Directory(strA,home);
-		//330
 		Directory dirB = new Directory(strB, dirA);
-		//333
 		Directory dirC = new Directory(strC, dirB);
 
-		new PlainFile(Y25,dirC ,"valid");
-		new PlainFile(Y26,dirC ,"valid");
+		new PlainFile(Y19,dirC ,"valid");
+		new PlainFile(Y20,dirC ,"valid");
 
-		new Link("link1024",home , strA+"/"+strB+"/"+strC+"/"+Y25);
-		new Link("link1025",home , strA+"/"+strB+"/"+strC+"/"+Y26);
+		new Link("link1024",home , strA+"/"+strB+"/"+strC+"/"+Y19);
+		new Link("link1025",home , strA+"/"+strB+"/"+strC+"/"+Y20);
 
 		new Link("loop1",home , "loop2");
 		new Link("loop2",home , "loop3");
@@ -77,79 +72,11 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		new Link("linktoapp",home , "app1");
 		new App("app1",home , "valid");
 
-
 		new Link("link1",home , "link2");
 		new Link("link2",home , "textfile");
 		new PlainFile("textfile",home , "valid");
 
 	}
-
-	//TEST 12
-	@Test(expected = PathHasMoreThan1024CharactersException.class)
-	public void insuccessWriteLinkLoop(){
-		WriteFileService service = new WriteFileService(token, "loop1", "writelink");
-		service.execute();
-	}
-
-
-	//TEST 13
-	@Test
-	public void success1024CharWriteLink(){
-		WriteFileService service = new WriteFileService(token, "link1024", "writelink");
-		service.execute();
-
-		PlainFile pfile = (PlainFile)home.lookup(strA+"/"+strB+"/"+strC+"/"+Y25);
-		assertEquals("1024 characters write not executed successfully", pfile.getContent(), "writelink");
-	}
-
-	//TEST 14
-	@Test(expected = PathHasMoreThan1024CharactersException.class)
-	public void insuccess1025CharWriteLink(){
-		WriteFileService service = new WriteFileService(token, "link1025", "writelink");
-		service.execute();
-
-	}
-
-	//TEST 15
-	@Test
-	public void successWriteLinkToPlain(){
-		WriteFileService service = new WriteFileService(token, "linktoplain", "writelink");
-		service.execute();
-
-		PlainFile pfile = (PlainFile)home.lookup("linktoplain");
-		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
-
-	}
-
-	//TEST 16
-	@Test
-	public void successWriteLinkToApp(){
-		WriteFileService service = new WriteFileService(token, "linktoapp", "writelink");
-		service.execute();
-
-		PlainFile pfile = (PlainFile)home.lookup("linktoapp");
-		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
-
-	}
-
-	//TEST 17
-	@Test
-	public void successWriteDoubleLinkToPlain(){
-		WriteFileService service = new WriteFileService(token, "Link1", "writelink");
-		service.execute();
-
-		PlainFile pfile = (PlainFile)home.lookup("textfile");
-		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
-
-	}
-
-
-
-
-
-
-
-
 
 
 	//TEST 1
@@ -238,7 +165,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		App appfile = (App) home.lookup("validapp");
 		
 		assertEquals("Write not executed", appfile.getContent(), "pt.tecnico.myDrive.domain.App");
-	
 	}
 
 	//TEST 11
@@ -247,6 +173,61 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "root", "/home");
 		service.execute();
 
+	}
+
+	//TEST 12
+	@Test(expected = PathHasMoreThan1024CharactersException.class)
+	public void insuccessWriteLinkLoop(){
+		WriteFileService service = new WriteFileService(token, "loop1", "writelink");
+		service.execute();
+	}
+
+
+	//TEST 13
+	@Test
+	public void success1024CharWriteLink(){
+		WriteFileService service = new WriteFileService(token, "link1024", "writelink");
+		service.execute();
+
+		PlainFile pfile = (PlainFile)home.lookup(strA+"/"+strB+"/"+strC+"/"+Y19);
+		assertEquals("1024 characters write not executed successfully", pfile.getContent(), "writelink");
+	}
+
+	//TEST 14
+	@Test(expected = PathHasMoreThan1024CharactersException.class)
+	public void insuccess1025CharWriteLink(){
+		WriteFileService service = new WriteFileService(token, "link1025", "writelink");
+		service.execute();
+	}
+
+	//TEST 15
+	@Test
+	public void successWriteLinkToPlain(){
+		WriteFileService service = new WriteFileService(token, "linktoplain", "writelink");
+		service.execute();
+
+		PlainFile pfile = (PlainFile)home.lookup("plain1");
+		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
+	}
+
+	//TEST 16
+	@Test
+	public void successWriteLinkToApp(){
+		WriteFileService service = new WriteFileService(token, "linktoapp", "writelink");
+		service.execute();
+
+		App appfile = (App)home.lookup("app1");
+		assertEquals("write not executed successfully", appfile.getContent(), "writelink");
+	}
+
+	//TEST 17
+	@Test
+	public void successWriteDoubleLinkToPlain(){
+		WriteFileService service = new WriteFileService(token, "Link1", "writelink");
+		service.execute();
+
+		PlainFile pfile = (PlainFile)home.lookup("textfile");
+		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
 	}
 
 }
