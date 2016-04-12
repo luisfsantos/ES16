@@ -7,13 +7,15 @@ import pt.tecnico.myDrive.domain.*;
 public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 
 	private Login login;
+	private Login loginBad;
 
 	protected void populate(){
 		Manager manager = Manager.getInstance();
 
 		User thunder = new User(manager,"Thor","pass","kami","rwxdrwxd");  //creates /home/Thor
-		User lies = new User(manager,"Loki","pass","badkami","rwxdrwx-");
+		User lies = new User(manager,"Loki","pass","badkami","-wxd-wx-");
 		this.login = new Login("Thor","pass");
+		this.loginBad = new Login("Loki","pass");
 
 		Directory currentDir = thunder.getHome(); //has permissions for everything
 
@@ -22,6 +24,12 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		Directory dir = new Directory("pasta",lies, currentDir);
 			PlainFile child = new PlainFile("filho",thunder, dir,"I AM IRRELEVANT CONTENT");
 		Link link = new Link("zelda", thunder, currentDir, "/root");
+	}
+
+	@Test(expected = AcessDeniedException.class)
+	public void failUserDoesntHaveReadPermissions{
+		ListDirectoryService service = new ListDirectoryService(loginBad.getToken());
+		service.execute();
 	}
 
 	@Test
