@@ -17,13 +17,14 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		this.login = new Login("Thor","pass");
 		this.loginBad = new Login("Loki","pass");
 
-		Directory currentDir = thunder.getHome(); //has permissions for everything
-
-		App app = new App("application", thunder, currentDir, "i.am.fully.qualified.name");
-		PlainFile file = new PlainFile("ficheiro",lies, currentDir, "I AM FILE CONTENT");
-		Directory dir = new Directory("pasta",lies, currentDir);
+		Directory currentThorDir = login.getCurrentDir(); //has permissions for everything
+		loginBad.setCurrentDir(currentThorDir);
+		
+		App app = new App("application", thunder, currentThorDir, "i.am.fully.qualified.name");
+		PlainFile file = new PlainFile("ficheiro",lies, currentThorDir, "I AM FILE CONTENT");
+		Directory dir = new Directory("pasta",lies, currentThorDir);
 			PlainFile child = new PlainFile("filho",thunder, dir,"I AM IRRELEVANT CONTENT");
-		Link link = new Link("zelda", thunder, currentDir, "/root");
+		Link link = new Link("zelda", thunder, currentThorDir, "/root");
 	}
 
 	@Test(expected = AcessDeniedException.class)
