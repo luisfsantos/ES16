@@ -62,7 +62,7 @@ public class Directory extends Directory_Base {
 		}
 	}
 
-	private File lookup(String path, User user, int psize) {
+	public File lookup(String path, User user, int psize) {
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
@@ -103,7 +103,7 @@ public class Directory extends Directory_Base {
 				if(psize < 0 )
 					throw new PathTooBigException();
 			if (hasFile(name))
-				return this.getFileByName(name).lookup(path, user);
+				return this.getFileByName(name).lookup(path, user, psize);
 
 			return null;
 		} else {
