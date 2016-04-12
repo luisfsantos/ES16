@@ -74,7 +74,18 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		service.execute();
 	}
 	
-	// 6
+	// 5
+	@Test
+	public void executionPermissionOnRootNotParent() {
+		Login l = new Login("lads", "lads");
+		l.setCurrentDir((Directory) home.lookup("foo", root));
+		
+		ChangeDirectoryService service = new ChangeDirectoryService(l.getToken(), "/home");
+		service.execute();
+		assertEquals("Current directory not changed" , home.getAbsolutePath(), service.result());	
+	}
+	
+	// 7
 	@Test
 	public void successChangeDirectorySelf() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, ".");
@@ -82,7 +93,7 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		assertEquals("Current directory not changed" , rootHome.getAbsolutePath(), service.result());
 	}
 	
-	// 7
+	// 8
 	@Test
 	public void successChangeDirectoryParent() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "..");
@@ -90,21 +101,21 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		assertEquals("Current directory not changed" , home.getAbsolutePath(), service.result());
 	}
 	
-	// 8
+	// 9
 	@Test (expected = FileDoesntExistsInDirectoryException.class)
 	public void nonExistantDirectory() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "notExistant");
 		service.execute();
 	}
 	
-	// 9
+	// 10
 	@Test (expected = MyDriveException.class) //FIXME
 	public void existantFileDirectory() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "file");
 		service.execute();
 	}
 	
-	// 10
+	// 11
 	@Test
 	public void linkInPathSuccess() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "link/root");
@@ -112,21 +123,21 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		assertEquals("Current directory not changed" , rootHome.getAbsolutePath(), service.result());
 	}
 	
-	// 11
+	// 12
 	@Test (expected = MyDriveException.class) //FIXME
 	public void linkInPathFail() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "recursivelink");
 		service.execute();
 	}
 	
-	// 12
+	// 13
 	@Test (expected = IsNotDirOrLinkException.class)
 	public void fileInPath() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "file/ola");
 		service.execute();
 	}
 	
-	// 13
+	// 14
 	@Test
 	public void pathWithinCharacterLimit() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, name1024);
@@ -134,14 +145,14 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		assertEquals("Current directory not changed" , rootHome.lookup(name1024, root).getAbsolutePath(), service.result());
 	}
 	
-	// 14
+	// 15
 	@Test (expected = PathTooBigException.class)
 	public void pathoOutOfCharacterLimit() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, name1025);
 		service.execute();
 	}
 	
-	// 15
+	// 16
 	@Test (expected = PathTooBigException.class)
 	public void pathoResolvedOutOfCharacterLimit() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "link1025");
