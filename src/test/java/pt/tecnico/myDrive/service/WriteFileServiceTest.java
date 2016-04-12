@@ -30,9 +30,8 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 			"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" +
 			"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" +
 			"ccccccccccccccccccccccccccccccccccccccccccccc";
-	String Y24 = "yyyyyyyyyyyyyyyyyyyyyyyy";
-	String Y25 = "yyyyyyyyyyyyyyyyyyyyyyyyy";
-	String Y26 = "yyyyyyyyyyyyyyyyyyyyyyyyyy";
+	String Y25 = "yyyyyyyyyyyyyyyyyyy";
+	String Y26 = "yyyyyyyyyyyyyyyyyyyy";
 
 
 	@Override
@@ -61,11 +60,9 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		//333
 		Directory dirC = new Directory(strC, dirB);
 
-		new PlainFile(Y24,dirC ,"valid");
 		new PlainFile(Y25,dirC ,"valid");
 		new PlainFile(Y26,dirC ,"valid");
 
-		new Link("link1023",home , strA+"/"+strB+"/"+strC+"/"+Y24);
 		new Link("link1024",home , strA+"/"+strB+"/"+strC+"/"+Y25);
 		new Link("link1025",home , strA+"/"+strB+"/"+strC+"/"+Y26);
 
@@ -94,17 +91,8 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		service.execute();
 	}
 
+
 	//TEST 13
-	@Test
-	public void success1023CharWriteLink(){
-		WriteFileService service = new WriteFileService(token, "link1023", "writelink");
-		service.execute();
-
-		PlainFile pfile = (PlainFile)home.lookup(strA+"/"+strB+"/"+strC+"/"+Y24);
-		assertEquals("1023 characters write not executed successfully", pfile.getContent(), "writelink");
-	}
-
-	//TEST 14
 	@Test
 	public void success1024CharWriteLink(){
 		WriteFileService service = new WriteFileService(token, "link1024", "writelink");
@@ -114,7 +102,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("1024 characters write not executed successfully", pfile.getContent(), "writelink");
 	}
 
-	//TEST 15
+	//TEST 14
 	@Test(expected = PathHasMoreThan1024CharactersException.class)
 	public void insuccess1025CharWriteLink(){
 		WriteFileService service = new WriteFileService(token, "link1025", "writelink");
@@ -122,7 +110,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	}
 
-	//TEST 16
+	//TEST 15
 	@Test
 	public void successWriteLinkToPlain(){
 		WriteFileService service = new WriteFileService(token, "linktoplain", "writelink");
@@ -133,7 +121,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	}
 
-	//TEST 17
+	//TEST 16
 	@Test
 	public void successWriteLinkToApp(){
 		WriteFileService service = new WriteFileService(token, "linktoapp", "writelink");
@@ -144,7 +132,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	}
 
-	//TEST 18
+	//TEST 17
 	@Test
 	public void successWriteDoubleLinkToPlain(){
 		WriteFileService service = new WriteFileService(token, "Link1", "writelink");
@@ -232,11 +220,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	public void insuccessEmptyWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "");
 		service.execute();
-
-//		App appfile = (App) home.lookup("validapp");
-//
-//		assertNotEquals("Write executed successfully", appfile.getContent(), "");
-
 	}
 
 	//TEST 9
@@ -244,11 +227,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	public void insuccessWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "pt..tecnico.myDrive.domain.App");
 		service.execute();
-
-//		App appfile = (App) home.lookup("validapp");
-//
-//		assertNotEquals("Write executed successfully", appfile.getContent(), "pt..tecnico.myDrive.domain.App");
-
 	}
 
 	//TEST 10
