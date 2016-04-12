@@ -21,6 +21,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 	private Long userToken;
 	private Login rootLogin;
 	private Login userLogin;
+	private Directory rootDirectory;
 	private Directory homeDir;
 	private Directory dirContent;
 	private Directory dirNoContent;
@@ -35,26 +36,25 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 		
 		rootLogin = new Login("root", "***");
 		rootToken = rootLogin.getToken();
-		noPermissionFile = new PlainFile("noPermissionFile",
-				rootLogin.getCurrentUser(), rootLogin.getCurrentDir(), "contentPlainFile1");
-		
 		new User(manager, "userTest");
 		userLogin = new Login("userTest", "userTest");
 		userToken = userLogin.getToken();
+				
+		rootDirectory = manager.getRootDirectory();
+		homeDir = (Directory) manager.getRootDirectory().lookup("home", rootLogin.getCurrentUser());
 		
-		dirContent = new Directory("dirContent", userLogin.getCurrentUser(), userLogin.getCurrentDir());
-		dirNoContent = new Directory("dirContent", userLogin.getCurrentUser(), dirContent);
+		noPermissionFile = new PlainFile("noPermissionFile", rootLogin.getCurrentUser(), homeDir, "contentPlainFile1");
+		dirContent = new Directory("dirContent", userLogin.getCurrentUser(), homeDir);
+		dirNoContent = new Directory("dirNoContent", userLogin.getCurrentUser(), dirContent);
 		linkTest = new Link("linkTest", userLogin.getCurrentUser(), dirContent, "contentLink");
 		appTest = new App("appTest", userLogin.getCurrentUser(), dirContent, "contentApp");
 		plainFileTest = new PlainFile("plineFileTest", userLogin.getCurrentUser(), dirContent, "contentPlainFile2");
-		
-		homeDir = (Directory) manager.getRootDirectory().lookup("home", rootLogin.getCurrentUser());
 	}
 	
 	// 3
 	@Test(expected = InvalidPermissionException.class)
 	public void noPermission(){
-		userLogin.setCurrentDir(rootLogin.getCurrentDir());
+		userLogin.setCurrentDir(homeDir);
 		DeleteFileService service = new DeleteFileService(userToken, noPermissionFile.getName());
 		service.execute();
 	}
@@ -85,6 +85,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 	// 7
 	@Test(expected = CannotRemoveDirectoryException.class)
 	public void rootDirectory(){
+		rootLogin.setCurrentDir(rootDirectory);
 		DeleteFileService service = new DeleteFileService(rootToken, "/");
 		service.execute();
 	}
@@ -146,7 +147,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 	// 14
 	@Test
 	public void removeDirectoryWithContent(){
-		userLogin.setCurrentDir(dirContent);
+		userLogin.setCurrentDir(homeDir);
 		DeleteFileService service = new DeleteFileService(userToken, dirContent.getName());
 		service.execute();
 		assertEquals("cannot remove directory with content", false, userLogin.getCurrentDir().hasFile(dirContent.getName()));
