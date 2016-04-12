@@ -96,6 +96,9 @@ public class Manager extends Manager_Base {
     
 
 	public User fetchUser(String username, String password) {
+		if (username.equals("root") && super.getSuperUser().validatePassword(password)){
+			return super.getSuperUser();
+		}
     	for (User user: super.getUserSet()) {
     		if (user.getUsername().equals(username) && user.validatePassword(password))
     			return user;
@@ -143,14 +146,16 @@ public class Manager extends Manager_Base {
     
 	@Override
 	public Set<User> getUserSet() {
-		throw new AccessDeniedException("get user set", "manager");
+		throw new AccessDeniedException("get user set", "Manager");
 	}
 	
+	/*
+	 FIXME 
 	@Override
 	public SuperUser getSuperUser() {
-		throw new AccessDeniedException("get Super User", "manager");
+		throw new AccessDeniedException("get Super User", "Manager");
 	}
- 
+ 	*/
     
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
 		for(Element userNode : myDriveElement.getChildren("user")) {
