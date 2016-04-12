@@ -14,6 +14,7 @@ import pt.tecnico.myDrive.domain.Link;
 import pt.tecnico.myDrive.domain.App;
 import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.exception.EmptyUsernameException;
+import pt.tecnico.myDrive.exception.InvalidUsernameException;
 import pt.tecnico.myDrive.exception.InvalidUsernameOrPasswordException;
 import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
@@ -35,7 +36,7 @@ public class LoginServiceTest extends AbstractServiceTest {
 
 	//2
 	@Test(expected = InvalidUsernameOrPasswordException.class)
-	public void wrongPassword() {
+	public void wrongUserPassword() {
 		LoginService service = new LoginService("Existent", "New");
 		service.execute();
 	}
@@ -54,10 +55,24 @@ public class LoginServiceTest extends AbstractServiceTest {
 		assertEquals("User from Token does not match", user.getName(), "Existent");
 	}
 
+	//4
+	@Test(expected = InvalidUsernameOrPasswordException.class)
+	public void invalidUserName() {
+		LoginService service = new LoginService("Invalid+", "New");
+		service.execute();
+	}
+
+	//5
+	@Test(expected = InvalidUsernameOrPasswordException.class)
+	public void wrongRootPassword() {
+		LoginService service = new LoginService("root", "New");
+		service.execute();
+	}
+
 	//6
 	@Test
 	public void successRootLogin() {
-		LoginService service = new LoginService("Existent", "Existent");
+		LoginService service = new LoginService("root", "***");
 		service.execute();
 
 		Manager manager = Manager.getInstance();
