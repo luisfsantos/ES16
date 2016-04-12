@@ -133,10 +133,55 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
     }
 
     @Test(expected = PathTooBigException.class)
-    public void invalidReadCycleLinks() {
-        new Link("link1", root, home, "/home/link1");
+    public void invalidReadOfLoopGeneratedByLinks() {
+        new Link("link1", root, home, "/home/link2");
         new Link("link2", root, home, "/home/link1");
         ReadFileService service = new ReadFileService(rootToken, "link1");
         service.execute();
+    }
+
+    @Test
+    public void successReadLinkPointValidBigPath() {
+        String validLargePath = "";
+        for(int i = 0; i < (1020/3); i++) {
+            validLargePath += "/ab";
+        }
+        Manager manager = Manager.getInstance();
+        Directory rootDir = manager.getRootDirectory();
+        Directory lastDir = rootDir.createPath(root, validLargePath);
+        new PlainFile("ab", root, lastDir, dummyContent);
+        new Link("link", root, home, validLargePath + "/ab");
+
+        ReadFileService service = new ReadFileService(rootToken, "link");
+        service.execute();
+
+        assertEquals("output don't match", dummyContent, service.result());
+    }
+
+    @Test(expected = PathTooBigException.class)
+    public void readLinkPointInvalidBigPath() {
+        String invalidLargePath = "";
+        for(int i = 0; i < (1022/2); i++) {
+            invalidLargePath += "/a";
+        }
+        Manager manager = Manager.getInstance();
+        Directory rootDir = manager.getRootDirectory();
+        Directory lastDir = rootDir.createPath(root, invalidLargePath);
+        new PlainFile("a", root, lastDir, dummyContent);
+        new Link("link", root, home, invalidLargePath + "/a");
+
+        ReadFileService service = new ReadFileService(rootToken, "link");
+        service.execute();
+    }
+
+    @Test
+    public void successReadLinkPointPathContainsLink() {
+        new Link("link1", root, home, "/home");
+        new Link("link2", root, home, "/home/link1/" + rootPlainFile);
+
+        ReadFileService service = new ReadFileService(rootToken, "link1");
+        service.execute();
+
+        assertEquals("output don't match", dummyContent, service.result());
     }
 }

@@ -175,8 +175,11 @@ public class Directory extends Directory_Base {
 		
 	}
 
-	protected Directory createPath(User owner, String path) {
-		if(path.startsWith("/")) path = path.substring(1);
+	public Directory createPath(User owner, String path) {
+		if(path.startsWith("/")) {
+			path = path.substring(1);
+			return createPath(owner, path, Manager.getInstance().getRootDirectory());
+		}
 
 		return createPath(owner, path, this);
 	}
