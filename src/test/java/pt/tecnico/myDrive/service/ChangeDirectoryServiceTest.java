@@ -47,7 +47,7 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		new Link("recursivelink", root, rootHome, "/home/root/recursivelink");
 		new Directory("newDirectory", new User(m, "foo"), (Directory) home.lookup("foo", root));
 	}
-	
+
 	// 1
 	@Test
 	public void successChangeDirectoryRelative() {
@@ -144,20 +144,20 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		service.execute();
 		assertEquals("Current directory not changed" , rootHome.lookup(name1024, root).getAbsolutePath(), service.result());
 	}
-	
+
 	// 15
 	@Test (expected = PathTooBigException.class)
 	public void pathoOutOfCharacterLimit() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, name1025);
 		service.execute();
 	}
-	
+
 	// 16
 	@Test (expected = PathTooBigException.class)
 	public void pathoResolvedOutOfCharacterLimit() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "link1025");
 		service.execute();
 	}
-	
+
 
 }

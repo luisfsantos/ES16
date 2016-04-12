@@ -7,13 +7,11 @@ import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ChangeDirectoryService extends TokenValidationService{
 
-    private long token;
     private String path;
     private String result;
 
     public ChangeDirectoryService(long token, String path){
         super(token);
-        this.token = token;
         this.path = path;
     }
 
