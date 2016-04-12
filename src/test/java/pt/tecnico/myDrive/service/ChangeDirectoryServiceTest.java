@@ -18,7 +18,6 @@ import pt.tecnico.myDrive.exception.PathTooBigException;
 
 public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 	private String name1024 = "CiRZTFGYrJjLuqKlkJIytJcgcaOhvziwgVkMnqOOHfniKzlnMITGHkHzSVQUFkhzMrxDKKSnsQHfRmBYuqMmkrWFhJClWWbUEqvfseHwCBfAanpBSctLaYnatGDsFKtbUaCASgrLajLwUzJxcQmPPoXHbTFEjCTtrJNquktyYZeJxOLEEuAEkkfbCRVntVgcaEJYnFXWmZIfMPPlgbAxQoMEbVygWJkJPbQZwaOGzAzYvBMUGtcYjwgoAzYXVfofgtkxQtQwlTblXJogxSWoNHPYIYbbnvKwZLyjfCcAPEeuttTqrbWrsQStengQgPSMBRXhFaHhcUVhDQZMuhaWyBCmVJFYequcZbMHchAYlIDzFeGNUDMcTpfSOrFmZFLrhIBKjOWfkJbaoioLjAYgKRlcjGQeLtVTkzjfmpAQfVrLjFlOceCzxsqNbuNNpiCrxzOsxeFwXkZIZzeaqOrTaTSmjxUejQRfmlYqUtXIQkYaiETclNWqEGROCFmyqmIzvYTJebnVshjRNoBrtNMTFnZeAFmiPkzLBIkGRpnTHooENNECEMSpyrGflobyujOVUoUfzEsBVCZAYuLTjmlTVyaNPFrrqqSXztrUbcYMVhslzmtoQmeONQTVUKtfDTQeGgfAtNNhGDepKvpUJjxgvASFhIOGPtFeEEfqFJGEMAucZlusWjuAXnmHEZClxZTGhiEyuTMbrIyaySPElklzKQscWQcUWoXGmljrfYqauGtTIkDnpDAryEWbYtrIICgrmIZXkCFhSmVqyhTvgCbiuwSAkSBSRTGcrlGNSiJOcuYchFpZiFNmqgXvXeifcjJaKBvepqsqokQnqkWPjhrgTAVLvllXVOVRztZurGzgXRfBaGJVJCKxhkcFcfCuQLwkNDzKHvHzCrDFmfngQhucAYfWJEKIcVloioPKiMZRjOcarDgAMhkFwHkOZGMDffkVyupxQhRZBbHzGyKnZFbYDWfTZGZfEthcJqOCPQTiXzcMhSgPCWWsn";
-	private String name1025 = "a" + name1024;
 	private Long rootToken;
 	private Directory home;
 	private Directory rootHome;
@@ -40,10 +39,9 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		
 		new Directory("myhome", root, rootHome);
 		new Directory(name1024, root, rootHome);
-		new Directory(name1025, root, rootHome);
 		new PlainFile("file", root, rootHome, "file");
 		new Link("link", root, rootHome, "/home");
-		new Link("link1025", root, rootHome, name1025);
+		new Link("link1025", root, rootHome, "/home/root/./"+ name1024);
 		new Link("recursivelink", root, rootHome, "/home/root/recursivelink");
 		new Directory("newDirectory", new User(m, "foo"), (Directory) home.lookup("foo", root));
 	}
@@ -148,7 +146,7 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 	// 15
 	@Test (expected = PathTooBigException.class)
 	public void pathoOutOfCharacterLimit() {
-		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, name1025);
+		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "/home/root/./" + name1024);
 		service.execute();
 	}
 
