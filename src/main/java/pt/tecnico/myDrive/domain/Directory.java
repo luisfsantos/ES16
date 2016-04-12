@@ -133,9 +133,14 @@ public class Directory extends Directory_Base {
 	}
 	
 	@Override
+	public User getHomeOwner() {
+		throw new AccessDeniedException("get home owner", "Directory");
+	}
+	
+	@Override
 	public void remove() throws IsHomeDirectoryException {
 		
-		if (this.getHomeOwner() == null) {
+		if (super.getHomeOwner() == null) {
 			if(!this.getFileSet().isEmpty()) { 
 				for(File f: this.getFileSet()){
 					f.remove();
@@ -217,5 +222,6 @@ public class Directory extends Directory_Base {
 			}
 		}	
 	}
+
 }
 

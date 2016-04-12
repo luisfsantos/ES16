@@ -62,6 +62,15 @@ public abstract class File extends File_Base {
 		}
 	}
 
+	@Override
+	public User getOwner() {
+		throw new AccessDeniedException("get owner", "File");
+	}
+
+	public String getOwnerUsername() {
+		return super.getOwner().getUsername();
+	}
+
 	public abstract String read(User user);
 
 	@Override
@@ -94,7 +103,7 @@ public abstract class File extends File_Base {
 		element.addContent(nameElement);
 
 		Element ownerElement = new Element("owner");
-		ownerElement.setText(getOwner().getName());
+		ownerElement.setText(getOwnerUsername());
 		element.addContent(ownerElement);
 
 		Element permissionElement = new Element("perm");
@@ -143,7 +152,11 @@ public abstract class File extends File_Base {
 		deleteDomainObject();
 	}
 
+
 	public abstract File lookup(String path, User user);
+
+
 	public abstract File lookup(String path, User user, int psize);
+
 }
 
