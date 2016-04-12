@@ -57,7 +57,7 @@ public class LoginServiceTest extends AbstractServiceTest {
 
 	//4
 	@Test(expected = InvalidUsernameOrPasswordException.class)
-	public void invalidUserName() {
+	public void invalidUsername() {
 		LoginService service = new LoginService("Invalid+", "New");
 		service.execute();
 	}
@@ -83,5 +83,11 @@ public class LoginServiceTest extends AbstractServiceTest {
 		assertEquals("User from Token does not match", user.getName(), "root");
 	}
 
+	//7
+	@Test(expected = EmptyUsernameException.class)
+	public void emptyUsername() {
+		LoginService service = new LoginService("", "New");
+		service.execute();
+	}
 
 }
