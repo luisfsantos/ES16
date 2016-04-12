@@ -18,4 +18,9 @@ public class ReadFileService extends MyDriveService {
 
 	}
 
+	public final String result() {
+		//TODO
+		return null;
+	}
+
 }
