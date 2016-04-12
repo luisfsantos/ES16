@@ -45,12 +45,13 @@ public abstract class File extends File_Base {
 		super.setName(name);
 		this.setLastModified(new DateTime());	
 	}
-	
-	protected void removeOwner(){
-		getOwner().setHome(null);
-		super.setOwner(null);
-	}
 
+	
+	@Override
+	public void setParent(Directory parent){
+		parent.addFile(this);
+	}
+	
 
 	@Override
 	public void setOwner(User user) {
@@ -60,7 +61,17 @@ public abstract class File extends File_Base {
 			throw new UserDoesNotExistException(user.getUsername());
 		}
 	}
+	
+	@Override
+	public User getOwner() {
+		throw new AccessDeniedException("get owner", "File");
+	}
+	
+	public String getOwnerUsername() {
+		return super.getOwner().getUsername();
+	}
 
+	public abstract String read(User user);
 
 	@Override
 	public void setPermissions(String permission) throws InvalidPermissionException {
@@ -69,6 +80,7 @@ public abstract class File extends File_Base {
 		if (!isPermissionString)
 			throw new InvalidPermissionException(permission);
 		super.setPermissions(permission);
+		this.setLastModified(new DateTime());
 	}
 
 	public String getAbsolutePath() {
@@ -91,7 +103,7 @@ public abstract class File extends File_Base {
 		element.addContent(nameElement);
 
 		Element ownerElement = new Element("owner");
-		ownerElement.setText(getOwner().getName());
+		ownerElement.setText(getOwnerUsername());
 		element.addContent(ownerElement);
 
 		Element permissionElement = new Element("perm");
@@ -115,14 +127,14 @@ public abstract class File extends File_Base {
 
 		setName(new String(name.getBytes("UTF-8")));
 
-		if(owner != null) {
-			User ownerUser = manager.getUserByUsername(new String(owner.getBytes("UTF-8")));
-			if (ownerUser == null) {
-				throw new UserDoesNotExistException(owner);
-			}
-			setOwner(ownerUser);
-			setId(ownerUser.getNextIdCounter());
+		
+		User ownerUser = manager.fetchUser(fileNode);
+		if (ownerUser == null) {
+			throw new UserDoesNotExistException(owner);
 		}
+		setOwner(ownerUser);
+		setId(ownerUser.getNextIdCounter());
+		
 
 		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
 		else setPermissions("rwxd----");
@@ -135,12 +147,13 @@ public abstract class File extends File_Base {
 	}
 
 	public void remove(){
-		setParent(null);
-		removeOwner();
+		super.setParent(null);
+		super.setOwner(null);
 		deleteDomainObject();
 	}
 	
-	public abstract File lookup(String path);
+	public abstract File lookup(String path, User user);
 
+	
 }
 

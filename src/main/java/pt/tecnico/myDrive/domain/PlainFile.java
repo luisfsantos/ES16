@@ -2,6 +2,9 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.jdom2.Element;
+import org.joda.time.DateTime;
+
+import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
@@ -30,13 +33,26 @@ public class PlainFile extends PlainFile_Base {
         this.xmlImport(manager, plainNode);
     }
 
-    public File lookup(String path) throws IsNotDirOrLinkException{
-    	
-    	if (path.indexOf('/') == -1){
-    		return this;
-    	}
-    	else {
+    public File lookup(String path, User user) throws IsNotDirOrLinkException{
     		throw new IsNotDirOrLinkException(this.getName());
+    }
+    
+    @Override
+    public String getContent(){
+    	throw new AccessDeniedException("read", super.getName());
+    }
+    
+    @Override
+    public void setContent(String content){
+    	super.setContent(content);
+    	this.setLastModified(new DateTime());
+    }
+    
+    public String read(User user) {
+    	if (user.hasPermission(this, Mask.READ)) {
+    		return super.getContent();
+    	} else {
+    		throw new AccessDeniedException("read", super.getName());
     	}
     }
 

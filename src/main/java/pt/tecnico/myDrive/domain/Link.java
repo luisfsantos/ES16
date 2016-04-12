@@ -1,8 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
 
+import pt.tecnico.myDrive.exception.CannotReadException;
 import java.io.UnsupportedEncodingException;
 
 public class Link extends Link_Base {
@@ -21,6 +21,16 @@ public class Link extends Link_Base {
         String value = new String(linkNode.getChildText("value").getBytes("UTF-8"));
         setContent(value);
         this.xmlImport(manager, linkNode);
+    }
+    
+    @Override
+    public String read(User user) {
+    	File endpoint = lookup(super.getContent(), user);
+    	if (endpoint == null) {
+    		throw new CannotReadException("File does not exist");
+    	} else {
+    		return endpoint.read(user);
+    	}
     }
     
     @Override

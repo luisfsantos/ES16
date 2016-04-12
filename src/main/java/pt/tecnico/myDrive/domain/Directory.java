@@ -1,6 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import org.joda.time.DateTime;
+
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
@@ -23,6 +25,11 @@ public class Directory extends Directory_Base {
 
 	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
 		this.xmlImport(manager, dirNode);
+	}
+	
+	@Override
+	public Set<File> getFile() {
+		throw new AccessDeniedException("read", super.getName());
 	}
 
 	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
@@ -47,34 +54,61 @@ public class Directory extends Directory_Base {
 		return true;
 	}
 
-	public File lookup(String path) {
-		String name;
+	public File lookup(String path, User user) {
+		if(path.length() < 1024) {
+			return lookup(path, user, 1024);
+		} else {
+			throw new PathTooBigException();
+		}
+	}
 
-		while(path.endsWith("/"))
-			path = path.substring(0, path.lastIndexOf('/'));
+	private File lookup(String path, User user, int psize) {
+		if(user.hasPermission(this, Mask.EXEC)) {
+			String name;
 
-		if(path.startsWith("/")) {
-			if(this != getParent()) {
-				return getParent().lookup(path);
-			} else {
-				while(path.startsWith("/"))
-					path = path.substring(1);
+			while (path.endsWith("/")) {
+				path = path.substring(0, path.lastIndexOf('/'));
+				psize--;
+				if(psize < 0 )
+					throw new PathTooBigException();
 			}
-		}
-		
-		if(path.indexOf('/') == -1) {
-			name = path;
-			return getFileByName(name);
-		}
 
-		name = path.substring(0, path.indexOf("/", 1));
-		path = path.substring(path.indexOf("/", 1) + 1);
-		while(path.startsWith("/"))
-			path = path.substring(1);
-		if(hasFile(name))
-			return this.getFileByName(name).lookup(path);
+			if (path.startsWith("/")) {
+				if (this != getParent()) {
+					return getParent().lookup(path, user);
+				} else {
+					while (path.startsWith("/")) {
+						path = path.substring(1);
+						psize--;
+						if(psize < 0 )
+							throw new PathTooBigException();
+					}
+				}
+			}
 
-		return null;
+			if (path.indexOf('/') == -1) {
+				name = path;
+				psize -= path.length();
+				if(psize < 0 )
+					throw new PathTooBigException();
+				return getFileByName(name);
+			}
+
+			name = path.substring(0, path.indexOf("/", 1));
+			path = path.substring(path.indexOf("/", 1) + 1);
+			psize -= (name.length() + 1);
+			while (path.startsWith("/"))
+				path = path.substring(1);
+				psize--;
+				if(psize < 0 )
+					throw new PathTooBigException();
+			if (hasFile(name))
+				return this.getFileByName(name).lookup(path, user);
+
+			return null;
+		} else {
+			throw new AccessDeniedException("search", getName());
+		}
 	}
 	
 	@Override
@@ -82,49 +116,63 @@ public class Directory extends Directory_Base {
 		homeOwner.setHome(this);
 	}
 	
-	@Override
-	public Element xmlExport() {
-		Element dirElement = super.xmlExport();
-		dirElement.setName("dir");
-		return dirElement;
+	@Override 
+	public void addFile(File file){
+		super.addFile(file);
+		this.setLastModified(new DateTime());
 	}
 	
 	@Override
-	protected void xmlExport(Element myDrive) {
-		if (!getFileSet().isEmpty()) {
-			for(File f: getFileSet()) {
-				if (f.getId() > 2)
-					myDrive.addContent(f.xmlExport());	
-			}
-			for(File f: getFileSet()) {
-				if (f!=this)
-					f.xmlExport(myDrive);
-			}
-		}	
+	public void addLogin(Login login){
+		throw new AccessDeniedToManipulateLoginException();
 	}
 	
 	@Override
-	public void remove() throws NotEmptyDirectoryException {
+	public Set <Login> getLoginSet(){
+		throw new AccessDeniedToManipulateLoginException();
+	}
+	
+	@Override
+	public User getHomeOwner() {
+		throw new AccessDeniedException("get home owner", "Directory");
+	}
+	
+	@Override
+	public void remove() throws IsHomeDirectoryException {
 		
-		if (this.getFileSet().size() == 0){ 
+		if (super.getHomeOwner() == null) {
+			if(!this.getFileSet().isEmpty()) { 
+				for(File f: this.getFileSet()){
+					f.remove();
+				}
+			}
 			super.remove();
 		}
 		else{ 
-			throw new NotEmptyDirectoryException(this.getName());
+			throw new IsHomeDirectoryException(this.getName());
 		}
 	}
 	
+	@Override
+	public String read(User user) {
+		throw new CannotReadException("A directory cannot be read");
+	}
 
-	public List<File> getOrderByNameFileList() {
-		List<File> files = new ArrayList<File>(getFileSet());
+	public List<File> getOrderByNameFileList(User user) {
+		if (user.hasPermission(this, Mask.READ)) {
+			List<File> files = new ArrayList<File>(super.getFileSet());
 
-		Collections.sort(files, new Comparator<File>() {
-			public int compare(File f1, File f2) {
-				return f1.getName().compareToIgnoreCase(f2.getName());
-			}
-		});
+			Collections.sort(files, new Comparator<File>() {
+				public int compare(File f1, File f2) {
+					return f1.getName().compareToIgnoreCase(f2.getName());
+				}
+			});
 
-		return files;
+			return files;
+		} else {
+			throw new AccessDeniedException("list directory contents", super.getName());
+		}
+		
 	}
 
 	protected Directory createPath(User owner, String path) {
@@ -153,6 +201,28 @@ public class Directory extends Directory_Base {
 			return createPath(owner, nextPath, nextDir);
 		}
 	}
+	
+	@Override
+	public Element xmlExport() {
+		Element dirElement = super.xmlExport();
+		dirElement.setName("dir");
+		return dirElement;
+	}
+	
+	@Override
+	protected void xmlExport(Element myDrive) {
+		if (!getFileSet().isEmpty()) {
+			for(File f: getFileSet()) {
+				if (f.getId() > 2)
+					myDrive.addContent(f.xmlExport());	
+			}
+			for(File f: getFileSet()) {
+				if (f!=this)
+					f.xmlExport(myDrive);
+			}
+		}	
+	}
+
 }
 
 
