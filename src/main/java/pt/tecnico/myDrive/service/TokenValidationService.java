@@ -14,7 +14,7 @@ public class TokenValidationService extends MyDriveService {
 
 	@Override
 	protected void dispatch() throws MyDriveException {
-		Manager m = Manager.getInstance();
+		Manager m = getManager();
 		session = m.getLoginByToken(token);
 	}
 
