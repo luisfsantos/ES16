@@ -20,7 +20,38 @@ import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 public class LoginServiceTest extends AbstractServiceTest {
 
 
-    @Override
-    protected void populate() {
-    }
+	@Override
+	protected void populate() {
+		Manager manager = Manager.getInstance();
+		new User(manager, "Existent");
+	}
+
+	@Test
+	public void successUserLogin() {
+		LoginService service = new LoginService("Existent", "Existent");
+		service.execute();
+
+		Manager manager = Manager.getInstance();
+		long token = service.result();
+		User user = manager.getLoginByToken(token).getCurrentUser();
+
+		assertThat("LoginToken is not a long", token, instanceOf(long.class));
+		assertEquals("User from Token does not match", user.getName(), "Existent");
+	}
+
+	@Test
+	public void successRootLogin() {
+		LoginService service = new LoginService("Existent", "Existent");
+		service.execute();
+
+		Manager manager = Manager.getInstance();
+		long token = service.result();
+		User user = manager.getLoginByToken(token).getCurrentUser();
+
+		assertThat("LoginToken is not a long", token, instanceOf(long.class));
+		assertEquals("User from Token does not match", user.getName(), "root");
+
+	}
+
+
 }

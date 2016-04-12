@@ -17,6 +17,11 @@ public abstract class MyDriveService {
         dispatch();
     }
 
+    public final long result() {
+        long a = 0;
+        return a;
+    }
+
     static Manager getManager() {
         return Manager.getInstance();
     }

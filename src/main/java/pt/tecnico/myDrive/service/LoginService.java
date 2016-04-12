@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.service;
 
+import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class LoginService extends MyDriveService {
