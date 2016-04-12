@@ -26,6 +26,21 @@ public class LoginServiceTest extends AbstractServiceTest {
 		new User(manager, "Existent");
 	}
 
+	//1
+	@Test(expected = UserDoesNotExistException.class)
+	public void userDoesNotExist() {
+		LoginService service = new LoginService("New", "New");
+		service.execute();
+	}
+
+	//2
+	@Test(expected = InvalidUsernameOrPasswordException.class)
+	public void wrongPassword() {
+		LoginService service = new LoginService("Existent", "New");
+		service.execute();
+	}
+
+	//3
 	@Test
 	public void successUserLogin() {
 		LoginService service = new LoginService("Existent", "Existent");
@@ -39,6 +54,7 @@ public class LoginServiceTest extends AbstractServiceTest {
 		assertEquals("User from Token does not match", user.getName(), "Existent");
 	}
 
+	//6
 	@Test
 	public void successRootLogin() {
 		LoginService service = new LoginService("Existent", "Existent");
@@ -50,7 +66,6 @@ public class LoginServiceTest extends AbstractServiceTest {
 
 		assertThat("LoginToken is not a long", token, instanceOf(long.class));
 		assertEquals("User from Token does not match", user.getName(), "root");
-
 	}
 
 
