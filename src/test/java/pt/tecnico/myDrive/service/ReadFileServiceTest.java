@@ -156,7 +156,7 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
     @Test
     public void successReadLinkPointValidBigPath() {
         String validLargePath = "";
-        for(int i = 0; i < (1024-8)/2; i++) {
+        for(int i = 0; i < (1024-2)/2; i++) {
             validLargePath += "/a";
         }
 
@@ -165,7 +165,6 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         Directory lastDir = rootDir.createPath(root, validLargePath);
         new PlainFile("a", root, lastDir, dummyContent);
         new Link("link", root, home, validLargePath + "/a");
-
         ReadFileService service = new ReadFileService(rootToken, "link");
         service.execute();
 
@@ -182,9 +181,9 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         Directory rootDir = manager.getRootDirectory();
         Directory lastDir = rootDir.createPath(root, invalidLargePath);
         new PlainFile("a", root, lastDir, dummyContent);
-        new Link("link", root, home, invalidLargePath + "/a");
+        new Link("link", root, home, invalidLargePath + "/aa");
 
-        System.out.println((invalidLargePath + "/a").length());
+        System.out.println((invalidLargePath + "/aa").length());
 
         ReadFileService service = new ReadFileService(rootToken, "link");
         service.execute();
