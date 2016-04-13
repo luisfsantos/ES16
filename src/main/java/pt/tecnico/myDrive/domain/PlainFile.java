@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.domain;
 
+
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
@@ -32,6 +33,10 @@ public class PlainFile extends PlainFile_Base {
 
     public File lookup(String path, User user) throws IsNotDirOrLinkException{
     		throw new IsNotDirOrLinkException(this.getName());
+    }
+
+    File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
+        throw new IsNotDirOrLinkException(this.getName());
     }
     
     @Override
@@ -67,12 +72,6 @@ public class PlainFile extends PlainFile_Base {
 		plainElement.addContent(contentsElement);
 
 		return plainElement;
-	}
-
-	@Override
-	File lookup(String path, User user, int psize) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	
