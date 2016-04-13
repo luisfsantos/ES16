@@ -1,12 +1,12 @@
 package pt.tecnico.myDrive.service;
 
-import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.DirectoryContentNotNullException;
+import pt.tecnico.myDrive.exception.InvalidFileTypeException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class CreateFileService extends TokenValidationService {
-	
-	private Long token;
+
 	private String name; 
 	private String type; 
 	private String contents;
@@ -20,30 +20,27 @@ public class CreateFileService extends TokenValidationService {
 
 	@Override
 	protected void dispatch() throws MyDriveException {
-		Manager manager = Manager.getInstance();
-		Login login = manager.getLoginByToken(token);
-		User user = login.getCurrentUser();
-		Directory parentDir = login.getCurrentDir();
+		super.dispatch();
+		User user = session.getCurrentUser();
+		Directory parentDir = session.getCurrentDir();
 
-		if (login.validateToken(token)){
-			switch (type) {
-				case "app":
-					new App(name, user, parentDir, contents);
-					break;
-				case "dir":
-					//FIXME directory must not have contents
-					new Directory(name, user, parentDir);
-					break;
-				case "link":
-					new Link(name, user, parentDir, contents);
-					break;
-				case "plain":
-					new PlainFile(name, user, parentDir, contents);
-					break;
-				default:
-					//FIXME type must be one of the above
-					break;
-			}
+		if (type == null) throw new InvalidFileTypeException(type);
+		switch (type) {
+			case "app":
+				new App(name, user, parentDir, contents);
+				break;
+			case "dir":
+				if(contents != null) throw new DirectoryContentNotNullException();
+				new Directory(name, user, parentDir);
+				break;
+			case "link":
+				new Link(name, user, parentDir, contents);
+				break;
+			case "plain":
+				new PlainFile(name, user, parentDir, contents);
+				break;
+			default:
+				throw new InvalidFileTypeException(type);
 		}
 
 	}
