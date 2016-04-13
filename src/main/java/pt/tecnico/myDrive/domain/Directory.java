@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Directory extends Directory_Base {
+	final int max_path = 1024;
 	
 	protected Directory() {
 		super();
@@ -55,8 +56,8 @@ public class Directory extends Directory_Base {
 	}
 
 	public File lookup(String path, User user) {
-		if(path.length() <= 1024) {
-			return lookup(path, user, 1024);
+		if(path.length() <= max_path) {
+			return lookup(path, user, max_path);
 		} else {
 			throw new PathTooBigException();
 		}
@@ -97,7 +98,7 @@ public class Directory extends Directory_Base {
 
 			name = path.substring(0, path.indexOf("/", 1));
 			path = path.substring(path.indexOf("/", 1) + 1);
-			psize -= (name.length() + 1);
+			psize -= (name.length());
 			while (path.startsWith("/"))
 				path = path.substring(1);
 				psize--;

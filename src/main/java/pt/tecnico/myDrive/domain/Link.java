@@ -24,7 +24,8 @@ public class Link extends Link_Base {
     }
     
     protected File lookup(String path, User user, int psize) {
-    	return this.getParent().lookup(this.viewContent().concat("/"+path), user, psize);
+    	int psize_resolved = psize + this.getName().length() + 1;
+    	return this.getParent().lookup(this.viewContent().concat("/" + path), user, psize_resolved);
     }
     
     @Override
