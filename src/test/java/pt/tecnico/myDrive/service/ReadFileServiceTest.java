@@ -183,8 +183,6 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         new PlainFile("a", root, lastDir, dummyContent);
         new Link("link", root, home, invalidLargePath + "/aa");
 
-        System.out.println((invalidLargePath + "/aa").length());
-
         ReadFileService service = new ReadFileService(rootToken, "link");
         service.execute();
     }
