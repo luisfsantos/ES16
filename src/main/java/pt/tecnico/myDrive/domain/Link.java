@@ -44,11 +44,15 @@ public class Link extends Link_Base {
 
 		return linkElement;
 	}
-/*
+
+    public File lookup(String path, User user, int psize) {
+        return this.getParent().lookup(this.getContent().concat("/"+path), user, psize);
+    }
+
     @Override
     public void write(User u, String content) {
         try {
-            File target = this.lookup(this.getContent());
+            File target = this.lookup(this.getContent(),u);
             if (u.hasPermission(target, Mask.WRITE)) {
                 target.write(u, content);
             } else {
@@ -58,7 +62,7 @@ public class Link extends Link_Base {
             throw new PathHasMoreThan1024CharactersException();
         }
     }
-*/
+
 
 
 

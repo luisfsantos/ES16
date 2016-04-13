@@ -34,6 +34,7 @@ public class PlainFile extends PlainFile_Base {
         throw new IsNotDirOrLinkException(this.getName());
     }
 
+
     public File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
         throw new IsNotDirOrLinkException(this.getName());
     }
