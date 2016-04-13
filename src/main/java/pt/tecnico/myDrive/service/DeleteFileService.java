@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.service;
 
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.domain.File;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.CannotRemoveDirectoryException;
@@ -13,6 +14,7 @@ public class DeleteFileService extends TokenValidationService {
 		super(token);
 		super.dispatch();
 		fileName = fname;
+		//session.setLastActivity(new DateTime());
 	}
 	
 	
