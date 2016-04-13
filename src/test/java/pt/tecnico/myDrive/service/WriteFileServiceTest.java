@@ -15,6 +15,8 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	private long token;
 	private long nopermtoken;
+	private User root;
+	private User usertest;
 	private Directory home;
 
 
@@ -28,13 +30,15 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	@Override
 	protected void populate() {
 		Manager manager = Manager.getInstance();
-		home = (Directory) manager.getRootDirectory().lookup("home");
 
-		Login l = new Login("root", "***");
-		l.setCurrentDir(home);
-		token = l.getToken();
 
-		User usertest = new User(Manager.getInstance(), "usertest");
+		Login rootlogin = new Login("root", "***");
+		root = rootlogin.getCurrentUser();
+		home = (Directory) manager.getRootDirectory().lookup("home", root);
+		rootlogin.setCurrentDir(home);
+		token = rootlogin.getToken();
+
+		usertest = new User(Manager.getInstance(), "usertest");
 		Login testLogin = new Login(usertest.getUsername(), usertest.getUsername());
 		testLogin.setCurrentDir(home);
 		nopermtoken = testLogin.getToken();
@@ -46,37 +50,37 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 			strC += "c";
 		}
 
-		new PlainFile("validplain",home ,"valid");
-		new App("validapp", home ,"pt.tecnico.myDrive.domain.User");
-		new Link("validlink", home ,"/");
+		new PlainFile("validplain",root ,home ,"valid");
+		new App("validapp",root, home ,"pt.tecnico.myDrive.domain.User");
+		new Link("validlink",root , home ,"/");
 
 
-		Directory dirA = new Directory(strA,home);
-		Directory dirB = new Directory(strB, dirA);
-		Directory dirC = new Directory(strC, dirB);
+		Directory dirA = new Directory(strA,root,home);
+		Directory dirB = new Directory(strB,root,dirA);
+		Directory dirC = new Directory(strC,root,dirB);
 
-		new PlainFile(Y19,dirC ,"valid");
-		new PlainFile(Y20,dirC ,"valid");
+		new PlainFile(Y19,root,dirC ,"valid");
+		new PlainFile(Y20,root,dirC ,"valid");
 
-		new Link("link1024",home , strA+"/"+strB+"/"+strC+"/"+Y19);
-		new Link("link1025",home , strA+"/"+strB+"/"+strC+"/"+Y20);
+		new Link("link1024",root,home , strA+"/"+strB+"/"+strC+"/"+Y19);
+		new Link("link1025", root,home , strA+"/"+strB+"/"+strC+"/"+Y20);
 
-		new Link("loop1",home , "loop2");
-		new Link("loop2",home , "loop3");
-		new Link("loop3",home , "loop1");
+		new Link("loop1", root, home,"loop2");
+		new Link("loop2", root, home, "loop3");
+		new Link("loop3", root, home, "loop1");
 
 
-		new Link("linktoplain",home , "plain1");
-		new PlainFile("plain1",home , "valid");
+		new Link("linktoplain", home, "plain1");
+		new PlainFile("plain1",home, "valid");
 
-		new Link("linktoapp",home , "app1");
-		new App("app1",home , "valid");
+		new Link("linktoapp",root ,home, "app1");
+		new App("app1",root ,home, "valid");
 
-		new Link("link1",home , "link2");
-		new Link("link2",home , "textfile");
-		new PlainFile("textfile",home , "valid");
+		new Link("link1",root ,home, "link2");
+		new Link("link2",root ,home, "textfile");
+		new PlainFile("textfile",root, home, "valid");
 
-		new Link("linktoNE", home, "batata");
+		new Link("linktoNE",root, home, "batata");
 	}
 
 
@@ -133,9 +137,9 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "validplain", "");
 		service.execute();
 		
-		PlainFile pfile = (PlainFile)home.lookup("validplain");
+		PlainFile pfile = (PlainFile)home.lookup("validplain", root);
 
-		assertEquals("Empty write not executed", pfile.getContent(), "");
+		assertEquals("Empty write not executed", pfile.read(root), "");
 
 	}
 
@@ -145,9 +149,9 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "validplain", "mydrive");
 		service.execute();
 		
-		PlainFile pfile = (PlainFile)home.lookup("validplain");
+		PlainFile pfile = (PlainFile)home.lookup("validplain", root);
 		
-		assertEquals("Write not executed", pfile.getContent(), "mydrive");
+		assertEquals("Write not executed", pfile.read(root), "mydrive");
 
 	}
 	//TEST 9
@@ -170,8 +174,8 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "validapp", "pt.tecnico.myDrive.domain.App");
 		service.execute();
 		
-		App appfile = (App) home.lookup("validapp");
-		assertEquals("Write not executed", appfile.getContent(), "pt.tecnico.myDrive.domain.App");
+		App appfile = (App) home.lookup("validapp", root);
+		assertEquals("Write not executed", appfile.read(root), "pt.tecnico.myDrive.domain.App");
 	}
 
 	//TEST 12
@@ -183,7 +187,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	}
 
 	//TEST 13
-	@Test(expected = PathHasMoreThan1024CharactersException.class)
+	@Test(expected = PathTooBigException.class)
 	public void insuccessWriteLinkLoop(){
 		WriteFileService service = new WriteFileService(token, "loop1", "writelink");
 		service.execute();
@@ -196,12 +200,12 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "link1024", "writelink");
 		service.execute();
 
-		PlainFile pfile = (PlainFile)home.lookup(strA+"/"+strB+"/"+strC+"/"+Y19);
-		assertEquals("1024 characters write not executed successfully", pfile.getContent(), "writelink");
+		PlainFile pfile = (PlainFile)home.lookup(strA+"/"+strB+"/"+strC+"/"+Y19, root);
+		assertEquals("1024 characters write not executed successfully", pfile.read(root), "writelink");
 	}
 
 	//TEST 15
-	@Test(expected = PathHasMoreThan1024CharactersException.class)
+	@Test(expected = PathTooBigException.class)
 	public void insuccess1025CharWriteLink(){
 		WriteFileService service = new WriteFileService(token, "link1025", "writelink");
 		service.execute();
@@ -213,8 +217,8 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "linktoplain", "writelink");
 		service.execute();
 
-		PlainFile pfile = (PlainFile)home.lookup("plain1");
-		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
+		PlainFile pfile = (PlainFile)home.lookup("plain1", root);
+		assertEquals("write not executed successfully", pfile.read(root), "writelink");
 	}
 
 	//TEST 17
@@ -223,18 +227,18 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "linktoapp", "writelink");
 		service.execute();
 
-		App appfile = (App)home.lookup("app1");
-		assertEquals("write not executed successfully", appfile.getContent(), "writelink");
+		App appfile = (App)home.lookup("app1", root);
+		assertEquals("write not executed successfully", appfile.read(root), "writelink");
 	}
 
 	//TEST 18
 	@Test
 	public void successWriteDoubleLinkToPlain(){
-		WriteFileService service = new WriteFileService(token, "Link1", "writelink");
+		WriteFileService service = new WriteFileService(token, "link1", "writelink");
 		service.execute();
 
-		PlainFile pfile = (PlainFile)home.lookup("textfile");
-		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
+		PlainFile pfile = (PlainFile)home.lookup("textfile", root);
+		assertEquals("write not executed successfully", pfile.read(root), "writelink");
 	}
 
 	//Test 19
