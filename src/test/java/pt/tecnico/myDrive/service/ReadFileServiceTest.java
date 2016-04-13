@@ -36,6 +36,7 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         home = (Directory) manager.getRootDirectory().getFileByName("home");
 
         rootLogin.setCurrentDir(home);
+        testUserLogin.setCurrentDir(home);
 
         new PlainFile("rootPlainFile", root, home, dummyContent);
         new App("rootApp", root, home, fullyQualifiedName);
@@ -73,12 +74,18 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
 
     @Test(expected = AccessDeniedException.class)
     public void noPermissionToReadPlainFile() {
+        PlainFile plainFile = (PlainFile) home.getFileByName(rootPlainFile);
+        plainFile.setPermissions("rwxd----");
+
         ReadFileService service = new ReadFileService(testUserToken, rootPlainFile);
         service.execute();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void noPermissionToReadApp() {
+        App app = (App) home.getFileByName(rootApp);
+        app.setPermissions("rwxd----");
+
         ReadFileService service = new ReadFileService(testUserToken, rootApp);
         service.execute();
     }
@@ -108,12 +115,18 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
 
     @Test(expected = AccessDeniedException.class)
     public void noPermissionToReadLinkPointsPlainFile() {
+        PlainFile plainFile = (PlainFile) home.getFileByName(rootPlainFile);
+        plainFile.setPermissions("rwxd----");
+
         ReadFileService service = new ReadFileService(testUserToken, rootLinkPlainFile);
         service.execute();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void noPermissionToReadLinkPointsApp() {
+        App app = (App) home.getFileByName(rootApp);
+        app.setPermissions("rwxd----");
+
         ReadFileService service = new ReadFileService(testUserToken, rootLinkApp);
         service.execute();
     }
@@ -143,14 +156,15 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
     @Test
     public void successReadLinkPointValidBigPath() {
         String validLargePath = "";
-        for(int i = 0; i < (1020/3); i++) {
-            validLargePath += "/ab";
+        for(int i = 0; i < (1024-8)/2; i++) {
+            validLargePath += "/a";
         }
+
         Manager manager = Manager.getInstance();
         Directory rootDir = manager.getRootDirectory();
         Directory lastDir = rootDir.createPath(root, validLargePath);
-        new PlainFile("ab", root, lastDir, dummyContent);
-        new Link("link", root, home, validLargePath + "/ab");
+        new PlainFile("a", root, lastDir, dummyContent);
+        new Link("link", root, home, validLargePath + "/a");
 
         ReadFileService service = new ReadFileService(rootToken, "link");
         service.execute();
@@ -170,16 +184,18 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         new PlainFile("a", root, lastDir, dummyContent);
         new Link("link", root, home, invalidLargePath + "/a");
 
+        System.out.println((invalidLargePath + "/a").length());
+
         ReadFileService service = new ReadFileService(rootToken, "link");
         service.execute();
     }
 
     @Test
     public void successReadLinkPointPathContainsLink() {
-        new Link("link1", root, home, "/home");
-        new Link("link2", root, home, "/home/link1/" + rootPlainFile);
+        new Link("link1", root, home, "/home/" + rootPlainFile);
+        new Link("link2", root, home, "/home/link1/");
 
-        ReadFileService service = new ReadFileService(rootToken, "link1");
+        ReadFileService service = new ReadFileService(rootToken, "link2");
         service.execute();
 
         assertEquals("output don't match", dummyContent, service.result());
