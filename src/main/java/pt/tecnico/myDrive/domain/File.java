@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public abstract class File extends File_Base {
 
-	
+
 	protected void initFile(String name, String permission, User owner, Directory parent) {
 		this.setParent(parent);
 		this.setName(name);
@@ -28,30 +28,30 @@ public abstract class File extends File_Base {
 		super.setId(superUser.getNextIdCounter());
 		super.setLastModified(new DateTime());
 	}
-	
-	
+
+
 	@Override
 	public void setName(String name){
-		
+
 		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
 			throw new InvalidFileNameException(name);
-		
+
 		for (File f : getParent().getFileSet()) {
 			if(!f.equals(this) && f.getName().equals(name)){
 				throw new FileAlreadyExistsInDirectoryException(name, this.getParent().getName());
 			}
 		}
-		
+
 		super.setName(name);
-		this.setLastModified(new DateTime());	
+		this.setLastModified(new DateTime());
 	}
 
-	
+
 	@Override
 	public void setParent(Directory parent){
 		parent.addFile(this);
 	}
-	
+
 
 	@Override
 	public void setOwner(User user) {
@@ -61,12 +61,12 @@ public abstract class File extends File_Base {
 			throw new UserDoesNotExistException(user.getUsername());
 		}
 	}
-	
+
 	@Override
 	public User getOwner() {
 		throw new AccessDeniedException("get owner", "File");
 	}
-	
+
 	public String getOwnerUsername() {
 		return super.getOwner().getUsername();
 	}
@@ -93,7 +93,7 @@ public abstract class File extends File_Base {
 	public Element xmlExport() {
 		Element element = new Element("file");
 		element.setAttribute("id", getId().toString());
-		
+
 		Element pathElement = new Element("path");
 		pathElement.setText(getAbsolutePath());
 		element.addContent(pathElement);
@@ -112,14 +112,14 @@ public abstract class File extends File_Base {
 
 		return element;
 	}
-	
+
 	protected void xmlExport(Element myDrive) {}
 
 	public void xmlImport(Manager manager, Element fileNode) throws UnsupportedEncodingException {
 		String path = fileNode.getChildText("path");
 		String name = fileNode.getChildText("name");
 		String owner = fileNode.getChildText("owner");
-		String perm = fileNode.getChildText("perm"); 
+		String perm = fileNode.getChildText("perm");
 
 		if (name == null || path == null) {
 			throw new ImportDocumentException("Missing name or path value");
@@ -127,14 +127,14 @@ public abstract class File extends File_Base {
 
 		setName(new String(name.getBytes("UTF-8")));
 
-		
+
 		User ownerUser = manager.fetchUser(fileNode);
 		if (ownerUser == null) {
 			throw new UserDoesNotExistException(owner);
 		}
 		setOwner(ownerUser);
 		setId(ownerUser.getNextIdCounter());
-		
+
 
 		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
 		else setPermissions("rwxd----");
@@ -146,14 +146,21 @@ public abstract class File extends File_Base {
 		parentDir.addFile(this);
 	}
 
+	public void delete(User user){
+		if(user.hasPermission(this, Mask.DELETE)){
+			this.remove();
+		}
+		else throw new InvalidPermissionException(this.getPermissions());
+	}
+
 	public void remove(){
 		super.setParent(null);
 		super.setOwner(null);
 		deleteDomainObject();
 	}
-	
+
 	public abstract File lookup(String path, User user);
 
-	
+
 }
 
