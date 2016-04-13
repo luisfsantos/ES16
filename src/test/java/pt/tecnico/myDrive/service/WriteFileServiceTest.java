@@ -76,6 +76,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		new Link("link2",home , "textfile");
 		new PlainFile("textfile",home , "valid");
 
+		new Link("linktoNE", home, "batata");
 	}
 
 
@@ -230,6 +231,12 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
 	}
 
+	//Test 18
+	@Test(expected = FileDoesntExistsInDirectoryException.class)
+	public void insuccessWriteLinkToNotExistingPlain(){
+		WriteFileService service = new WriteFileService(token, "linktoNE", "batata");
+		service.execute();
+	}
 }
 
 
