@@ -33,9 +33,9 @@ public class Link extends Link_Base {
     	max_content -= Math.max(viewContent().lastIndexOf("/"), 0);
     	File endpoint = this.getParent().lookup(viewContent(), user);
     	
-    	while (endpoint instanceof Link && max_content > 0) {
+    	while ((endpoint instanceof Link) && max_content > 0) {
     		max_content -= Math.max(((Link) endpoint).viewContent().lastIndexOf("/"), 0);
-    		endpoint = endpoint.lookup(((Link) endpoint).viewContent(), user, max_content);
+    		endpoint = endpoint.lookup("", user, max_content);
     	}
     	if (endpoint == null) {
     		throw new CannotReadException("File does not exist");
