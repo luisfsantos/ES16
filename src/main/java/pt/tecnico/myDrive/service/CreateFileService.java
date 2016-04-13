@@ -1,7 +1,10 @@
 package pt.tecnico.myDrive.service;
 
-import pt.ist.fenixframework.Atomic;
-import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.domain.File;
+import pt.tecnico.myDrive.domain.Login;
+import pt.tecnico.myDrive.domain.Manager;
+import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class CreateFileService extends TokenValidationService {

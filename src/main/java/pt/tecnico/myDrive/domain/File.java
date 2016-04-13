@@ -33,7 +33,7 @@ public abstract class File extends File_Base {
 	@Override
 	public void setName(String name){
 		
-		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
+		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0) || name == null || name.equals(""))
 			throw new InvalidFileNameException(name);
 		
 		for (File f : getParent().getFileSet()) {
@@ -60,6 +60,15 @@ public abstract class File extends File_Base {
 		} else {
 			throw new UserDoesNotExistException(user.getUsername());
 		}
+	}
+
+	@Override
+	public User getOwner() {
+		throw new AccessDeniedException("get owner", "File");
+	}
+
+	public String getOwnerUsername() {
+		return super.getOwner().getUsername();
 	}
 
 	public abstract String read(User user);
@@ -94,7 +103,7 @@ public abstract class File extends File_Base {
 		element.addContent(nameElement);
 
 		Element ownerElement = new Element("owner");
-		ownerElement.setText(getOwner().getName());
+		ownerElement.setText(getOwnerUsername());
 		element.addContent(ownerElement);
 
 		Element permissionElement = new Element("perm");
@@ -144,6 +153,8 @@ public abstract class File extends File_Base {
 	}
 	
 	public abstract File lookup(String path, User user);
+
+	public abstract File lookup(String path, User user, int psize);
 
 }
 
