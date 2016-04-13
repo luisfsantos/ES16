@@ -19,13 +19,14 @@ public class Login extends Login_Base {
     		token = new BigInteger(64, new Random()).longValue();
     	}
     	super.setToken(token);
-    	this.setLastActivity(new DateTime());
+    	super.setLastActivity(new DateTime());
     	super.setManager(Manager.getInstance());
     	super.setCurrentUser(Manager.getInstance().fetchUser(username, password));
     	this.setCurrentDir(Manager.getInstance().fetchUser(username, password).getHome());
     }
     
-    private void validateAccount(String username, String password) {
+
+	private void validateAccount(String username, String password) {
     	User user = Manager.getInstance().fetchUser(username, password);
     	if ( user == null ) {
     		throw new InvalidUsernameOrPasswordException();
@@ -51,6 +52,13 @@ public class Login extends Login_Base {
     public void setCurrentUser(User user){
     	throw new AccessDeniedToManipulateLoginException();
     }
+    
+    @Override
+	public void setLastActivity(DateTime lastActivity) {
+		throw new AccessDeniedToManipulateLoginException();
+	}
+    
+    // TODO refreshLastActivity
     
     public void remove(){
 		super.setManager(null);

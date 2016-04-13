@@ -23,6 +23,11 @@ class File {
 	DateTime lastModified;
 }
 
+class EnvironmentVariable{
+	String name;
+	String value;
+}
+
 class SuperUser extends User;
 
 class PlainFile extends File {
@@ -99,6 +104,15 @@ relation LoginHasCurrentDir {
 	}
 	Directory playsRole currentDir {
 	multiplicity 1;
+	} 
+}
+
+relation LoginHasEnvironmentVariables {
+	Login playsRole login {
+	multiplicity 1;
+	}
+	EnvironmentVariable playsRole environmentVariable {
+	multiplicity *;
 	} 
 }
 

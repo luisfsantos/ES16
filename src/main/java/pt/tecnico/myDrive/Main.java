@@ -73,7 +73,6 @@ public class Main {
     	log.trace("currDir = " + login.getCurrentDir().getName());
     	log.trace("token = " + login.getToken() );
     	log.trace("password of David = " + user1.validatePassword("DAVID"));
-    	login.setLastActivity(login.getLastActivity().minusHours(3));
     	
     	new User(Manager.getInstance(), "ddd");
     	Login login2 = new Login("ddd", "ddd");
