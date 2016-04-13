@@ -4,6 +4,7 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 public class Directory extends Directory_Base {
@@ -47,35 +48,7 @@ public class Directory extends Directory_Base {
 		return true;
 	}
 
-	public File lookup(String path) {
-		String name;
 
-		while(path.endsWith("/"))
-			path = path.substring(0, path.lastIndexOf('/'));
-
-		if(path.startsWith("/")) {
-			if(this != getParent()) {
-				return getParent().lookup(path);
-			} else {
-				while(path.startsWith("/"))
-					path = path.substring(1);
-			}
-		}
-		
-		if(path.indexOf('/') == -1) {
-			name = path;
-			return getFileByName(name);
-		}
-
-		name = path.substring(0, path.indexOf("/", 1));
-		path = path.substring(path.indexOf("/", 1) + 1);
-		while(path.startsWith("/"))
-			path = path.substring(1);
-		if(hasFile(name))
-			return this.getFileByName(name).lookup(path);
-
-		return null;
-	}
 	
 	@Override
 	public void setHomeOwner(User homeOwner) {
@@ -102,7 +75,35 @@ public class Directory extends Directory_Base {
 			}
 		}	
 	}
-	
+	public File lookup(String path) {
+		String name;
+
+		while(path.endsWith("/"))
+			path = path.substring(0, path.lastIndexOf('/'));
+
+		if(path.startsWith("/")) {
+			if(this != getParent()) {
+				return getParent().lookup(path);
+			} else {
+				while(path.startsWith("/"))
+					path = path.substring(1);
+			}
+		}
+
+		if(path.indexOf('/') == -1) {
+			name = path;
+			return getFileByName(name);
+		}
+
+		name = path.substring(0, path.indexOf("/", 1));
+		path = path.substring(path.indexOf("/", 1) + 1);
+		while(path.startsWith("/"))
+			path = path.substring(1);
+		if(hasFile(name))
+			return this.getFileByName(name).lookup(path);
+
+		return null;
+	}
 	@Override
 	public void remove() throws IsHomeDirectoryException {
 		
