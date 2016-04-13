@@ -47,11 +47,13 @@ public class Main {
     	if (FenixFramework.getDomainRoot().getManager() != null) {
     		return;
     	}
+
 		/*
     	log.trace("Manager: " + Manager.getInstance());
     	User root = Manager.getInstance().fetchUser("root", "***");
-    	lsDir(root);
-    	User user1 = new User(Manager.getInstance(), "DAVID");
+
+		lsDir(root);
+		User user1 = new User(Manager.getInstance(), "DAVID");
     	Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
     	App app1 = new App("APPME", user1, home, "batata");    	
@@ -62,7 +64,7 @@ public class Main {
     	
     	System.out.println("========================================================");
     	lsDir(root);
-    	
+
     	log.trace(Manager.getInstance().getRootDirectory().getName());
     	log.trace(home.getName());
     	log.trace(home.getFileSet().size());
@@ -81,7 +83,8 @@ public class Main {
     	log.trace("token2 = " + login2.getToken());
     	Manager.getInstance().removeInactiveLogins();
     	
-    	
+    	Login loginRoot = new Login("root", "***");
+    	log.trace(loginRoot.getCurrentUser().getName());
 
     	dir1.remove();
     	//file1.remove();

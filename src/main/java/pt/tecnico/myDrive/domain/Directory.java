@@ -62,7 +62,7 @@ public class Directory extends Directory_Base {
 		}
 	}
 
-	private File lookup(String path, User user, int psize) {
+	public File lookup(String path, User user, int psize) {
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
@@ -103,7 +103,7 @@ public class Directory extends Directory_Base {
 				if(psize < 0 )
 					throw new PathTooBigException();
 			if (hasFile(name))
-				return this.getFileByName(name).lookup(path, user);
+				return this.getFileByName(name).lookup(path, user, psize);
 
 			return null;
 		} else {
@@ -118,6 +118,7 @@ public class Directory extends Directory_Base {
 	
 	@Override 
 	public void addFile(File file){
+		hasFile(file.getName());
 		super.addFile(file);
 		this.setLastModified(new DateTime());
 	}
@@ -133,9 +134,14 @@ public class Directory extends Directory_Base {
 	}
 	
 	@Override
+	public User getHomeOwner() {
+		throw new AccessDeniedException("get home owner", "Directory");
+	}
+	
+	@Override
 	public void remove() throws IsHomeDirectoryException {
 		
-		if (this.getHomeOwner() == null) {
+		if (super.getHomeOwner() == null) {
 			if(!this.getFileSet().isEmpty()) { 
 				for(File f: this.getFileSet()){
 					f.remove();
@@ -176,7 +182,6 @@ public class Directory extends Directory_Base {
 		return createPath(owner, path, this);
 	}
 
-
 	private Directory createPath(User owner, String path, Directory dir) {
 		Directory nextDir;
 		int first = path.indexOf('/');
@@ -194,6 +199,43 @@ public class Directory extends Directory_Base {
 		} else {
 			nextDir = new Directory(dirName,  owner, dir);
 			return createPath(owner, nextPath, nextDir);
+		}
+	}
+
+	public void createFile(User user, String name, String type, String contents) {
+		if(user.hasPermission(this, Mask.WRITE)) {
+			/*
+			if(name.indexOf('/') != -1 || name.indexOf('\0') != -1) {
+				throw new InvalidFileNameException(name);
+			}
+			*/
+			if((getAbsolutePath().length() + 1 + name.length()) > 1024 ) {
+				throw new PathTooBigException();
+			}
+
+			switch (type) {
+				case "app":
+					App app = new App(name, user, this, contents);
+					addFile(app);
+					break;
+				case "dir":
+					Directory directory = new Directory(name, user, this);
+					addFile(directory);
+					break;
+				case "link":
+					Link link = new Link(name, user, this, contents);
+					addFile(link);
+					break;
+				case "plain":
+					PlainFile plainFile = new PlainFile(name, user, this, contents);
+					addFile(plainFile);
+					break;
+				default:
+					//FIXME
+					break;
+			}
+		} else {
+			//FIXME
 		}
 	}
 	
@@ -217,6 +259,7 @@ public class Directory extends Directory_Base {
 			}
 		}	
 	}
+
 }
 
 

@@ -116,7 +116,7 @@ public class User extends User_Base {
 		if (home == null) {
 			throw new InvalidHomeDirectoryException("null");
 		} else {
-			if (this.equals(home.getOwner())) {
+			if (this.getUsername().equals(home.getOwnerUsername())) {
 				super.setHome(home);
 			} else {
 				throw new InvalidHomeDirectoryException(home.getName());
@@ -153,7 +153,7 @@ public class User extends User_Base {
 
 
 	public boolean hasPermission(File file, Mask mask){
-		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
+		if(this.getUsername().equals(file.getOwnerUsername())) return ownerHasPermission(file, mask);
 		else { return allHasPermission(file, mask);}
 	}
 
@@ -187,8 +187,8 @@ public class User extends User_Base {
 		}
 	}
 
-	public boolean equals(User user){
-		return this.getUsername().equals(user.getUsername());
+	public boolean equals(String username){
+		return this.getUsername().equals(username);
 	}
 
 	public Element xmlExport() {

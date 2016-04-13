@@ -25,6 +25,7 @@ public class CreateFileServiceTest extends TokenValidationServiceTest {
 	private Directory rootHome;
 	private String name = "newFile";
 	private User root;
+	
 	@Override
 	protected void populate() {
 		Manager m = Manager.getInstance();
