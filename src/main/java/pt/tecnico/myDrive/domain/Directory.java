@@ -118,7 +118,6 @@ public class Directory extends Directory_Base {
 	
 	@Override 
 	public void addFile(File file){
-		hasFile(file.getName());
 		super.addFile(file);
 		this.setLastModified(new DateTime());
 	}
