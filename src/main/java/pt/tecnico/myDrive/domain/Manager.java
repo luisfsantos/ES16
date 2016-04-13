@@ -7,7 +7,8 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.exception.AccessDeniedToGetLoginSetException;
+import pt.tecnico.myDrive.exception.AccessDeniedException;
+import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidIdCounter;
@@ -66,15 +67,55 @@ public class Manager extends Manager_Base {
     	}
     	throw new InvalidTokenException();
     }
+    
+    public void removeInactiveLogins() {
+    	DateTime now = new DateTime();
+    	for (Login login: super.getLoginSet()) {
+			if (login.getLastActivity().isBefore(now.minusHours(2))){
+				login.remove();
+			} 
+    	}
+    }
+    
+    public boolean tokenAlreadyExist(Long token){
+    	for (Login login: super.getLoginSet()){
+    		if (login.validateToken(token)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 	
-
-	public User getUserByUsername(String username) {
-    	for (User user: this.getUserSet()) {
+    private User getUserByUsername(String username) {
+    	for (User user: super.getUserSet()) {
     		if (user.getUsername().equals(username))
     			return user;
     	}
     	return null;
     }
+    
+
+	public User fetchUser(String username, String password) {
+		if (username.equals("root") && super.getSuperUser().validatePassword(password)){
+			return super.getSuperUser();
+		}
+    	for (User user: super.getUserSet()) {
+    		if (user.getUsername().equals(username) && user.validatePassword(password))
+    			return user;
+    	}
+    	return null;
+    }
+	
+	public User fetchUser(Element fileNode) throws UnsupportedEncodingException {
+		String owner = fileNode.getChildText("owner");
+		if(owner != null) {
+			return getUserByUsername(new String(owner.getBytes("UTF-8")));
+			}
+		else {
+			return super.getSuperUser();
+		}
+    }
+	
     
     public boolean hasUser(String username) {
     	return this.getUserByUsername(username) != null;
@@ -99,10 +140,22 @@ public class Manager extends Manager_Base {
     
     @Override
     public Set <Login> getLoginSet() {
-    	throw new AccessDeniedToGetLoginSetException();
+    	throw new AccessDeniedToManipulateLoginException();
     }
     
- 
+    
+	@Override
+	public Set<User> getUserSet() {
+		throw new AccessDeniedException("get user set", "Manager");
+	}
+	
+	/*
+	 FIXME 
+	@Override
+	public SuperUser getSuperUser() {
+		throw new AccessDeniedException("get Super User", "Manager");
+	}
+ 	*/
     
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
 		for(Element userNode : myDriveElement.getChildren("user")) {
@@ -139,4 +192,6 @@ public class Manager extends Manager_Base {
         
         return doc;
     }
+
+
 }

@@ -3,6 +3,8 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
+
+import pt.tecnico.myDrive.exception.CannotReadException;
 import java.io.UnsupportedEncodingException;
 
 public class Link extends Link_Base {
@@ -24,6 +26,16 @@ public class Link extends Link_Base {
     }
 
     @Override
+    public String read(User user) {
+    	File endpoint = lookup(super.getContent(), user);
+    	if (endpoint == null) {
+    		throw new CannotReadException("File does not exist");
+    	} else {
+    		return endpoint.read(user);
+    	}
+    }
+    
+    @Override
 	public Element xmlExport() {
     	Element linkElement = super.xmlExport();
 		linkElement.setName("link");
@@ -32,7 +44,7 @@ public class Link extends Link_Base {
 
 		return linkElement;
 	}
-
+/*
     @Override
     public void write(User u, String content) {
         try {
@@ -46,7 +58,7 @@ public class Link extends Link_Base {
             throw new PathHasMoreThan1024CharactersException();
         }
     }
-
+*/
 
 
 
