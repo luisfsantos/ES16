@@ -47,6 +47,7 @@ public class Main {
     	if (FenixFramework.getDomainRoot().getManager() != null) {
     		return;
     	}
+		/*
     	log.trace("Manager: " + Manager.getInstance());
     	User root = Manager.getInstance().fetchUser("root", "***");
     	lsDir(root);
