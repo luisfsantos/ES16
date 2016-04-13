@@ -33,7 +33,7 @@ public abstract class File extends File_Base {
 	@Override
 	public void setName(String name){
 		
-		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
+		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0) || name == null || name.equals(""))
 			throw new InvalidFileNameException(name);
 		
 		for (File f : getParent().getFileSet()) {
