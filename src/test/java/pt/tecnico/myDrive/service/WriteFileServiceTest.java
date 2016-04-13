@@ -95,8 +95,15 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		service.execute();
 	}
 
-
 	//TEST 3
+	@Test(expected = InvalidPermissionException.class)
+	public void invalidPermissionsLink(){
+		WriteFileService service = new WriteFileService(nopermtoken, "validlink", "/home");
+		service.execute();
+	}
+
+
+	//TEST 4
 	@Test(expected = FileDoesntExistsInDirectoryException.class)
 	public void notExistsPlain(){
 		WriteFileService service = new WriteFileService(token, "notexists", "");
@@ -104,7 +111,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	}
 
-	//TEST 4
+	//TEST 5
 	@Test(expected = FileDoesntExistsInDirectoryException.class)
 	public void notExistsApp(){
 		WriteFileService service = new WriteFileService(token, "notexists", "pt.tecnico.myDrive.domain.App");
@@ -112,7 +119,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	}
 
-	//TEST 5
+	//TEST 6
 	@Test(expected = FileDoesntExistsInDirectoryException.class)
 	public void notExistsLink(){
 		WriteFileService service = new WriteFileService(token, "notexists", "/home");
@@ -120,7 +127,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	}
 
-	//TEST 6
+	//TEST 7
 	@Test
 	public void successEmptyWritePlain(){
 		WriteFileService service = new WriteFileService(token, "validplain", "");
@@ -132,7 +139,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	}
 
-	//TEST 7
+	//TEST 8
 	@Test
 	public void successWritePlain(){
 		WriteFileService service = new WriteFileService(token, "validplain", "mydrive");
@@ -143,32 +150,31 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("Write not executed", pfile.getContent(), "mydrive");
 
 	}
-	//TEST 8
+	//TEST 9
 	@Test(expected=InvalidContentException.class)
 	public void insuccessEmptyWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "");
 		service.execute();
 	}
 
-	//TEST 9
+	//TEST 10
 	@Test(expected=InvalidContentException.class)
 	public void insuccessWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "pt..tecnico.myDrive.domain.App");
 		service.execute();
 	}
 
-	//TEST 10
+	//TEST 11
 	@Test
 	public void successWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "pt.tecnico.myDrive.domain.App");
 		service.execute();
 		
 		App appfile = (App) home.lookup("validapp");
-		
 		assertEquals("Write not executed", appfile.getContent(), "pt.tecnico.myDrive.domain.App");
 	}
 
-	//TEST 11
+	//TEST 12
 	@Test(expected=InvalidWriteException.class)
 	public void insuccessWriteDir(){
 		WriteFileService service = new WriteFileService(token, "root", "/home");
@@ -176,7 +182,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 	}
 
-	//TEST 12
+	//TEST 13
 	@Test(expected = PathHasMoreThan1024CharactersException.class)
 	public void insuccessWriteLinkLoop(){
 		WriteFileService service = new WriteFileService(token, "loop1", "writelink");
@@ -184,7 +190,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	}
 
 
-	//TEST 13
+	//TEST 14
 	@Test
 	public void success1024CharWriteLink(){
 		WriteFileService service = new WriteFileService(token, "link1024", "writelink");
@@ -194,14 +200,14 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("1024 characters write not executed successfully", pfile.getContent(), "writelink");
 	}
 
-	//TEST 14
+	//TEST 15
 	@Test(expected = PathHasMoreThan1024CharactersException.class)
 	public void insuccess1025CharWriteLink(){
 		WriteFileService service = new WriteFileService(token, "link1025", "writelink");
 		service.execute();
 	}
 
-	//TEST 15
+	//TEST 16
 	@Test
 	public void successWriteLinkToPlain(){
 		WriteFileService service = new WriteFileService(token, "linktoplain", "writelink");
@@ -211,7 +217,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
 	}
 
-	//TEST 16
+	//TEST 17
 	@Test
 	public void successWriteLinkToApp(){
 		WriteFileService service = new WriteFileService(token, "linktoapp", "writelink");
@@ -221,7 +227,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("write not executed successfully", appfile.getContent(), "writelink");
 	}
 
-	//TEST 17
+	//TEST 18
 	@Test
 	public void successWriteDoubleLinkToPlain(){
 		WriteFileService service = new WriteFileService(token, "Link1", "writelink");
@@ -231,7 +237,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("write not executed successfully", pfile.getContent(), "writelink");
 	}
 
-	//Test 18
+	//Test 19
 	@Test(expected = FileDoesntExistsInDirectoryException.class)
 	public void insuccessWriteLinkToNotExistingPlain(){
 		WriteFileService service = new WriteFileService(token, "linktoNE", "batata");
