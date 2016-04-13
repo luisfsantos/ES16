@@ -10,8 +10,8 @@ import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.PathTooBigException;
 
 public class ReadFileServiceTest extends TokenValidationServiceTest {
-    private long rootToken;
-    private long testUserToken;
+    private Long rootToken;
+    private Long testUserToken;
     private Directory home;
     private User root;
     private String rootPlainFile = "rootPlainFile";

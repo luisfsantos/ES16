@@ -25,7 +25,7 @@ public class Link extends Link_Base {
     
     @Override
     public String read(User user) {
-    	File endpoint = lookup(super.getContent(), user);
+    	File endpoint = lookup(viewContent(), user);
     	if (endpoint == null) {
     		throw new CannotReadException("File does not exist");
     	} else {

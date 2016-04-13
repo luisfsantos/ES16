@@ -42,6 +42,10 @@ public class PlainFile extends PlainFile_Base {
     	throw new AccessDeniedException("read", super.getName());
     }
     
+    protected String viewContent() {
+    	return super.getContent();
+    }
+    
     @Override
     public void setContent(String content){
     	super.setContent(content);

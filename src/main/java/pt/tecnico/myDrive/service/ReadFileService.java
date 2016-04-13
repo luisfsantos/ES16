@@ -1,26 +1,28 @@
 package pt.tecnico.myDrive.service;
 
+import pt.tecnico.myDrive.domain.File;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
-public class ReadFileService extends MyDriveService {
-
-	public ReadFileService() {
-		// TODO Auto-generated constructor stub
-	}
+public class ReadFileService extends TokenValidationService {
+	private String contents;
+	private String fileToRead;
 	
-	public ReadFileService(long token, String name) {
-		// TODO 
+	public ReadFileService(Long token, String name) {
+		super(token);
+		fileToRead = name;
 	}
 
 	@Override
 	protected void dispatch() throws MyDriveException {
-		// TODO Auto-generated method stub
-
+		super.dispatch();
+		File file = session.getCurrentDir().lookup(fileToRead, session.getCurrentUser());
+		if (file != null) {
+			contents = file.read(session.getCurrentUser());
+		}
 	}
 
 	public final String result() {
-		//TODO
-		return null;
+		return contents;
 	}
 
 }
