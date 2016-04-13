@@ -5,6 +5,7 @@ import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class TokenValidationService extends MyDriveService {
+
     protected Login session;
     private long token;
 

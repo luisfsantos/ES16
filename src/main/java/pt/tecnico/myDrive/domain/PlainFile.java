@@ -2,10 +2,9 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.InvalidPermissionException;
-import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
+import org.joda.time.DateTime;
+
+import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
 
@@ -31,12 +30,31 @@ public class PlainFile extends PlainFile_Base {
         this.xmlImport(manager, plainNode);
     }
 
-    public File lookup(String path) throws IsNotDirOrLinkException {
+    public File lookup(String path, User user) throws IsNotDirOrLinkException{
+        throw new IsNotDirOrLinkException(this.getName());
+    }
 
-        if (path.indexOf('/') == -1) {
-            return this;
+
+    public File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
+        throw new IsNotDirOrLinkException(this.getName());
+    }
+
+    @Override
+    public String getContent(){
+        throw new AccessDeniedException("read", super.getName());
+    }
+
+    @Override
+    public void setContent(String content){
+        super.setContent(content);
+        this.setLastModified(new DateTime());
+    }
+
+    public String read(User user) {
+        if (user.hasPermission(this, Mask.READ)) {
+            return super.getContent();
         } else {
-            throw new IsNotDirOrLinkException(this.getName());
+            throw new AccessDeniedException("read", super.getName());
         }
     }
 
@@ -52,13 +70,12 @@ public class PlainFile extends PlainFile_Base {
         return plainElement;
     }
 
-    public void write(User u, String content) {
+    public void write(User u, String content){
         if (u.hasPermission(this, Mask.WRITE)) {
-            super.setContent(content);
-        } else {
-            throw new InvalidPermissionException("Write in PlainFile");
+            setContent(content);
+        }
+        else {
+            throw new InvalidPermissionException("Write in App"); //not sure about argument
         }
     }
 }
-
-

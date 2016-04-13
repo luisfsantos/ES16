@@ -41,50 +41,55 @@ public class Main {
 			
 		} finally { FenixFramework.shutdown(); }
 	}
-	
-    @Atomic
-    public static void setup() {	
-    	log.trace("Manager: " + Manager.getInstance());
-    	lsDir();
 
-    	User user1 = new User(Manager.getInstance(), "DAVID");
-    	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
-    	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
-    	App app1 = new App("APPME", user1, home, "batata");
+	@Atomic
+	public static void setup() {
+		if (FenixFramework.getDomainRoot().getManager() != null) {
+			return;
+		}
+		log.trace("Manager: " + Manager.getInstance());
+		User root = Manager.getInstance().fetchUser("root", "***");
+		lsDir(root);
+		User user1 = new User(Manager.getInstance(), "DAVID");
+		Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
+		PlainFile file1 = new PlainFile("README", user1, home, "batata");
+		App app1 = new App("APPME", user1, home, "batata");
+		Directory dir1 = new Directory("bin", user1, home);
+		PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
+		PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
+		App app2 = new App("binapp", user1, dir1, "batata");
 
-    	
-    	System.out.println("========================================================");
-    	lsDir();
-    	
-    	log.trace(Manager.getInstance().getRootDirectory().getName());
-    	log.trace(home.getName());
-    	log.trace(home.getFileSet().size());
-    	log.trace(Manager.getInstance().getRootDirectory().lookup("home/root").getName());
-    	
-    	Login login = new Login("DAVID", "DAVID");
-    	log.trace("-------Login------");
-    	log.trace("currUser = " + login.getCurrentUser().getName());
-    	log.trace("currDir = " + login.getCurrentDir().getName());
-    	log.trace("token = " + login.validateToken(new Long(11122)) );
-    	log.trace("password of David = " + user1.validatePassword("DAVID"));
-    	
-    	
-    	
-    	
-    	/* DAVID
-    	Directory dir1 = new Directory("bin", user1, home);
-    	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
-    	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
-    	App app2 = new App("binapp", user1, dir1, "batata"); 
-    	dir1.remove();
-    	file1.remove();
-    	app1.remove();
-    	//Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
-    
+		System.out.println("========================================================");
+		lsDir(root);
 
-    	System.out.println("========================================================");
-    	lsDir(); */
-      	
+		log.trace(Manager.getInstance().getRootDirectory().getName());
+		log.trace(home.getName());
+		log.trace(home.getFileSet().size());
+		log.trace(Manager.getInstance().getRootDirectory().lookup("home/root", root).getName());
+
+		Login login = new Login("DAVID", "DAVID");
+		log.trace("-------Login------");
+		log.trace("currUser = " + login.getCurrentUser().getName());
+		log.trace("currDir = " + login.getCurrentDir().getName());
+		log.trace("token = " + login.getToken() );
+		log.trace("password of David = " + user1.validatePassword("DAVID"));
+
+		new User(Manager.getInstance(), "ddd");
+		Login login2 = new Login("ddd", "ddd");
+		log.trace("token2 = " + login2.getToken());
+		Manager.getInstance().removeInactiveLogins();
+
+		Login loginRoot = new Login("root", "***");
+		log.trace(loginRoot.getCurrentUser().getName());
+
+		dir1.remove();
+		//file1.remove();
+		//app1.remove();
+		//Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
+
+		System.out.println("========================================================");
+		lsDir(root);
+
         /*DAVID
 	   	User user1 = new User(Manager.getInstance(), "DAVID");
     	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata");
@@ -95,13 +100,15 @@ public class Main {
 	   	Manager.getInstance().getHomeDirectory().showContent();
 	   	System.out.println(file1.getLastModified());
 	   	DAVID*/
-	   	
-    	//xmlPrint();
+
+
+
+		//xmlPrint();
 	}
 
-	public static void lsDir() {
-		Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
-		List<File> files = home.getOrderByNameFileList();
+	public static void lsDir(User user) {
+		Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
+		List<File> files = home.getOrderByNameFileList(user);
 		System.out.println(".");
 		System.out.println("..");
 		for (File f : files) {
