@@ -80,7 +80,8 @@ public class Main {
     	log.trace("token2 = " + login2.getToken());
     	Manager.getInstance().removeInactiveLogins();
     	
-    	
+    	Login loginRoot = new Login("root", "***");
+    	log.trace(loginRoot.getCurrentUser().getName());
 
     	dir1.remove();
     	//file1.remove();
