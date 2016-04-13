@@ -62,7 +62,7 @@ public class Directory extends Directory_Base {
 		}
 	}
 
-	private File lookup(String path, User user, int psize) {
+	File lookup(String path, User user, int psize) {
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 

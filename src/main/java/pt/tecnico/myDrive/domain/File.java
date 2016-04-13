@@ -61,12 +61,12 @@ public abstract class File extends File_Base {
 			throw new UserDoesNotExistException(user.getUsername());
 		}
 	}
-	
+
 	@Override
 	public User getOwner() {
 		throw new AccessDeniedException("get owner", "File");
 	}
-	
+
 	public String getOwnerUsername() {
 		return super.getOwner().getUsername();
 	}
@@ -154,6 +154,7 @@ public abstract class File extends File_Base {
 	
 	public abstract File lookup(String path, User user);
 
-	
+	abstract File lookup(String path, User user, int psize);
+
 }
 
