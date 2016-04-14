@@ -22,11 +22,13 @@ public class ChangeDirectoryService extends TokenValidationService{
         Directory currentDir = session.getCurrentDir();
         User u = session.getCurrentUser();
         File newDir = currentDir.lookup(path, u);
+        
         if (newDir instanceof Directory) {
             session.setCurrentDir((Directory) newDir);
             result = newDir.getAbsolutePath();
+        } else {
+            throw new IsNotDirOrLinkException(newDir.getName());
         }
-        else throw new IsNotDirOrLinkException("BU");
     }
 
     public final String result(){
