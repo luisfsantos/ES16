@@ -23,8 +23,8 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	String strA = "";
 	String strB = "";
 	String strC = "";
-	String Y19 = "yyyyyyyyyyyyyyyyyyy";
-	String Y20 = "yyyyyyyyyyyyyyyyyyyy";
+	String Y22 = "yyyyyyyyyyyyyyyyyyyyyy";
+	String Y23 = "yyyyyyyyyyyyyyyyyyyyyyy";
 
 
 	@Override
@@ -52,23 +52,23 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 
 		new PlainFile("validplain",root ,home ,"valid");
 		new App("validapp",root, home ,"pt.tecnico.myDrive.domain.User");
-		new Link("validlink",root , home ,"/");
+		new PlainFile("validplain2",root ,home ,"valid");
+		new Link("validlink",root , home ,"/home/validplain2");
 
 
 		Directory dirA = new Directory(strA,root,home);
 		Directory dirB = new Directory(strB,root,dirA);
 		Directory dirC = new Directory(strC,root,dirB);
 
-		new PlainFile(Y19,root,dirC ,"valid");
-		new PlainFile(Y20,root,dirC ,"valid");
+		new PlainFile(Y22,root,dirC ,"valid");
+		new PlainFile(Y23,root,dirC ,"valid");
 
-		new Link("link1024",root,home , strA+"/"+strB+"/"+strC+"/"+Y19);
-		new Link("link1025", root,home , strA+"/"+strB+"/"+strC+"/"+Y20);
+		new Link("link1024",root, home , strA+"/"+strB+"/"+strC+"/"+Y22);
+		new Link("link1025", root, home , strA+"/"+strB+"/"+strC+"/"+Y23);
 
 		new Link("loop1", root, home,"loop2");
 		new Link("loop2", root, home, "loop3");
 		new Link("loop3", root, home, "loop1");
-
 
 		new Link("linktoplain", root,home, "plain1");
 		new PlainFile("plain1", root , home, "valid");
@@ -89,7 +89,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	public void invalidPermissionsPlain(){
 		WriteFileService service = new WriteFileService(nopermtoken, "validplain", "");
 		service.execute();
-
 	}
 
 	//TEST 2
@@ -200,7 +199,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "link1024", "writelink");
 		service.execute();
 
-		PlainFile pfile = (PlainFile)home.lookup(strA+"/"+strB+"/"+strC+"/"+Y19, root);
+		PlainFile pfile = (PlainFile)home.lookup(strA+"/"+strB+"/"+strC+"/"+Y22, root);
 		assertEquals("1024 characters write not executed successfully", pfile.read(root), "writelink");
 	}
 
