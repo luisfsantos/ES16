@@ -89,6 +89,19 @@ public class Directory extends Directory_Base {
 	}
 
 	public File lookup(String path, User user, int psize) {
+		if (path.startsWith("/")) {
+			if (this != getParent()) {
+				return getParent().lookup(path, user);
+			} else {
+				while (path.startsWith("/")) {
+					path = path.substring(1);
+					psize--;
+					if(psize < 0 )
+						throw new PathTooBigException();
+				}
+			}
+		}
+		
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
