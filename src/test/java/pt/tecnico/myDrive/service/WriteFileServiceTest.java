@@ -70,8 +70,8 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		new Link("loop3", root, home, "loop1");
 
 
-		new Link("linktoplain", home, "plain1");
-		new PlainFile("plain1",home, "valid");
+		new Link("linktoplain", root,home, "plain1");
+		new PlainFile("plain1", root , home, "valid");
 
 		new Link("linktoapp",root ,home, "app1");
 		new App("app1",root ,home, "valid");
