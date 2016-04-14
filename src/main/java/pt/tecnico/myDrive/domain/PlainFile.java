@@ -1,10 +1,13 @@
 package pt.tecnico.myDrive.domain;
 
-import org.apache.commons.lang.ObjectUtils;
+
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.*;
+import pt.tecnico.myDrive.exception.AccessDeniedException;
+
+import pt.tecnico.myDrive.exception.InvalidPermissionException;
+import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -34,14 +37,17 @@ public class PlainFile extends PlainFile_Base {
         throw new IsNotDirOrLinkException(this.getName());
     }
 
-
-    public File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
+    File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
         throw new IsNotDirOrLinkException(this.getName());
     }
 
     @Override
     public String getContent(){
         throw new AccessDeniedException("read", super.getName());
+    }
+    
+    protected String viewContent() {
+    	return super.getContent();
     }
 
     @Override
