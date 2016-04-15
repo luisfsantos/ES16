@@ -71,7 +71,7 @@ public class Directory extends Directory_Base {
 	public File lookup(String path, User user, int psize) {
 		if (path.startsWith("/")) {
 			if (this != getParent()) {
-				return getParent().lookup(path, user);
+				return getParent().lookup(path, user, psize);
 			} else {
 				while (path.startsWith("/")) {
 					path = path.substring(1);
