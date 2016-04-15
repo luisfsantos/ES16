@@ -71,11 +71,13 @@ public class Directory extends Directory_Base {
 	public File lookup(String path, User user, int psize) {
 		if (path.startsWith("/")) {
 			if (this != getParent()) {
+
 				return getParent().lookup(path, user, psize);
 			} else {
 				while (path.startsWith("/")) {
 					if(path.length() == 1)
 						return this;
+
 					path = path.substring(1);
 					psize--;
 					if(psize < 0 )
@@ -83,8 +85,6 @@ public class Directory extends Directory_Base {
 				}
 			}
 		}
-
-
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
@@ -235,5 +235,4 @@ public class Directory extends Directory_Base {
 	}
 
 }
-
 
