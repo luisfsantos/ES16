@@ -33,7 +33,6 @@ public class Login extends Login_Base {
     	}
     }
     
-    
     public boolean validateToken(Long token){
     	return super.getToken().equals(token);
     }
