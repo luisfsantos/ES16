@@ -3,6 +3,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.AccessDeniedException;
+import pt.tecnico.myDrive.service.dto.FileDto;
+
+import java.util.List;
 
 public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 
@@ -27,19 +31,19 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		Link link = new Link("zelda", thunder, currentThorDir, "/root");
 	}
 
-	@Test(expected = AcessDeniedException.class)
-	public void failUserDoesntHaveReadPermissions{
+	@Test(expected = AccessDeniedException.class)
+	public void failUserDoesntHaveReadPermissions () {
 		ListDirectoryService service = new ListDirectoryService(loginBad.getToken());
 		service.execute();
 	}
 
 	@Test
-	public void sucessWithNonEmptyDirectory(){
+	public void successWithNonEmptyDirectory(){
 	
 		ListDirectoryService service = new ListDirectoryService(login.getToken());
 		service.execute();
 
-		List<FileDTO> result = service.result();
+		List<FileDto> result = service.result();
 
 		assertEquals("List with 6 elements",6, result.size());
 
@@ -77,11 +81,11 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 	}
 
 	@Test
-	public void sucessWithEmptyDirectory(){
+	public void successWithEmptyDirectory(){
 		ListDirectoryService service = new ListDirectoryService(login.getToken());
 		service.execute();
 
-		List<FileDTO> result = service.result();
+		List<FileDto> result = service.result();
 
 
 		assertEquals("List with 2 elements",2, result.size());
