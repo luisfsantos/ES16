@@ -48,7 +48,11 @@ public class Link extends Link_Base {
     	max_content -= Math.max(viewContent().lastIndexOf("/"), 0);
     	File endpoint = this.getParent().lookup(viewContent(), user);
     	while ((endpoint instanceof Link) && max_content > 0) {
-    		max_content -= Math.max(((Link) endpoint).viewContent().lastIndexOf("/"), 0);
+    		if (((Link) endpoint).viewContent().contains("/")) {
+    			max_content -= ((Link) endpoint).viewContent().lastIndexOf("/");
+    		} else {
+    			max_content -= ((Link) endpoint).viewContent().length();
+    		}
     		endpoint = endpoint.lookup("", user, max_content);
     	}
     	return endpoint;
