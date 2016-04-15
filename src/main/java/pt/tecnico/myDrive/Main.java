@@ -48,14 +48,12 @@ public class Main {
     		return;
     	}
 
-		User root = Manager.getInstance().fetchUser("root", "***");
-		Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("/", root);
-		log.trace(home.getName());
-    	/*
+		/*
     	log.trace("Manager: " + Manager.getInstance());
     	User root = Manager.getInstance().fetchUser("root", "***");
-    	lsDir(root);
-    	User user1 = new User(Manager.getInstance(), "DAVID");
+
+		lsDir(root);
+		User user1 = new User(Manager.getInstance(), "DAVID");
     	Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
     	App app1 = new App("APPME", user1, home, "batata");    	
@@ -66,7 +64,7 @@ public class Main {
     	
     	System.out.println("========================================================");
     	lsDir(root);
-    	
+
     	log.trace(Manager.getInstance().getRootDirectory().getName());
     	log.trace(home.getName());
     	log.trace(home.getFileSet().size());
@@ -86,18 +84,8 @@ public class Main {
     	
     	Login loginRoot = new Login("root", "***");
     	log.trace(loginRoot.getCurrentUser().getName());
-    	
-    	
-    	
-    	Long invToken = login.getToken();
-    	login.setLastActivity(login.getLastActivity().minusHours(3));
-    	for (int i = 0; i<10; i++) {
-    		Login l = Manager.getInstance().getLoginByToken(invToken);
-    	}
-    	
-    	
 
-    	dir1.remove();*/
+    	dir1.remove();
     	//file1.remove();
     	//app1.remove();
     	//Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();

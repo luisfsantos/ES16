@@ -64,8 +64,14 @@ public class User extends User_Base {
 		this.setUsername(username);
 		this.setManager(manager);
 		this.setUmask(umask);
+
 		Directory home = (Directory) this.getManager().getRootDirectory().getFileByName("home");
-		this.setHome(new Directory(username, this, home));
+		SuperUser superUser = this.getManager().getSuperUser();
+		Directory userHome = new Directory(username, superUser, home);
+		userHome.setOwner(this);
+		userHome.setPermissions(this.getUmask());
+
+		this.setHome(userHome);
 		this.setPassword(password);
 		this.setName(name);
 	}
@@ -163,7 +169,7 @@ public class User extends User_Base {
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(0);
 			case WRITE:
-				return mask.getValue() == file.getPermissions().charAt(1);
+				return 'w' == file.getPermissions().charAt(1);
 			case EXEC:
 				return mask.getValue() == file.getPermissions().charAt(2);
 			case DELETE:
@@ -178,7 +184,7 @@ public class User extends User_Base {
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(4);
 			case WRITE:
-				return mask.getValue() == file.getPermissions().charAt(5);
+				return 'w' == file.getPermissions().charAt(5);
 			case EXEC:
 				return mask.getValue() == file.getPermissions().charAt(6);
 			case DELETE:
