@@ -1,7 +1,14 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.*;
+
+import pt.tecnico.myDrive.exception.AccessDeniedToGetPasswordException;
+import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
+import pt.tecnico.myDrive.exception.EmptyUsernameException;
+import pt.tecnico.myDrive.exception.InvalidHomeDirectoryException;
+import pt.tecnico.myDrive.exception.InvalidPermissionException;
+import pt.tecnico.myDrive.exception.InvalidUsernameException;
+import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Set;

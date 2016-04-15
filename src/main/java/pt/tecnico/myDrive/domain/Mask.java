@@ -1,7 +1,5 @@
 package pt.tecnico.myDrive.domain;
 
-import org.joda.time.DateTime;
-
 public enum Mask{
 	READ('r'),
 	WRITE('w'),
