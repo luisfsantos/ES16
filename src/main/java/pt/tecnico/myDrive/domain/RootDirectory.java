@@ -15,10 +15,7 @@ public class RootDirectory extends RootDirectory_Base {
 		throw new RootDirectoryCannotBeModified();    			
 	}
     
-    @Override
-	public void setLastModified(DateTime dateTime){
-		throw new RootDirectoryCannotBeModified();    			
-	}
+
     
     @Override
 	public void setPermissions(String permissions){

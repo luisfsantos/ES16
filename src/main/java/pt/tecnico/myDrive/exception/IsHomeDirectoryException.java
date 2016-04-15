@@ -1,12 +1,12 @@
 package pt.tecnico.myDrive.exception;
 
-public class NotEmptyDirectoryException extends MyDriveException {
+public class IsHomeDirectoryException extends MyDriveException {
 
     private static final long serialVersionUID = 1L;
 
     private String dirName;
 
-    public NotEmptyDirectoryException(String dirName) {
+    public IsHomeDirectoryException(String dirName) {
         this.dirName = dirName;
     }
 
@@ -16,6 +16,6 @@ public class NotEmptyDirectoryException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "Directory " + getDirName() + " is not empty";
+        return "Directory " + getDirName() + " is a home directory";
     }
 }
