@@ -1,6 +1,5 @@
 package pt.tecnico.myDrive.service;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import pt.tecnico.myDrive.domain.Login;
@@ -15,10 +14,9 @@ public class TokenValidationServiceTest extends AbstractServiceTest {
 	protected void populate() {
 		Login root = new Login("root", "***");
 		expiredSession = root.getToken();
-		//FIXME
-		//root.setLastActivity(new DateTime());
+		root.setLastActivity(root.getLastActivity().minusHours(10));
 	}
-	/*
+	
 	@Test (expected = InvalidTokenException.class)
 	public void noSession() {
 		TokenValidationService validate = new TokenValidationService(noSession);
@@ -29,6 +27,6 @@ public class TokenValidationServiceTest extends AbstractServiceTest {
 	public void expiredSession() {
 		TokenValidationService validate = new TokenValidationService(expiredSession);
 		validate.execute();
-	}*/
+	}
 
 }

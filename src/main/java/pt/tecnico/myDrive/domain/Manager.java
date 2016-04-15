@@ -59,13 +59,16 @@ public class Manager extends Manager_Base {
     	for (Login login: super.getLoginSet()) {
     		if (login.validateToken(token)){
     			if (login.getLastActivity().isBefore(now.minusHours(2))){
-    				throw new InvalidTokenException();
+    				log.warn("Try to accsess with invalid token ");
+    				return null;
     			} else {
+    				login.refreshLoginActivity();
     				return login;
     			}
     		}
     	}
-    	throw new InvalidTokenException();
+    	log.warn("Try to accsess with invalid token ");
+		return null;
     }
     
     public void removeInactiveLogins() {
