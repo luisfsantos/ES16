@@ -58,7 +58,7 @@ public abstract class File extends File_Base {
 		}
 		
 		super.setName(name);
-		this.setLastModified(new DateTime());	
+		this.setLastModified(new DateTime());
 	}
 
 	
@@ -134,7 +134,7 @@ public abstract class File extends File_Base {
 		String path = fileNode.getChildText("path");
 		String name = fileNode.getChildText("name");
 		String owner = fileNode.getChildText("owner");
-		String perm = fileNode.getChildText("perm"); 
+		String perm = fileNode.getChildText("perm");
 
 		if (name == null || path == null) {
 			throw new ImportDocumentException("Missing name or path value");
@@ -142,14 +142,14 @@ public abstract class File extends File_Base {
 
 		setName(new String(name.getBytes("UTF-8")));
 
-
+		
 		User ownerUser = manager.fetchUser(fileNode);
 		if (ownerUser == null) {
 			throw new UserDoesNotExistException(owner);
 		}
 		setOwner(ownerUser);
 		setId(ownerUser.getNextIdCounter());
-
+		
 
 		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
 		else setPermissions("rwxd----");
@@ -159,6 +159,13 @@ public abstract class File extends File_Base {
 		Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(),
 				new String(path.getBytes("UTF-8")));
 		parentDir.addFile(this);
+	}
+
+	public void delete(User user){
+		if(user.hasPermission(this, Mask.DELETE)){
+			this.remove();
+		}
+		else throw new InvalidPermissionException(this.getPermissions());
 	}
 
 	public void remove(){
