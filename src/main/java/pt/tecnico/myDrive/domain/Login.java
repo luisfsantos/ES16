@@ -6,7 +6,6 @@ import java.util.Random;
 import org.joda.time.DateTime;
 
 import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
-import pt.tecnico.myDrive.exception.EmptyUsernameException;
 import pt.tecnico.myDrive.exception.InvalidUsernameOrPasswordException;
 
 public class Login extends Login_Base {
@@ -28,9 +27,6 @@ public class Login extends Login_Base {
     
 
 	private void validateAccount(String username, String password) {
-		if (username == ""){
-			throw new EmptyUsernameException();
-		}
     	User user = Manager.getInstance().fetchUser(username, password);
     	if ( user == null ) {
     		throw new InvalidUsernameOrPasswordException();
