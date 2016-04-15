@@ -17,12 +17,16 @@ public abstract class File extends File_Base {
 
 	
 	protected void initFile(String name, String permission, User owner, Directory parent) {
-		this.setParent(parent);
-		this.setName(name);
-		this.setOwner(owner);
-		this.setPermissions(permission);
-		this.setId(owner.getNextIdCounter());
-		this.setLastModified(new DateTime());
+		if(owner.hasPermission(parent, Mask.WRITE)) {
+			this.setParent(parent);
+			this.setName(name);
+			this.setOwner(owner);
+			this.setPermissions(permission);
+			this.setId(owner.getNextIdCounter());
+			this.setLastModified(new DateTime());
+		} else {
+			throw new AccessDeniedException("create new file " + name +" on", parent.getName());
+		}
 	}
 
 
@@ -38,10 +42,15 @@ public abstract class File extends File_Base {
 	
 	@Override
 	public void setName(String name){
-		
-		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
+		if(name == null)
 			throw new InvalidFileNameException(name);
-		
+		if((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0) ||  name.equals(""))
+			throw new InvalidFileNameException(name);
+		if((getParent().getAbsolutePath().length() + 1 + name.length()) > 1024)
+			throw new InvalidFileNameException(name);
+
+		if (name.equals(".") || name.equals(".."))
+			throw new FileAlreadyExistsInDirectoryException(name, getParent().getName());
 		for (File f : getParent().getFileSet()) {
 			if(!f.equals(this) && f.getName().equals(name)){
 				throw new FileAlreadyExistsInDirectoryException(name, this.getParent().getName());
