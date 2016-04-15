@@ -13,6 +13,8 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 	private Login login;
 	private Login loginBad;
 	private Login emptyLogin;
+	private String appContent="i.am.fully.qualified.name";
+	private String fileContent="I AM FILE CONTENT";
 
 	protected void populate(){
 		Manager manager = Manager.getInstance();
@@ -29,8 +31,8 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		Directory currentThorDir = login.getCurrentDir(); //has permissions for everything
 
 		
-		App app = new App("application", thunder, currentThorDir, "i.am.fully.qualified.name");
-		PlainFile file = new PlainFile("ficheiro",lies, currentThorDir, "I AM FILE CONTENT");
+		App app = new App("application", thunder, currentThorDir, appContent);
+		PlainFile file = new PlainFile("ficheiro",lies, currentThorDir, fileContent);
 		Directory dir = new Directory("pasta",lies, currentThorDir);
 			PlainFile child = new PlainFile("filho",thunder, dir,"I AM IRRELEVANT CONTENT");
 		Link link = new Link("zelda", thunder, currentThorDir, "/root");
@@ -55,19 +57,6 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 
 		assertEquals("List with 6 elements",6, result.size());
 
-		System.out.println(result.get(0).getName());
-		System.out.println(result.get(1).getName());
-		System.out.println(result.get(2).getName());
-		System.out.println(result.get(3).getName());
-		System.out.println(result.get(4).getName());
-		System.out.println(result.get(5).getName());
-
-		System.out.println(result.get(0).getUmask());
-		System.out.println(result.get(1).getUmask());
-		System.out.println(result.get(2).getUmask());
-		System.out.println(result.get(3).getUmask());
-		System.out.println(result.get(4).getUmask());
-		System.out.println(result.get(5).getUmask());
 
 		//DTO should be ordered alphabetically, after . and ..
 		assertEquals("Type of first element is Directory","Directory",result.get(0).getType());
@@ -77,21 +66,21 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		assertEquals("Type of fifth element is Directory","Directory",result.get(4).getType());
 		assertEquals("Type of sixth element is Link","Link",result.get(5).getType());
 
-		/*
+
 		assertEquals("Permissions of first element","rwxdrwxd",result.get(0).getUmask());
 		assertEquals("Permissions of third element","rwxdrwxd",result.get(2).getUmask());
-		assertEquals("Permissions of forth element","rwxdrwx-",result.get(3).getUmask());
-		assertEquals("Permissions of fifth element","rwxdrwx-",result.get(4).getUmask());
+		assertEquals("Permissions of forth element","-wxd-wx-",result.get(3).getUmask());
+		assertEquals("Permissions of fifth element","-wxd-wx-",result.get(4).getUmask());
 		assertEquals("Permissions of sixth element","rwxdrwxd",result.get(5).getUmask());
-		*/
 
-		/*
-		assertEquals("Dimension of first element is 6",6,result.get(0).getDimension());
-		assertEquals("Dimension of third element is 1",1,result.get(2).getDimension());
-		assertEquals("Dimension of forth element is 1",1,result.get(3).getDimension());
-		assertEquals("Dimension of fifth element is 3",3,result.get(4).getDimension());
-		assertEquals("Dimension of sixth element is 1",1,result.get(5).getDimension());
-		*/
+
+
+		assertEquals("Dimension of first element is wrong",6,result.get(0).getDimension());
+		assertEquals("Dimension of third element is wrong",appContent.length(),result.get(2).getDimension());
+		assertEquals("Dimension of forth element is wrong",fileContent.length(),result.get(3).getDimension());
+		assertEquals("Dimension of fifth element is wrong",3,result.get(4).getDimension());
+		assertEquals("Dimension of sixth element is wrong",5,result.get(5).getDimension());
+
 
 		assertEquals("Username of first element is Thor","Thor",result.get(0).getUsername());
 		assertEquals("Username of third element is Thor","Thor",result.get(2).getUsername());
