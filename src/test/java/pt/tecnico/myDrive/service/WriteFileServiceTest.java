@@ -137,7 +137,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		service.execute();
 		
 		PlainFile pfile = (PlainFile)home.lookup("validplain", root);
-
 		assertEquals("Empty write not executed", pfile.read(root), "");
 
 	}
@@ -149,7 +148,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		service.execute();
 		
 		PlainFile pfile = (PlainFile)home.lookup("validplain", root);
-		
 		assertEquals("Write not executed", pfile.read(root), "mydrive");
 
 	}
@@ -182,7 +180,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	public void insuccessWriteDir(){
 		WriteFileService service = new WriteFileService(token, "root", "/home");
 		service.execute();
-
 	}
 
 	//TEST 13
