@@ -36,5 +36,16 @@ public class RootDirectory extends RootDirectory_Base {
     public String getAbsolutePath() {
     	return getName();
     }
+
+	@Override
+	public void remove() { throw new RootDirectoryCannotBeModified();}
+
+	@Override
+	public File getFileByName(String name){
+		if (name.equals("/")){
+			return getParent();
+		}
+		return super.getFileByName(name);
+	}
     
 }

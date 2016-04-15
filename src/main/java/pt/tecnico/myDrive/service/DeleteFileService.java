@@ -12,15 +12,14 @@ public class DeleteFileService extends TokenValidationService {
 	
 	public DeleteFileService(Long token, String fname) {
 		super(token);
-		super.dispatch();
 		fileName = fname;
-		//session.setLastActivity(new DateTime());
 	}
 	
 	
 	@Override 
 	protected void dispatch() throws MyDriveException {
-		if (fileName.equals(".") || fileName.equals("..")|| fileName.equals("/")){
+		super.dispatch();
+		if (fileName.equals(".") || fileName.equals("..")){
 			throw new CannotRemoveDirectoryException(fileName);
 		}
 		User user = session.getCurrentUser();
