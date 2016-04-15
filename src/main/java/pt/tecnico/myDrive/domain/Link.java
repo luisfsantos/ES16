@@ -30,12 +30,24 @@ public class Link extends Link_Base {
     
     @Override
     public String read(User user) {
-    	File endpoint = this.getParent().lookup(viewContent(), user);
+    	File endpoint = this.resolveLink(user);
     	if (endpoint == null) {
     		throw new CannotReadException("File does not exist");
     	} else {
     		return endpoint.read(user);
     	}
+    }
+    
+    public File resolveLink(User user) {
+    	int max_content = 1024;
+    	max_content -= Math.max(viewContent().lastIndexOf("/"), 0);
+    	File endpoint = this.getParent().lookup(viewContent(), user);
+    	while ((endpoint instanceof Link) && max_content > 0) {
+    		max_content -= Math.max(((Link) endpoint).viewContent().lastIndexOf("/"), 0);
+    		endpoint = endpoint.lookup("", user, max_content);
+    	}
+    	return endpoint;
+
     }
     
     @Override
