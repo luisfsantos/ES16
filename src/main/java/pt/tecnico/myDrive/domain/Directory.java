@@ -71,11 +71,13 @@ public class Directory extends Directory_Base {
 	public File lookup(String path, User user, int psize) {
 		if (path.startsWith("/")) {
 			if (this != getParent()) {
+
 				return getParent().lookup(path, user, psize);
 			} else {
 				while (path.startsWith("/")) {
 					if(path.length() == 1)
 						return this;
+
 					path = path.substring(1);
 					psize--;
 					if(psize < 0 )
@@ -83,8 +85,6 @@ public class Directory extends Directory_Base {
 				}
 			}
 		}
-
-
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
@@ -119,7 +119,17 @@ public class Directory extends Directory_Base {
 			throw new AccessDeniedException("search", getName());
 		}
 	}
-	
+
+	@Override
+	public int getSize() {
+		return getFileSet().size() + 2;
+	}
+
+	@Override
+	public String getType() {
+		return "Directory";
+	}
+
 	@Override
 	public void setHomeOwner(User homeOwner) {
 		homeOwner.setHome(this);
@@ -167,21 +177,13 @@ public class Directory extends Directory_Base {
 		throw new CannotReadException("A directory cannot be read");
 	}
 
-	public List<File> getOrderByNameFileList(User user) {
+	public Set<File> getFileSet(User user) {
 		if (user.hasPermission(this, Mask.READ)) {
-			List<File> files = new ArrayList<File>(super.getFileSet());
-
-			Collections.sort(files, new Comparator<File>() {
-				public int compare(File f1, File f2) {
-					return f1.getName().compareToIgnoreCase(f2.getName());
-				}
-			});
-
-			return files;
+			return super.getFileSet();
 		} else {
 			throw new AccessDeniedException("list directory contents", super.getName());
 		}
-		
+
 	}
 
 	protected Directory createPath(User owner, String path) {
@@ -269,5 +271,4 @@ public class Directory extends Directory_Base {
 	}
 
 }
-
 

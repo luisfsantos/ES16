@@ -22,13 +22,18 @@ public class Link extends Link_Base {
         setContent(value);
         this.xmlImport(manager, linkNode);
     }
-    
+
     protected File lookup(String path, User user, int psize) {
     	int psize_resolved = psize + this.getName().length() + 1;
     	return this.getParent().lookup(this.viewContent().concat("/" + path), user, psize_resolved);
     }
-    
-    @Override
+
+	@Override
+	public String getType() {
+		return "Link";
+	}
+
+	@Override
     public String read(User user) {
     	File endpoint = this.resolveLink(user);
     	if (endpoint == null) {
