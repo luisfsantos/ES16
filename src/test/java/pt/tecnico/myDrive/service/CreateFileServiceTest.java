@@ -29,6 +29,8 @@ public class CreateFileServiceTest extends TokenValidationServiceTest {
 	@Override
 	protected void populate() {
 		Manager m = Manager.getInstance();
+		super.populate();
+
 		new User(m, "lads");
 		Login l = new Login("root", "***");
 		root = l.getCurrentUser();
