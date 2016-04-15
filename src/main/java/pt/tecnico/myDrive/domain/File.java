@@ -174,6 +174,7 @@ public abstract class File extends File_Base {
 		deleteDomainObject();
 	}
 
+	public abstract void write(User u, String content);
 
 	public abstract File lookup(String path, User user);
 	abstract File lookup(String path, User user, int psize);

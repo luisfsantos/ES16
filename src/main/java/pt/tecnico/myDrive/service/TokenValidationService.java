@@ -10,8 +10,8 @@ public class TokenValidationService extends MyDriveService {
 	private Long token;
 
 	public TokenValidationService(long token) {
-		this.token = token;
-	}
+        this.token = token;
+    }
 
 	@Override
 	protected void dispatch() throws MyDriveException {

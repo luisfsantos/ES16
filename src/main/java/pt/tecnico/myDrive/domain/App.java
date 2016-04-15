@@ -1,6 +1,9 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.InvalidContentException;
+import pt.tecnico.myDrive.exception.InvalidPermissionException;
 import pt.tecnico.myDrive.exception.IsNotJavaFullyQualifiedNameException;
 
 import java.io.UnsupportedEncodingException;
@@ -70,5 +73,15 @@ public class App extends App_Base {
 		}
 
 		super.setContent(content);
+	}
+
+	@Override
+	public void write(User u, String content){
+		if (u.hasPermission(this, Mask.WRITE)) {
+			setContent(content);
+		}
+		else {
+			throw new InvalidPermissionException("Write in App"); //not sure about argument
+		}
 	}
 }

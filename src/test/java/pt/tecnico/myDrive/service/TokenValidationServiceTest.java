@@ -9,7 +9,7 @@ public abstract class TokenValidationServiceTest extends AbstractServiceTest {
 
 	Long noSession = 1L;
 	Long expiredSession;
-	
+
 	@Override
 	protected void populate() {
 		Login root = new Login("root", "***");

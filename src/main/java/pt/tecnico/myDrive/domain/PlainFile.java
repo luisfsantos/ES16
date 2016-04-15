@@ -5,6 +5,8 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.tecnico.myDrive.exception.AccessDeniedException;
+
+import pt.tecnico.myDrive.exception.InvalidPermissionException;
 import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 
 import java.io.UnsupportedEncodingException;
@@ -19,7 +21,7 @@ public class PlainFile extends PlainFile_Base {
         this.initFile(name, owner.getUmask(), owner, parent);
         this.setContent(content);
     }
-    
+
     public PlainFile(String name, Directory parent, String content) {
         this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
         this.setContent(content);
@@ -32,18 +34,18 @@ public class PlainFile extends PlainFile_Base {
     }
 
     public File lookup(String path, User user) throws IsNotDirOrLinkException{
-    		throw new IsNotDirOrLinkException(this.getName());
+        throw new IsNotDirOrLinkException(this.getName());
     }
 
-    File lookup(String path, User user,int psize) throws IsNotDirOrLinkException{
+    File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
         throw new IsNotDirOrLinkException(this.getName());
     }
 
     @Override
     public String getContent(){
-    	throw new AccessDeniedException("read", super.getName());
+        throw new AccessDeniedException("read", super.getName());
     }
-    
+
     @Override
     public int getSize() {
         return viewContent().length();
@@ -60,30 +62,38 @@ public class PlainFile extends PlainFile_Base {
 
     @Override
     public void setContent(String content){
-    	super.setContent(content);
-    	this.setLastModified(new DateTime());
+        super.setContent(content);
+        this.setLastModified(new DateTime());
     }
-    
+
     public String read(User user) {
-    	if (user.hasPermission(this, Mask.READ)) {
-    		return super.getContent();
-    	} else {
-    		throw new AccessDeniedException("read", super.getName());
-    	}
+        if (user.hasPermission(this, Mask.READ)) {
+            return super.getContent();
+        } else {
+            throw new AccessDeniedException("read", super.getName());
+        }
     }
 
-	@Override
-	public Element xmlExport() {
-		Element plainElement = super.xmlExport();
-		plainElement.setName("plain");
+    @Override
+    public Element xmlExport() {
+        Element plainElement = super.xmlExport();
+        plainElement.setName("plain");
 
-		Element contentsElement = new Element("contents");
-		contentsElement.setText(getContent());
-		plainElement.addContent(contentsElement);
+        Element contentsElement = new Element("contents");
+        contentsElement.setText(getContent());
+        plainElement.addContent(contentsElement);
 
-		return plainElement;
-	}
+        return plainElement;
+    }
 
+    public void write(User u, String content){
+        if (u.hasPermission(this, Mask.WRITE)) {
+            setContent(content);
+        }
+        else {
+            throw new InvalidPermissionException("Write in App"); //not sure about argument
+        }
+    }
 }
 
 

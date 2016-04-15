@@ -1,17 +1,19 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import pt.tecnico.myDrive.exception.*;
+
 
 import pt.tecnico.myDrive.exception.CannotReadException;
 import java.io.UnsupportedEncodingException;
 
 public class Link extends Link_Base {
-    
+
     public Link(String name, User owner, Directory parent, String content) {
         this.initFile(name, owner.getUmask(), owner, parent);
         this.setContent(content);
     }
-    
+
     public Link(String name, Directory parent, String content) {
         this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
         this.setContent(content);
@@ -63,9 +65,24 @@ public class Link extends Link_Base {
 	public Element xmlExport() {
     	Element linkElement = super.xmlExport();
 		linkElement.setName("link");
-		
+
 		linkElement.getChild("contents").setName("value");
-		
+
 		return linkElement;
 	}
+
+    @Override
+    public void write(User u, String content) {
+            File f = this.resolveLink(u);
+            if (f == null) {
+                throw new CannotReadException("File does not exist");
+            } else {
+                f.write(u,content);
+            }
+
+    }
+
+
+
+
 }

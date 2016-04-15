@@ -9,6 +9,8 @@ import pt.tecnico.myDrive.exception.CannotReadException;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.IsHomeDirectoryException;
 import pt.tecnico.myDrive.exception.PathTooBigException;
+import pt.tecnico.myDrive.exception.InvalidWriteException;
+
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -71,13 +73,11 @@ public class Directory extends Directory_Base {
 	public File lookup(String path, User user, int psize) {
 		if (path.startsWith("/")) {
 			if (this != getParent()) {
-
 				return getParent().lookup(path, user, psize);
 			} else {
 				while (path.startsWith("/")) {
 					if(path.length() == 1)
 						return this;
-
 					path = path.substring(1);
 					psize--;
 					if(psize < 0 )
@@ -155,7 +155,7 @@ public class Directory extends Directory_Base {
 	public User getHomeOwner() {
 		throw new AccessDeniedException("get home owner", "Directory");
 	}
-	
+
 	@Override
 	public void remove() throws IsHomeDirectoryException {
 		
@@ -215,62 +215,28 @@ public class Directory extends Directory_Base {
 		}
 	}
 
-	public void createFile(User user, String name, String type, String contents) {
-		if(user.hasPermission(this, Mask.WRITE)) {
-			/*
-			if(name.indexOf('/') != -1 || name.indexOf('\0') != -1) {
-				throw new InvalidFileNameException(name);
-			}
-			*/
-			if((getAbsolutePath().length() + 1 + name.length()) > 1024 ) {
-				throw new PathTooBigException();
-			}
-
-			switch (type) {
-				case "app":
-					App app = new App(name, user, this, contents);
-					addFile(app);
-					break;
-				case "dir":
-					Directory directory = new Directory(name, user, this);
-					addFile(directory);
-					break;
-				case "link":
-					Link link = new Link(name, user, this, contents);
-					addFile(link);
-					break;
-				case "plain":
-					PlainFile plainFile = new PlainFile(name, user, this, contents);
-					addFile(plainFile);
-					break;
-				default:
-					//FIXME
-					break;
-			}
-		} else {
-			//FIXME
-		}
+	public void write(User u, String content){throw new InvalidWriteException();
 	}
-	
+
 	@Override
 	public Element xmlExport() {
 		Element dirElement = super.xmlExport();
 		dirElement.setName("dir");
 		return dirElement;
 	}
-	
+
 	@Override
 	protected void xmlExport(Element myDrive) {
 		if (!getFileSet().isEmpty()) {
 			for(File f: getFileSet()) {
 				if (f.getId() > 2)
-					myDrive.addContent(f.xmlExport());	
+					myDrive.addContent(f.xmlExport());
 			}
 			for(File f: getFileSet()) {
 				if (f!=this)
 					f.xmlExport(myDrive);
 			}
-		}	
+		}
 	}
 
 }
