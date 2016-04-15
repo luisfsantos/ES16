@@ -161,5 +161,6 @@ public abstract class File extends File_Base {
 	public abstract File lookup(String path, User user);
 	abstract File lookup(String path, User user, int psize);
 	public abstract int getSize();
+	public abstract String getType();
 }
 

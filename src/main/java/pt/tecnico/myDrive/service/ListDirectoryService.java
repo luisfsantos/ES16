@@ -24,43 +24,20 @@ public class ListDirectoryService extends TokenValidationService {
         Directory parent = currDir.getParent();
         lsDir = new ArrayList<>();
 
-        FileDto newDto = new FileDto(
-                "Directory",
-                currDir.getPermissions(),
-                currDir.getSize(),
-                currDir.getOwner().getName(),
-                currDir.getId(),
-                currDir.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"),
-                ".");
+        FileDto newDto = new FileDto("Directory", currDir.getPermissions(), currDir.getSize(),
+                currDir.getOwnerUsername(), currDir.getId(),
+                currDir.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"), ".");
         lsDir.add(newDto);
 
-        newDto = new FileDto(
-                "Directory",
-                parent.getPermissions(),
-                parent.getSize(),
-                parent.getOwner().getName(),
-                parent.getId(),
-                parent.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"),
-                "..");
+        newDto = new FileDto("Directory", parent.getPermissions(), parent.getSize(), parent.getOwnerUsername(),
+                parent.getId(), parent.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"), "..");
         lsDir.add(newDto);
 
         Set<File> dirContent = currDir.getFileSet(session.getCurrentUser());
         for (File f : dirContent) {
-            String type;
 
-            if (f instanceof App) type = "App";
-            else if (f instanceof Link) type = "Link";
-            else if (f instanceof PlainFile) type = "PlainFile";
-            else type = "Directory";
-
-            newDto = new FileDto(
-                    type,
-                    f.getPermissions(),
-                    f.getSize(),
-                    f.getOwner().getName(),
-                    f.getId(),
-                    f.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"),
-                    f.getName());
+            newDto = new FileDto(f.getType(), f.getPermissions(), f.getSize(), f.getOwnerUsername(), f.getId(),
+                    f.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"), f.getName());
             lsDir.add(newDto);
         }
 

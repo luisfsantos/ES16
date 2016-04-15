@@ -121,7 +121,12 @@ public class Directory extends Directory_Base {
 
 	@Override
 	public int getSize() {
-		return getFile().size() + 2;
+		return getFileSet().size() + 2;
+	}
+
+	@Override
+	public String getType() {
+		return "Directory";
 	}
 
 	@Override

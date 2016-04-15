@@ -47,10 +47,15 @@ public class PlainFile extends PlainFile_Base {
 
     @Override
     public int getSize() {
-        return getContent().length();
+        return viewContent().length();
     }
 
-        protected String viewContent() {
+    @Override
+    public String getType() {
+        return "PlainFile";
+    }
+
+    protected String viewContent() {
     	return super.getContent();
     }
 

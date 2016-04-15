@@ -49,6 +49,6 @@ public class FileDto implements Comparable<FileDto> {
 
     @Override
     public int compareTo(FileDto other) {
-        return getName().compareTo(other.getName());
+        return getName().compareToIgnoreCase(other.getName());
     }
 }
