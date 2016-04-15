@@ -46,7 +46,6 @@ public class Main {
     public static void setup() {	
     	log.trace("Manager: " + Manager.getInstance());
     	User root = Manager.getInstance().getUserByUsername("root");
-    	lsDir(root);
     	User user1 = new User(Manager.getInstance(), "DAVID");
     	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
@@ -57,7 +56,6 @@ public class Main {
     	App app2 = new App("binapp", user1, dir1, "batata");  
     	
     	System.out.println("========================================================");
-    	lsDir(root);
     	
     	log.trace(Manager.getInstance().getRootDirectory().getName());
     	log.trace(home.getName());
@@ -85,7 +83,6 @@ public class Main {
     	//Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
 
     	System.out.println("========================================================");
-    	lsDir(root); 
       	
         /*DAVID
 	   	User user1 = new User(Manager.getInstance(), "DAVID");
@@ -101,16 +98,6 @@ public class Main {
 		
 
     	//xmlPrint();
-	}
-
-	public static void lsDir(User user) {
-		Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("home");
-		List<File> files = home.getOrderByNameFileList(user);
-		System.out.println(".");
-		System.out.println("..");
-		for (File f : files) {
-			System.out.println(f.getName());
-		}
 	}
 
 	@Atomic

@@ -36,10 +36,15 @@ public class PlainFile extends PlainFile_Base {
     public File lookup(String path) throws IsNotDirOrLinkException{
     		throw new IsNotDirOrLinkException(this.getName());
     }
-    
+
     @Override
     public String getContent(){
     	throw new AccessDeniedException("read", super.getName());
+    }
+
+    @Override
+    public int getSize() {
+        return getContent().length();
     }
     
     @Override

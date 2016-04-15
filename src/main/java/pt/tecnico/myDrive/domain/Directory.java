@@ -83,7 +83,12 @@ public class Directory extends Directory_Base {
 
 		return null;
 	}
-	
+
+	@Override
+	public int getSize() {
+		return getFile().size() + 2;
+	}
+
 	@Override
 	public void setHomeOwner(User homeOwner) {
 		homeOwner.setHome(this);
@@ -126,21 +131,13 @@ public class Directory extends Directory_Base {
 		throw new CannotReadException("A directory cannot be read");
 	}
 
-	public List<File> getOrderByNameFileList(User user) {
+	public Set<File> getFileSet(User user) {
 		if (user.hasPermission(this, Mask.READ)) {
-			List<File> files = new ArrayList<File>(super.getFileSet());
-
-			Collections.sort(files, new Comparator<File>() {
-				public int compare(File f1, File f2) {
-					return f1.getName().compareToIgnoreCase(f2.getName());
-				}
-			});
-
-			return files;
+			return super.getFileSet();
 		} else {
 			throw new AccessDeniedException("list directory contents", super.getName());
 		}
-		
+
 	}
 
 	protected Directory createPath(User owner, String path) {
