@@ -1,7 +1,5 @@
 package pt.tecnico.myDrive.domain;
 
-import org.joda.time.DateTime;
-
 import pt.tecnico.myDrive.exception.RootDirectoryCannotBeModified;
 
 public class RootDirectory extends RootDirectory_Base {
