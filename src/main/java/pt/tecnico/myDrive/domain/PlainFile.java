@@ -36,19 +36,29 @@ public class PlainFile extends PlainFile_Base {
     		throw new IsNotDirOrLinkException(this.getName());
     }
 
-    File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
+    File lookup(String path, User user,int psize) throws IsNotDirOrLinkException{
         throw new IsNotDirOrLinkException(this.getName());
     }
-    
+
     @Override
     public String getContent(){
     	throw new AccessDeniedException("read", super.getName());
     }
-    
-        protected String viewContent() {
+
+    @Override
+    public int getSize() {
+        return viewContent().length();
+    }
+
+    @Override
+    public String getType() {
+        return "PlainFile";
+    }
+
+    protected String viewContent() {
     	return super.getContent();
     }
-    
+
     @Override
     public void setContent(String content){
     	super.setContent(content);
@@ -75,7 +85,6 @@ public class PlainFile extends PlainFile_Base {
 		return plainElement;
 	}
 
-	
 }
 
 

@@ -15,14 +15,18 @@ import java.util.regex.Pattern;
 
 public abstract class File extends File_Base {
 
-
+	
 	protected void initFile(String name, String permission, User owner, Directory parent) {
-		this.setParent(parent);
-		this.setName(name);
-		this.setOwner(owner);
-		this.setPermissions(permission);
-		this.setId(owner.getNextIdCounter());
-		this.setLastModified(new DateTime());
+		if(owner.hasPermission(parent, Mask.WRITE)) {
+			this.setParent(parent);
+			this.setName(name);
+			this.setOwner(owner);
+			this.setPermissions(permission);
+			this.setId(owner.getNextIdCounter());
+			this.setLastModified(new DateTime());
+		} else {
+			throw new AccessDeniedException("create new file " + name +" on", parent.getName());
+		}
 	}
 
 
@@ -34,30 +38,35 @@ public abstract class File extends File_Base {
 		super.setId(superUser.getNextIdCounter());
 		super.setLastModified(new DateTime());
 	}
-
-
+	
+	
 	@Override
 	public void setName(String name){
-
-		if ((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0))
+		if(name == null)
+			throw new InvalidFileNameException(name);
+		if((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0) ||  name.equals(""))
+			throw new InvalidFileNameException(name);
+		if((getParent().getAbsolutePath().length() + 1 + name.length()) > 1024)
 			throw new InvalidFileNameException(name);
 
+		if (name.equals(".") || name.equals(".."))
+			throw new FileAlreadyExistsInDirectoryException(name, getParent().getName());
 		for (File f : getParent().getFileSet()) {
 			if(!f.equals(this) && f.getName().equals(name)){
 				throw new FileAlreadyExistsInDirectoryException(name, this.getParent().getName());
 			}
 		}
-
+		
 		super.setName(name);
 		this.setLastModified(new DateTime());
 	}
 
-
+	
 	@Override
 	public void setParent(Directory parent){
 		parent.addFile(this);
 	}
-
+	
 
 	@Override
 	public void setOwner(User user) {
@@ -99,7 +108,7 @@ public abstract class File extends File_Base {
 	public Element xmlExport() {
 		Element element = new Element("file");
 		element.setAttribute("id", getId().toString());
-
+		
 		Element pathElement = new Element("path");
 		pathElement.setText(getAbsolutePath());
 		element.addContent(pathElement);
@@ -118,7 +127,7 @@ public abstract class File extends File_Base {
 
 		return element;
 	}
-
+	
 	protected void xmlExport(Element myDrive) {}
 
 	public void xmlImport(Manager manager, Element fileNode) throws UnsupportedEncodingException {
@@ -133,14 +142,14 @@ public abstract class File extends File_Base {
 
 		setName(new String(name.getBytes("UTF-8")));
 
-
+		
 		User ownerUser = manager.fetchUser(fileNode);
 		if (ownerUser == null) {
 			throw new UserDoesNotExistException(owner);
 		}
 		setOwner(ownerUser);
 		setId(ownerUser.getNextIdCounter());
-
+		
 
 		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
 		else setPermissions("rwxd----");
@@ -165,11 +174,10 @@ public abstract class File extends File_Base {
 		deleteDomainObject();
 	}
 
+
 	public abstract File lookup(String path, User user);
-
-
 	abstract File lookup(String path, User user, int psize);
-
-
+	public abstract int getSize();
+	public abstract String getType();
 }
 
