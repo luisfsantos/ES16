@@ -19,15 +19,16 @@ public class Login extends Login_Base {
     		token = new BigInteger(64, new Random()).longValue();
     	}
     	super.setToken(token);
-    	this.setLastActivity(new DateTime());
+    	super.setLastActivity(new DateTime());
     	super.setManager(Manager.getInstance());
-    	super.setCurrentUser(Manager.getInstance().getUserByUsername(username));
-    	this.setCurrentDir(Manager.getInstance().getUserByUsername(username).getHome());
+    	super.setCurrentUser(Manager.getInstance().fetchUser(username, password));
+    	this.setCurrentDir(Manager.getInstance().fetchUser(username, password).getHome());
     }
     
-    private void validateAccount(String username, String password) {
-    	User user = Manager.getInstance().getUserByUsername(username);
-    	if ( user == null || !user.validatePassword(password)) {
+
+	private void validateAccount(String username, String password) {
+    	User user = Manager.getInstance().fetchUser(username, password);
+    	if ( user == null ) {
     		throw new InvalidUsernameOrPasswordException();
     	}
     }
@@ -50,6 +51,19 @@ public class Login extends Login_Base {
     @Override
     public void setCurrentUser(User user){
     	throw new AccessDeniedToManipulateLoginException();
+    }
+    
+    @Override
+	public void setLastActivity(DateTime lastActivity) {
+    	if (lastActivity.isBefore(getLastActivity())) {
+    		super.setLastActivity(lastActivity);
+    	} else {
+    		throw new AccessDeniedToManipulateLoginException();
+    	}
+	}
+    
+    void refreshLoginActivity() {
+    	super.setLastActivity(new DateTime());
     }
     
     public void remove(){

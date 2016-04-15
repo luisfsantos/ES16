@@ -2,7 +2,13 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 import org.joda.time.DateTime;
-import pt.tecnico.myDrive.exception.*;
+
+import pt.tecnico.myDrive.exception.AccessDeniedException;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.InvalidFileNameException;
+import pt.tecnico.myDrive.exception.InvalidPermissionException;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
@@ -62,6 +68,15 @@ public abstract class File extends File_Base {
 		}
 	}
 
+	@Override
+	public User getOwner() {
+		throw new AccessDeniedException("get owner", "File");
+	}
+
+	public String getOwnerUsername() {
+		return super.getOwner().getUsername();
+	}
+
 	public abstract String read(User user);
 
 	@Override
@@ -94,7 +109,7 @@ public abstract class File extends File_Base {
 		element.addContent(nameElement);
 
 		Element ownerElement = new Element("owner");
-		ownerElement.setText(getOwner().getName());
+		ownerElement.setText(getOwnerUsername());
 		element.addContent(ownerElement);
 
 		Element permissionElement = new Element("perm");
@@ -118,14 +133,14 @@ public abstract class File extends File_Base {
 
 		setName(new String(name.getBytes("UTF-8")));
 
-		if(owner != null) {
-			User ownerUser = manager.getUserByUsername(new String(owner.getBytes("UTF-8")));
-			if (ownerUser == null) {
-				throw new UserDoesNotExistException(owner);
-			}
-			setOwner(ownerUser);
-			setId(ownerUser.getNextIdCounter());
+
+		User ownerUser = manager.fetchUser(fileNode);
+		if (ownerUser == null) {
+			throw new UserDoesNotExistException(owner);
 		}
+		setOwner(ownerUser);
+		setId(ownerUser.getNextIdCounter());
+
 
 		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
 		else setPermissions("rwxd----");
@@ -143,8 +158,8 @@ public abstract class File extends File_Base {
 		deleteDomainObject();
 	}
 	
-	public abstract File lookup(String path);
+	public abstract File lookup(String path, User user);
+	abstract File lookup(String path, User user, int psize);
 	public abstract int getSize();
-
 }
 

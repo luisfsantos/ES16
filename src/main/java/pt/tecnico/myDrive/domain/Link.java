@@ -23,14 +23,31 @@ public class Link extends Link_Base {
         this.xmlImport(manager, linkNode);
     }
     
+    protected File lookup(String path, User user, int psize) {
+    	int psize_resolved = psize + this.getName().length() + 1;
+    	return this.getParent().lookup(this.viewContent().concat("/" + path), user, psize_resolved);
+    }
+    
     @Override
     public String read(User user) {
-    	File endpoint = lookup(super.getContent());
+    	File endpoint = this.resolveLink(user);
     	if (endpoint == null) {
     		throw new CannotReadException("File does not exist");
     	} else {
     		return endpoint.read(user);
     	}
+    }
+    
+    public File resolveLink(User user) {
+    	int max_content = 1024;
+    	max_content -= Math.max(viewContent().lastIndexOf("/"), 0);
+    	File endpoint = this.getParent().lookup(viewContent(), user);
+    	while ((endpoint instanceof Link) && max_content > 0) {
+    		max_content -= Math.max(((Link) endpoint).viewContent().lastIndexOf("/"), 0);
+    		endpoint = endpoint.lookup("", user, max_content);
+    	}
+    	return endpoint;
+
     }
     
     @Override

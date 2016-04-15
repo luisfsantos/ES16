@@ -1,7 +1,14 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.*;
+
+import pt.tecnico.myDrive.exception.AccessDeniedToGetPasswordException;
+import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
+import pt.tecnico.myDrive.exception.EmptyUsernameException;
+import pt.tecnico.myDrive.exception.InvalidHomeDirectoryException;
+import pt.tecnico.myDrive.exception.InvalidPermissionException;
+import pt.tecnico.myDrive.exception.InvalidUsernameException;
+import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
@@ -48,7 +55,7 @@ public class User extends User_Base {
 			Directory homeDir = new Directory(dirName, this, parentDir);
 			setHome(homeDir);
 		} else {
-			Directory homeDir = (Directory) manager.getRootDirectory().lookup("home");
+			Directory homeDir = (Directory) manager.getRootDirectory().getFileByName("home");
 			setHome(new Directory(username, this, homeDir));
 		}
 	}
@@ -57,7 +64,7 @@ public class User extends User_Base {
 		this.setUsername(username);
 		this.setManager(manager);
 		this.setUmask(umask);
-		Directory home = (Directory) this.getManager().getRootDirectory().lookup("home");
+		Directory home = (Directory) this.getManager().getRootDirectory().getFileByName("home");
 		this.setHome(new Directory(username, this, home));
 		this.setPassword(password);
 		this.setName(name);
@@ -110,7 +117,7 @@ public class User extends User_Base {
 		if (home == null) {
 			throw new InvalidHomeDirectoryException("null");
 		} else {
-			if (this.equals(home.getOwner())) {
+			if (this.getUsername().equals(home.getOwnerUsername())) {
 				super.setHome(home);
 			} else {
 				throw new InvalidHomeDirectoryException(home.getName());
@@ -147,7 +154,7 @@ public class User extends User_Base {
 
 
 	public boolean hasPermission(File file, Mask mask){
-		if(this.equals(file.getOwner())) return ownerHasPermission(file, mask);
+		if(this.getUsername().equals(file.getOwnerUsername())) return ownerHasPermission(file, mask);
 		else { return allHasPermission(file, mask);}
 	}
 
@@ -181,8 +188,8 @@ public class User extends User_Base {
 		}
 	}
 
-	public boolean equals(User user){
-		return this.getUsername().equals(user.getUsername());
+	public boolean equals(String username){
+		return this.getUsername().equals(username);
 	}
 
 	public Element xmlExport() {

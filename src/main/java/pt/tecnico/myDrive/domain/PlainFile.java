@@ -1,12 +1,11 @@
 package pt.tecnico.myDrive.domain;
 
-import org.apache.commons.lang.ObjectUtils;
+
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.tecnico.myDrive.exception.AccessDeniedException;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
+
 import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 
 import java.io.UnsupportedEncodingException;
@@ -33,8 +32,12 @@ public class PlainFile extends PlainFile_Base {
         this.xmlImport(manager, plainNode);
     }
 
-    public File lookup(String path) throws IsNotDirOrLinkException{
+    public File lookup(String path, User user) throws IsNotDirOrLinkException{
     		throw new IsNotDirOrLinkException(this.getName());
+    }
+
+    File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
+        throw new IsNotDirOrLinkException(this.getName());
     }
 
     @Override
@@ -46,7 +49,11 @@ public class PlainFile extends PlainFile_Base {
     public int getSize() {
         return getContent().length();
     }
-    
+
+        protected String viewContent() {
+    	return super.getContent();
+    }
+
     @Override
     public void setContent(String content){
     	super.setContent(content);
