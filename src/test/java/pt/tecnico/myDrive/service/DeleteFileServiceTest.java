@@ -14,9 +14,10 @@ import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.CannotRemoveDirectoryException;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.IsHomeDirectoryException;
+import pt.tecnico.myDrive.exception.RootDirectoryCannotBeModified;
 import pt.tecnico.myDrive.exception.InvalidPermissionException;
 
-public class DeleteFileServiceTest extends AbstractServiceTest {
+public class DeleteFileServiceTest extends TokenValidationServiceTest {
 	private Long rootToken;
 	private Long userToken;
 	private Login rootLogin;
@@ -32,6 +33,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 	
 	@Override
 	protected void populate() {
+		super.populate();
 		Manager manager = Manager.getInstance();
 		
 		rootLogin = new Login("root", "***");
@@ -42,6 +44,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 				
 		rootDirectory = manager.getRootDirectory();
 		homeDir = (Directory) manager.getRootDirectory().lookup("home", rootLogin.getCurrentUser());
+		homeDir.setPermissions("rwxdrwxd");
 		
 		noPermissionFile = new PlainFile("noPermissionFile", rootLogin.getCurrentUser(), homeDir, "contentPlainFile1");
 		dirContent = new Directory("dirContent", userLogin.getCurrentUser(), homeDir);
@@ -83,7 +86,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 	}
 	
 	// 7
-	@Test(expected = CannotRemoveDirectoryException.class)
+	@Test(expected = RootDirectoryCannotBeModified.class)
 	public void rootDirectory(){
 		rootLogin.setCurrentDir(rootDirectory);
 		DeleteFileService service = new DeleteFileService(rootToken, "/");
