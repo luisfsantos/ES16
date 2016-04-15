@@ -45,7 +45,17 @@ public class PlainFile extends PlainFile_Base {
     public String getContent(){
         throw new AccessDeniedException("read", super.getName());
     }
-    
+
+    @Override
+    public int getSize() {
+        return viewContent().length();
+    }
+
+    @Override
+    public String getType() {
+        return "PlainFile";
+    }
+
     protected String viewContent() {
     	return super.getContent();
     }

@@ -39,12 +39,24 @@ public class App extends App_Base {
 	}
 
 	@Override
+	public String getType() {
+		return "App";
+	}
+
+	@Override
 	public void setContent(String content) {
+		if(content == null) return;
 
 		String[] reservedWords = {"import","true", "null"};
+		boolean isJavaFullyQualifiedName;
 
-		boolean isJavaFullyQualifiedName =
-				Pattern.matches("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*", content);
+		if(content.indexOf('.') == -1) {
+			isJavaFullyQualifiedName =
+					Pattern.matches("[\\p{Lu}_$][\\p{L}\\p{N}_$]*", content);
+		} else {
+			isJavaFullyQualifiedName =
+					Pattern.matches("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*", content);
+		}
 
 		boolean containsReservedWords = false;
 		for(String word : reservedWords) {
@@ -57,8 +69,9 @@ public class App extends App_Base {
 		}
 
 		if (!isJavaFullyQualifiedName || containsReservedWords) {
-			throw new InvalidContentException(this.getName(),content);  //IsNotJavaFullyQualifiedNameException(content);
+			throw new IsNotJavaFullyQualifiedNameException(content);
 		}
+
 		super.setContent(content);
 	}
 

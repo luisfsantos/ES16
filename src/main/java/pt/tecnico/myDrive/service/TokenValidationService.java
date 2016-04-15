@@ -6,12 +6,10 @@ import pt.tecnico.myDrive.exception.InvalidTokenException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class TokenValidationService extends MyDriveService {
+	protected Login session;
+	private Long token;
 
-    protected Login session;
-    private long token;
-
-
-    public TokenValidationService(long token) {
+	public TokenValidationService(long token) {
         this.token = token;
     }
 
@@ -23,6 +21,5 @@ public class TokenValidationService extends MyDriveService {
 			throw new InvalidTokenException();
 		}
 	}
-
 
 }

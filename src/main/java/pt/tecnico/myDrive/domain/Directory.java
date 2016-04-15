@@ -62,31 +62,6 @@ public class Directory extends Directory_Base {
 		return true;
 	}
 
-
-	
-
-	
-	@Override
-	public Element xmlExport() {
-		Element dirElement = super.xmlExport();
-		dirElement.setName("dir");
-		return dirElement;
-	}
-	
-	@Override
-	protected void xmlExport(Element myDrive) {
-		if (!getFileSet().isEmpty()) {
-			for(File f: getFileSet()) {
-				if (f.getId() > 2)
-					myDrive.addContent(f.xmlExport());	
-			}
-			for(File f: getFileSet()) {
-				if (f!=this)
-					f.xmlExport(myDrive);
-			}
-		}	
-	}
-
 	public File lookup(String path, User user) {
 		if(path.length() <= max_path) {
 			return lookup(path, user, max_path);
@@ -110,8 +85,6 @@ public class Directory extends Directory_Base {
 				}
 			}
 		}
-
-
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
@@ -146,7 +119,17 @@ public class Directory extends Directory_Base {
 			throw new AccessDeniedException("search", getName());
 		}
 	}
-	
+
+	@Override
+	public int getSize() {
+		return getFileSet().size() + 2;
+	}
+
+	@Override
+	public String getType() {
+		return "Directory";
+	}
+
 	@Override
 	public void setHomeOwner(User homeOwner) {
 		homeOwner.setHome(this);
@@ -194,21 +177,13 @@ public class Directory extends Directory_Base {
 		throw new CannotReadException("A directory cannot be read");
 	}
 
-	public List<File> getOrderByNameFileList(User user) {
+	public Set<File> getFileSet(User user) {
 		if (user.hasPermission(this, Mask.READ)) {
-			List<File> files = new ArrayList<File>(super.getFileSet());
-
-			Collections.sort(files, new Comparator<File>() {
-				public int compare(File f1, File f2) {
-					return f1.getName().compareToIgnoreCase(f2.getName());
-				}
-			});
-
-			return files;
+			return super.getFileSet();
 		} else {
 			throw new AccessDeniedException("list directory contents", super.getName());
 		}
-		
+
 	}
 
 	protected Directory createPath(User owner, String path) {
@@ -216,7 +191,6 @@ public class Directory extends Directory_Base {
 
 		return createPath(owner, path, this);
 	}
-
 
 	private Directory createPath(User owner, String path, Directory dir) {
 		Directory nextDir;
@@ -240,6 +214,27 @@ public class Directory extends Directory_Base {
 
 	public void write(User u, String content){throw new InvalidWriteException();
 	}
-}
 
+	@Override
+	public Element xmlExport() {
+		Element dirElement = super.xmlExport();
+		dirElement.setName("dir");
+		return dirElement;
+	}
+
+	@Override
+	protected void xmlExport(Element myDrive) {
+		if (!getFileSet().isEmpty()) {
+			for(File f: getFileSet()) {
+				if (f.getId() > 2)
+					myDrive.addContent(f.xmlExport());
+			}
+			for(File f: getFileSet()) {
+				if (f!=this)
+					f.xmlExport(myDrive);
+			}
+		}
+	}
+
+}
 

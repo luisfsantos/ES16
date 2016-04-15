@@ -41,7 +41,6 @@ public class Main {
 			
 		} finally { FenixFramework.shutdown(); }
 	}
-
 	
     @Atomic
     public static void setup() {	
@@ -55,7 +54,6 @@ public class Main {
     	/*
     	log.trace("Manager: " + Manager.getInstance());
     	User root = Manager.getInstance().fetchUser("root", "***");
-    	lsDir(root);
     	User user1 = new User(Manager.getInstance(), "DAVID");
     	Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
@@ -66,7 +64,6 @@ public class Main {
     	App app2 = new App("binapp", user1, dir1, "batata");  
     	
     	System.out.println("========================================================");
-    	lsDir(root);
     	
     	log.trace(Manager.getInstance().getRootDirectory().getName());
     	log.trace(home.getName());
@@ -87,16 +84,16 @@ public class Main {
     	
     	Login loginRoot = new Login("root", "***");
     	log.trace(loginRoot.getCurrentUser().getName());
-    	
-    	
-    	
+
+
+
     	Long invToken = login.getToken();
     	login.setLastActivity(login.getLastActivity().minusHours(3));
     	for (int i = 0; i<10; i++) {
     		Login l = Manager.getInstance().getLoginByToken(invToken);
     	}
-    	
-    	
+
+
 
     	dir1.remove();*/
     	//file1.remove();
@@ -104,8 +101,7 @@ public class Main {
     	//Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
 
     	System.out.println("========================================================");
-    	lsDir(root); 
-
+      	
         /*DAVID
 	   	User user1 = new User(Manager.getInstance(), "DAVID");
     	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata");
@@ -116,20 +112,10 @@ public class Main {
 	   	Manager.getInstance().getHomeDirectory().showContent();
 	   	System.out.println(file1.getLastModified());
 	   	DAVID*/
+	   	
+		
 
-
-
-		//xmlPrint();
-	}
-
-	public static void lsDir(User user) {
-		Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
-		List<File> files = home.getOrderByNameFileList(user);
-		System.out.println(".");
-		System.out.println("..");
-		for (File f : files) {
-			System.out.println(f.getName());
-		}
+    	//xmlPrint();
 	}
 
 	@Atomic
