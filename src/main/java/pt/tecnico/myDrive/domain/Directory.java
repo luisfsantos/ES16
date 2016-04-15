@@ -3,7 +3,12 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.*;
+import pt.tecnico.myDrive.exception.AccessDeniedException;
+import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
+import pt.tecnico.myDrive.exception.CannotReadException;
+import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.IsHomeDirectoryException;
+import pt.tecnico.myDrive.exception.PathTooBigException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -69,6 +74,8 @@ public class Directory extends Directory_Base {
 				return getParent().lookup(path, user, psize);
 			} else {
 				while (path.startsWith("/")) {
+					if(path.length() == 1)
+						return this;
 					path = path.substring(1);
 					psize--;
 					if(psize < 0 )
@@ -84,19 +91,6 @@ public class Directory extends Directory_Base {
 				psize--;
 				if(psize < 0 )
 					throw new PathTooBigException();
-			}
-
-			if (path.startsWith("/")) {
-				if (this != getParent()) {
-					return getParent().lookup(path, user, psize);
-				} else {
-					while (path.startsWith("/")) {
-						path = path.substring(1);
-						psize--;
-						if(psize < 0 )
-							throw new PathTooBigException();
-					}
-				}
 			}
 
 			if (path.indexOf('/') == -1) {
