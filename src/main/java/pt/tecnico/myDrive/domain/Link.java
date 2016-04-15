@@ -32,12 +32,28 @@ public class Link extends Link_Base {
 
     @Override
     public String read(User user) {
-    	File endpoint = this.getParent().lookup(viewContent(), user);
+    	File endpoint = this.resolveLink(user);
     	if (endpoint == null) {
     		throw new CannotReadException("File does not exist");
     	} else {
     		return endpoint.read(user);
     	}
+    }
+    
+    public File resolveLink(User user) {
+    	int max_content = 1024;
+    	max_content -= Math.max(viewContent().lastIndexOf("/"), 0);
+    	File endpoint = this.getParent().lookup(viewContent(), user);
+    	while ((endpoint instanceof Link) && max_content > 0) {
+    		if (((Link) endpoint).viewContent().contains("/")) {
+    			max_content -= ((Link) endpoint).viewContent().lastIndexOf("/");
+    		} else {
+    			max_content -= ((Link) endpoint).viewContent().length();
+    		}
+    		endpoint = endpoint.lookup("", user, max_content);
+    	}
+    	return endpoint;
+
     }
     
     @Override
@@ -52,16 +68,13 @@ public class Link extends Link_Base {
 
     @Override
     public void write(User u, String content) {
-        try {
-            File target = this.getParent().lookup(viewContent(),u);
-            if (u.hasPermission(target, Mask.WRITE)) {
-                target.write(u, content);
+            File f = this.resolveLink(u);
+            if (f == null) {
+                throw new CannotReadException("File does not exist");
             } else {
-                throw new InvalidPermissionException("Write in App"); //not sure about argument
+                f.write(u,content);
             }
-        }catch (StackOverflowError e){
-            throw new PathTooBigException();
-        }
+
     }
 
 

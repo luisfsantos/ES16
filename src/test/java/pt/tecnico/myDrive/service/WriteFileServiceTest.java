@@ -105,7 +105,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		service.execute();
 	}
 
-
 	//TEST 4
 	@Test(expected = FileDoesntExistsInDirectoryException.class)
 	public void notExistsPlain(){
@@ -151,6 +150,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("Write not executed", pfile.read(root), "mydrive");
 
 	}
+
 	//TEST 9
 	@Test(expected=InvalidContentException.class)
 	public void insuccessEmptyWriteApp(){

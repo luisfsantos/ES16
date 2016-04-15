@@ -53,10 +53,16 @@ public class Login extends Login_Base {
     
     @Override
 	public void setLastActivity(DateTime lastActivity) {
-		throw new AccessDeniedToManipulateLoginException();
+    	if (lastActivity.isBefore(getLastActivity())) {
+    		super.setLastActivity(lastActivity);
+    	} else {
+    		throw new AccessDeniedToManipulateLoginException();
+    	}
 	}
     
-    // TODO refreshLastActivity
+    void refreshLoginActivity() {
+    	super.setLastActivity(new DateTime());
+    }
     
     public void remove(){
 		super.setManager(null);
