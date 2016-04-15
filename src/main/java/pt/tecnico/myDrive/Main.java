@@ -73,7 +73,6 @@ public class Main {
     	log.trace("currDir = " + login.getCurrentDir().getName());
     	log.trace("token = " + login.getToken() );
     	log.trace("password of David = " + user1.validatePassword("DAVID"));
-    	login.setLastActivity(login.getLastActivity().minusHours(3));
     	
     	new User(Manager.getInstance(), "ddd");
     	Login login2 = new Login("ddd", "ddd");
@@ -82,6 +81,16 @@ public class Main {
     	
     	Login loginRoot = new Login("root", "***");
     	log.trace(loginRoot.getCurrentUser().getName());
+    	
+    	
+    	
+    	Long invToken = login.getToken();
+    	login.setLastActivity(login.getLastActivity().minusHours(3));
+    	for (int i = 0; i<10; i++) {
+    		Login l = Manager.getInstance().getLoginByToken(invToken);
+    	}
+    	
+    	
 
     	dir1.remove();
     	//file1.remove();

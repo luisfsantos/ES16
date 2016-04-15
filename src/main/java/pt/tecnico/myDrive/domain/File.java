@@ -2,7 +2,13 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 import org.joda.time.DateTime;
-import pt.tecnico.myDrive.exception.*;
+
+import pt.tecnico.myDrive.exception.AccessDeniedException;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.InvalidFileNameException;
+import pt.tecnico.myDrive.exception.InvalidPermissionException;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
@@ -154,7 +160,7 @@ public abstract class File extends File_Base {
 	
 	public abstract File lookup(String path, User user);
 
-	public abstract File lookup(String path, User user, int psize);
+	abstract File lookup(String path, User user, int psize);
 
 }
 

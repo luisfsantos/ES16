@@ -2,6 +2,7 @@
 [Login| DateTime lastActivity; Long token;]
 [User| String username; String password; String name; String umask;]
 [File| Integer id; String name; String permissions; DateTime lastModified;]
+[EnvironmentVariable| String name; String value;]
 [User]^-[SuperUser]
 [SuperUser]
 [File]^-[PlainFile]
@@ -21,6 +22,7 @@
 [Manager]1 manager - login *[Login] // ManagerHasLogins
 [Login]* login - currentUser 1[User] // LoginHasCurrentUser
 [Login]* login - currentDir 1[Directory] // LoginHasCurrentDir
+[Login]1 login - environmentVariable *[EnvironmentVariable] // LoginHasEnvironmentVariables
 [User]1 owner - file *[File] // UserHasFiles
 [User]0..1 homeOwner - home 1[Directory] // UserHasHome
 [File]* file - parent 1[Directory] // DirectoryContainsFiles
