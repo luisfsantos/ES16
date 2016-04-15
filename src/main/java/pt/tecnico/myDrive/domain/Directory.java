@@ -74,6 +74,8 @@ public class Directory extends Directory_Base {
 				return getParent().lookup(path, user, psize);
 			} else {
 				while (path.startsWith("/")) {
+					if(path.length() == 1)
+						return this;
 					path = path.substring(1);
 					psize--;
 					if(psize < 0 )
@@ -81,7 +83,8 @@ public class Directory extends Directory_Base {
 				}
 			}
 		}
-		
+
+
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
@@ -90,19 +93,6 @@ public class Directory extends Directory_Base {
 				psize--;
 				if(psize < 0 )
 					throw new PathTooBigException();
-			}
-
-			if (path.startsWith("/")) {
-				if (this != getParent()) {
-					return getParent().lookup(path, user);
-				} else {
-					while (path.startsWith("/")) {
-						path = path.substring(1);
-						psize--;
-						if(psize < 0 )
-							throw new PathTooBigException();
-					}
-				}
 			}
 
 			if (path.indexOf('/') == -1) {
