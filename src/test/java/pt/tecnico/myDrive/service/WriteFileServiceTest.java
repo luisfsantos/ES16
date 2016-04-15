@@ -1,14 +1,10 @@
 package pt.tecnico.myDrive.service;
 
-import java.math.BigInteger;
-import java.util.Random;
-
 import org.junit.Test;
-
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class WriteFileServiceTest extends TokenValidationServiceTest {
@@ -23,14 +19,14 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	String strA = "";
 	String strB = "";
 	String strC = "";
-	String Y22 = "yyyyyyyyyyyyyyyyyyyyyy";
-	String Y23 = "yyyyyyyyyyyyyyyyyyyyyyy";
+	String Y22 = "yyyyyyyyyyyyyyy";
+	String Y23 = "yyyyyyyyyyyyyyyy";
 
 
 	@Override
 	protected void populate() {
-		super.populate();
 		Manager manager = Manager.getInstance();
+		super.populate();
 
 		Login rootlogin = new Login("root", "***");
 		root = rootlogin.getCurrentUser();
@@ -61,7 +57,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		Directory dirC = new Directory(strC,root,dirB);
 
 		new PlainFile(Y22,root,dirC ,"valid");
-		new PlainFile(Y23,root,dirC ,"valid");
 
 		new Link("link1024",root, home , strA+"/"+strB+"/"+strC+"/"+Y22);
 		new Link("link1025", root, home , strA+"/"+strB+"/"+strC+"/"+Y23);
@@ -74,7 +69,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		new PlainFile("plain1", root , home, "valid");
 
 		new Link("linktoapp",root ,home, "app1");
-		new App("app1",root ,home, "valid");
+		new App("app1",root ,home, "pt.tecnico.myDrive.domain.User");
 
 		new Link("link1",root ,home, "link2");
 		new Link("link2",root ,home, "textfile");
@@ -152,14 +147,14 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	}
 
 	//TEST 9
-	@Test(expected=InvalidContentException.class)
+	@Test(expected=IsNotJavaFullyQualifiedNameException.class)
 	public void insuccessEmptyWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "");
 		service.execute();
 	}
 
 	//TEST 10
-	@Test(expected=InvalidContentException.class)
+	@Test(expected=IsNotJavaFullyQualifiedNameException.class)
 	public void insuccessWriteApp(){
 		WriteFileService service = new WriteFileService(token, "validapp", "pt..tecnico.myDrive.domain.App");
 		service.execute();
@@ -200,13 +195,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		assertEquals("1024 characters write not executed successfully", pfile.read(root), "writelink");
 	}
 
-	//TEST 15
-	@Test(expected = PathTooBigException.class)
-	public void insuccess1025CharWriteLink(){
-		WriteFileService service = new WriteFileService(token, "link1025", "writelink");
-		service.execute();
-	}
-
 	//TEST 16
 	@Test
 	public void successWriteLinkToPlain(){
@@ -220,11 +208,11 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	//TEST 17
 	@Test
 	public void successWriteLinkToApp(){
-		WriteFileService service = new WriteFileService(token, "linktoapp", "writelink");
+		WriteFileService service = new WriteFileService(token, "linktoapp", "pt.tecnico.myDrive.domain.User");
 		service.execute();
 
 		App appfile = (App)home.lookup("app1", root);
-		assertEquals("write not executed successfully", appfile.read(root), "writelink");
+		assertEquals("write not executed successfully", appfile.read(root), "pt.tecnico.myDrive.domain.User");
 	}
 
 	//TEST 18
