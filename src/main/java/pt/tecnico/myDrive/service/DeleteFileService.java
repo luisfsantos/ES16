@@ -19,9 +19,11 @@ public class DeleteFileService extends TokenValidationService {
 	@Override 
 	protected void dispatch() throws MyDriveException {
 		super.dispatch();
+
 		if (fileName.equals(".") || fileName.equals("..")){
 			throw new CannotRemoveDirectoryException(fileName);
 		}
+		
 		User user = session.getCurrentUser();
 		File f = session.getCurrentDir().lookup(fileName, user);
 		f.delete(user);
