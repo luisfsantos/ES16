@@ -50,7 +50,7 @@ public class DeleteFileServiceTest extends TokenValidationServiceTest {
 		dirContent = new Directory("dirContent", userLogin.getCurrentUser(), homeDir);
 		dirNoContent = new Directory("dirNoContent", userLogin.getCurrentUser(), dirContent);
 		linkTest = new Link("linkTest", userLogin.getCurrentUser(), dirContent, "contentLink");
-		appTest = new App("appTest", userLogin.getCurrentUser(), dirContent, "contentApp");
+		appTest = new App("appTest", userLogin.getCurrentUser(), dirContent, "pt.tecnico.myDrive.domain.App");
 		plainFileTest = new PlainFile("plainFileTest", userLogin.getCurrentUser(), dirContent, "contentPlainFile2");
 	}
 	
