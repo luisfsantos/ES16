@@ -48,9 +48,7 @@ public class Main {
     		return;
     	}
     	log.trace("Manager: " + Manager.getInstance());
-    	User root = Manager.getInstance().getUserByUsername("root");
     	User root = Manager.getInstance().fetchUser("root", "***");
-    	lsDir(root);
     	User user1 = new User(Manager.getInstance(), "DAVID");
     	Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
