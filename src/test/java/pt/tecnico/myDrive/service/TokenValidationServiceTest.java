@@ -5,7 +5,7 @@ import org.junit.Test;
 import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.exception.InvalidTokenException;
 
-public class TokenValidationServiceTest extends AbstractServiceTest {
+public abstract class TokenValidationServiceTest extends AbstractServiceTest {
 
 	Long noSession = 1L;
 	Long expiredSession;
