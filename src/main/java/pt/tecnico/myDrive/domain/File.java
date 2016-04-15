@@ -133,14 +133,14 @@ public abstract class File extends File_Base {
 
 		setName(new String(name.getBytes("UTF-8")));
 
-		
+
 		User ownerUser = manager.fetchUser(fileNode);
 		if (ownerUser == null) {
 			throw new UserDoesNotExistException(owner);
 		}
 		setOwner(ownerUser);
 		setId(ownerUser.getNextIdCounter());
-		
+
 
 		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
 		else setPermissions("rwxd----");
@@ -160,11 +160,8 @@ public abstract class File extends File_Base {
 
 
 	public abstract File lookup(String path, User user);
-
-
-
 	abstract File lookup(String path, User user, int psize);
-
-
+	public abstract int getSize();
+	public abstract String getType();
 }
 

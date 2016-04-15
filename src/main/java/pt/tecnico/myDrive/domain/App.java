@@ -36,6 +36,11 @@ public class App extends App_Base {
 	}
 
 	@Override
+	public String getType() {
+		return "App";
+	}
+
+	@Override
 	public void setContent(String content) {
 		String[] reservedWords = {"import","true", "null"};
 

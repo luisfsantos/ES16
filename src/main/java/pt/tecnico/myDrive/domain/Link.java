@@ -27,8 +27,13 @@ public class Link extends Link_Base {
     	int psize_resolved = psize + this.getName().length() + 1;
     	return this.getParent().lookup(this.viewContent().concat("/" + path), user, psize_resolved);
     }
-    
-    @Override
+
+	@Override
+	public String getType() {
+		return "Link";
+	}
+
+	@Override
     public String read(User user) {
     	File endpoint = this.resolveLink(user);
     	if (endpoint == null) {
