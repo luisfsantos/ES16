@@ -48,7 +48,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 		dirNoContent = new Directory("dirNoContent", userLogin.getCurrentUser(), dirContent);
 		linkTest = new Link("linkTest", userLogin.getCurrentUser(), dirContent, "contentLink");
 		appTest = new App("appTest", userLogin.getCurrentUser(), dirContent, "contentApp");
-		plainFileTest = new PlainFile("plineFileTest", userLogin.getCurrentUser(), dirContent, "contentPlainFile2");
+		plainFileTest = new PlainFile("plainFileTest", userLogin.getCurrentUser(), dirContent, "contentPlainFile2");
 	}
 	
 	// 3
@@ -104,7 +104,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 	public void userHomeDirectory(){
 		String dirName = userLogin.getCurrentDir().getName();
 		rootLogin.setCurrentDir(homeDir);
-		DeleteFileService service = new DeleteFileService(userToken, dirName);
+		DeleteFileService service = new DeleteFileService(rootToken, dirName);
 		service.execute();
 	}
 	
@@ -114,7 +114,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 		userLogin.setCurrentDir(dirContent);
 		DeleteFileService service = new DeleteFileService(userToken, linkTest.getName());
 		service.execute();
-		assertEquals("cannot remove link", false, userLogin.getCurrentDir().hasFile(linkTest.getName()));
+		assertEquals("cannot remove link", false, userLogin.getCurrentDir().hasFile("linkTest"));
 	}
 	
 	// 11
@@ -123,7 +123,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 		userLogin.setCurrentDir(dirContent);
 		DeleteFileService service = new DeleteFileService(userToken, appTest.getName());
 		service.execute();
-		assertEquals("cannot remove app", false, userLogin.getCurrentDir().hasFile(appTest.getName()));
+		assertEquals("cannot remove app", false, userLogin.getCurrentDir().hasFile("appTest"));
 	}
 	
 	// 12
@@ -132,7 +132,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 		userLogin.setCurrentDir(dirContent);
 		DeleteFileService service = new DeleteFileService(userToken, plainFileTest.getName());
 		service.execute();
-		assertEquals("cannot remove plain file", false, userLogin.getCurrentDir().hasFile(plainFileTest.getName()));
+		assertEquals("cannot remove plain file", false, userLogin.getCurrentDir().hasFile("plainFileTest"));
 	}
 	
 	// 13
@@ -141,7 +141,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 		userLogin.setCurrentDir(dirContent);
 		DeleteFileService service = new DeleteFileService(userToken, dirNoContent.getName());
 		service.execute();
-		assertEquals("cannot remove directory without content", false, userLogin.getCurrentDir().hasFile(dirNoContent.getName()));
+		assertEquals("cannot remove directory without content", false, userLogin.getCurrentDir().hasFile("dirNoContent"));
 	}
 	
 	// 14
@@ -150,7 +150,7 @@ public class DeleteFileServiceTest extends AbstractServiceTest {
 		userLogin.setCurrentDir(homeDir);
 		DeleteFileService service = new DeleteFileService(userToken, dirContent.getName());
 		service.execute();
-		assertEquals("cannot remove directory with content", false, userLogin.getCurrentDir().hasFile(dirContent.getName()));
+		assertEquals("cannot remove directory with content", false, userLogin.getCurrentDir().hasFile("dirContent"));
 	}
 
 }
