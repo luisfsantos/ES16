@@ -48,6 +48,11 @@ public class Main {
     	if (FenixFramework.getDomainRoot().getManager() != null) {
     		return;
     	}
+
+		User root = Manager.getInstance().fetchUser("root", "***");
+		Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("/", root);
+		log.trace(home.getName());
+    	/*
     	log.trace("Manager: " + Manager.getInstance());
     	User root = Manager.getInstance().fetchUser("root", "***");
     	lsDir(root);
@@ -93,7 +98,7 @@ public class Main {
     	
     	
 
-    	dir1.remove();
+    	dir1.remove();*/
     	//file1.remove();
     	//app1.remove();
     	//Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();

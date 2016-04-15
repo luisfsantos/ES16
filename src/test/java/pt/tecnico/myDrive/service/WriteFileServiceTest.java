@@ -30,7 +30,7 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	@Override
 	protected void populate() {
 		Manager manager = Manager.getInstance();
-
+		super.populate();
 
 		Login rootlogin = new Login("root", "***");
 		root = rootlogin.getCurrentUser();
