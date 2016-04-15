@@ -27,6 +27,7 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 	@Override
 	protected void populate() {
 		Manager m = Manager.getInstance();
+		super.populate();
 		new User(m, "lads");
 		
 		rootLogin = new Login("root", "***");
