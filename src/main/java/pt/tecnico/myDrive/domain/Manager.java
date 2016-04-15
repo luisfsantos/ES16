@@ -9,18 +9,8 @@ import org.joda.time.DateTime;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidIdCounter;
-import pt.tecnico.myDrive.exception.InvalidPathException;
-import pt.tecnico.myDrive.exception.InvalidTokenException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 
 
@@ -59,13 +49,16 @@ public class Manager extends Manager_Base {
     	for (Login login: super.getLoginSet()) {
     		if (login.validateToken(token)){
     			if (login.getLastActivity().isBefore(now.minusHours(2))){
-    				throw new InvalidTokenException();
+    				log.warn("Try to accsess with invalid token ");
+    				return null;
     			} else {
+    				login.refreshLoginActivity();
     				return login;
     			}
     		}
     	}
-    	throw new InvalidTokenException();
+    	log.warn("Try to accsess with invalid token ");
+		return null;
     }
     
     public void removeInactiveLogins() {
@@ -96,6 +89,9 @@ public class Manager extends Manager_Base {
     
 
 	public User fetchUser(String username, String password) {
+		if (username.equals("root") && super.getSuperUser().validatePassword(password)){
+			return super.getSuperUser();
+		}
     	for (User user: super.getUserSet()) {
     		if (user.getUsername().equals(username) && user.validatePassword(password))
     			return user;
@@ -143,14 +139,16 @@ public class Manager extends Manager_Base {
     
 	@Override
 	public Set<User> getUserSet() {
-		throw new AccessDeniedException("get user set", "manager");
+		throw new AccessDeniedException("get user set", "Manager");
 	}
 	
+	/*
+	 FIXME 
 	@Override
 	public SuperUser getSuperUser() {
-		throw new AccessDeniedException("get Super User", "manager");
+		throw new AccessDeniedException("get Super User", "Manager");
 	}
- 
+ 	*/
     
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
 		for(Element userNode : myDriveElement.getChildren("user")) {

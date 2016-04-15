@@ -3,12 +3,18 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.*;
+import pt.tecnico.myDrive.exception.AccessDeniedException;
+import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
+import pt.tecnico.myDrive.exception.CannotReadException;
+import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.IsHomeDirectoryException;
+import pt.tecnico.myDrive.exception.PathTooBigException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Directory extends Directory_Base {
+	final int max_path = 1024;
 	
 	protected Directory() {
 		super();
@@ -55,14 +61,30 @@ public class Directory extends Directory_Base {
 	}
 
 	public File lookup(String path, User user) {
-		if(path.length() < 1024) {
-			return lookup(path, user, 1024);
+		if(path.length() <= max_path) {
+			return lookup(path, user, max_path);
 		} else {
 			throw new PathTooBigException();
 		}
 	}
 
-	private File lookup(String path, User user, int psize) {
+	public File lookup(String path, User user, int psize) {
+		if (path.startsWith("/")) {
+			if (this != getParent()) {
+				return getParent().lookup(path, user, psize);
+			} else {
+				while (path.startsWith("/")) {
+					if(path.length() == 1)
+						return this;
+					path = path.substring(1);
+					psize--;
+					if(psize < 0 )
+						throw new PathTooBigException();
+				}
+			}
+		}
+
+
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
@@ -71,19 +93,6 @@ public class Directory extends Directory_Base {
 				psize--;
 				if(psize < 0 )
 					throw new PathTooBigException();
-			}
-
-			if (path.startsWith("/")) {
-				if (this != getParent()) {
-					return getParent().lookup(path, user);
-				} else {
-					while (path.startsWith("/")) {
-						path = path.substring(1);
-						psize--;
-						if(psize < 0 )
-							throw new PathTooBigException();
-					}
-				}
 			}
 
 			if (path.indexOf('/') == -1) {
@@ -96,14 +105,14 @@ public class Directory extends Directory_Base {
 
 			name = path.substring(0, path.indexOf("/", 1));
 			path = path.substring(path.indexOf("/", 1) + 1);
-			psize -= (name.length() + 1);
+			psize -= (name.length());
 			while (path.startsWith("/"))
 				path = path.substring(1);
 				psize--;
 				if(psize < 0 )
 					throw new PathTooBigException();
 			if (hasFile(name))
-				return this.getFileByName(name).lookup(path, user);
+				return this.getFileByName(name).lookup(path, user, psize);
 
 			return null;
 		} else {
@@ -133,9 +142,14 @@ public class Directory extends Directory_Base {
 	}
 	
 	@Override
+	public User getHomeOwner() {
+		throw new AccessDeniedException("get home owner", "Directory");
+	}
+	
+	@Override
 	public void remove() throws IsHomeDirectoryException {
 		
-		if (this.getHomeOwner() == null) {
+		if (super.getHomeOwner() == null) {
 			if(!this.getFileSet().isEmpty()) { 
 				for(File f: this.getFileSet()){
 					f.remove();
@@ -217,6 +231,7 @@ public class Directory extends Directory_Base {
 			}
 		}	
 	}
+
 }
 
 
