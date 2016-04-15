@@ -76,7 +76,6 @@ public class Directory extends Directory_Base {
 				}
 			}
 		}
-		
 		if(user.hasPermission(this, Mask.EXEC)) {
 			String name;
 
@@ -89,7 +88,7 @@ public class Directory extends Directory_Base {
 
 			if (path.startsWith("/")) {
 				if (this != getParent()) {
-					return getParent().lookup(path, user);
+					return getParent().lookup(path, user, psize);
 				} else {
 					while (path.startsWith("/")) {
 						path = path.substring(1);
@@ -189,8 +188,11 @@ public class Directory extends Directory_Base {
 		
 	}
 
-	protected Directory createPath(User owner, String path) {
-		if(path.startsWith("/")) path = path.substring(1);
+	public Directory createPath(User owner, String path) {
+		if(path.startsWith("/")) {
+			path = path.substring(1);
+			return createPath(owner, path, Manager.getInstance().getRootDirectory());
+		}
 
 		return createPath(owner, path, this);
 	}

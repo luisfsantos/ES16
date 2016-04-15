@@ -5,7 +5,6 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.tecnico.myDrive.exception.AccessDeniedException;
-
 import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 
 import java.io.UnsupportedEncodingException;
@@ -45,7 +44,7 @@ public class PlainFile extends PlainFile_Base {
     	throw new AccessDeniedException("read", super.getName());
     }
     
-        protected String viewContent() {
+    protected String viewContent() {
     	return super.getContent();
     }
     
