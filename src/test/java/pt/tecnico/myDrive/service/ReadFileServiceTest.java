@@ -23,6 +23,7 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
 
     @Override
     protected void populate() {
+    	super.populate();
         Manager manager = Manager.getInstance();
 
         Login rootLogin = new Login("root", "***");
