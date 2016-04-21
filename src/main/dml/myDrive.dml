@@ -30,6 +30,8 @@ class EnvironmentVariable{
 
 class SuperUser extends User;
 
+class GuestUser extends User;
+
 class PlainFile extends File {
 	String content;
 }
@@ -65,6 +67,13 @@ relation ManagerHasUsers {
 relation ManagerHasSuperUser {
 	Manager playsRole;
 	SuperUser playsRole superUser {
+	multiplicity 1;
+	} 
+}
+
+relation ManagerHasGuestUser {
+	Manager playsRole;
+	GuestUser playsRole guestUser {
 	multiplicity 1;
 	} 
 }
