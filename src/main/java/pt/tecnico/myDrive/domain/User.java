@@ -90,6 +90,10 @@ public class User extends User_Base {
 		
         boolean isAlphanumeric = Pattern.matches("^[a-zA-Z0-9]*$", username);
 
+		if (username.length() < 3){
+			throw new InvalidUsernameException(username);
+		}
+
 		if (Manager.getInstance().hasUser(username)) throw new UserAlreadyExistsException(username);
 		if (username.isEmpty()) throw new EmptyUsernameException();
         if (!isAlphanumeric) throw new InvalidUsernameException(username);
@@ -130,7 +134,8 @@ public class User extends User_Base {
 			}
 		}
 	}
-	
+
+
 	@Override
 	public void addLogin(Login login){
 		throw new AccessDeniedToManipulateLoginException();

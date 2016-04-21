@@ -16,6 +16,6 @@ public class InvalidUsernameException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "Username " + getUserName() + " contains invalid characters";
+        return "Username " + getUserName() + " has less than 3 characters or contains invalid characters";
     }
 }
