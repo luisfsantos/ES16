@@ -2,7 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pt.tecnico.myDrive.exception.SuperUserCannotBeModified;
+import pt.tecnico.myDrive.exception.UserCannotBeModified;
 
 public class SuperUser extends SuperUser_Base {
 
@@ -14,30 +14,30 @@ public class SuperUser extends SuperUser_Base {
 
     @Override
 	public void setUsername(String username){
-		throw new SuperUserCannotBeModified();
+		throw new UserCannotBeModified(this.getName());
 	}
     
     @Override
 	public void setPassword(String password){
-		throw new SuperUserCannotBeModified();
+		throw new UserCannotBeModified(this.getName());
 	}
     
     @Override
 	public void setName(String name){
-		throw new SuperUserCannotBeModified();
+		throw new UserCannotBeModified(this.getName());
 	}
     
     @Override
 	public void setUmask(String umask){
-		throw new SuperUserCannotBeModified();
+		throw new UserCannotBeModified(this.getName());
 	}
     
     @Override
 	public void setManager(Manager manager){
-		throw new SuperUserCannotBeModified();
+		throw new UserCannotBeModified(this.getName());
 	}
     
-
+    @Override
 	public boolean hasPermission(File file, Mask mask){
 		return true;
 	}

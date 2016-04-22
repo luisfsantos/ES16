@@ -92,6 +92,7 @@ public class Main {
     		Login l = Manager.getInstance().getLoginByToken(invToken);
     	}
 
+    	
     	log.trace("Guest name = " + Manager.getInstance().getGuestUser().getName());
 
     	dir1.remove();
