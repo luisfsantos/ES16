@@ -27,7 +27,7 @@ public class LoginServiceTest extends AbstractServiceTest {
 	//1
 	@Test(expected = InvalidUsernameOrPasswordException.class)
 	public void userDoesNotExist() {
-		LoginService service = new LoginService("New", "New");
+		LoginService service = new LoginService("DoesNotExist", "DoesNotExist");
 		service.execute();
 	}
 
@@ -55,7 +55,7 @@ public class LoginServiceTest extends AbstractServiceTest {
 	//4
 	@Test(expected = InvalidUsernameOrPasswordException.class)
 	public void invalidUsername() {
-		LoginService service = new LoginService("Invalid+", "New");
+		LoginService service = new LoginService("Invalid+", "Invalid+");
 		service.execute();
 	}
 
