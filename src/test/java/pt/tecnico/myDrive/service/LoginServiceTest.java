@@ -13,10 +13,7 @@ import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.Link;
 import pt.tecnico.myDrive.domain.App;
 import pt.tecnico.myDrive.domain.Login;
-import pt.tecnico.myDrive.exception.EmptyUsernameException;
-import pt.tecnico.myDrive.exception.InvalidUsernameException;
-import pt.tecnico.myDrive.exception.InvalidUsernameOrPasswordException;
-import pt.tecnico.myDrive.exception.UserDoesNotExistException;
+import pt.tecnico.myDrive.exception.*;
 
 public class LoginServiceTest extends AbstractServiceTest {
 
@@ -24,7 +21,7 @@ public class LoginServiceTest extends AbstractServiceTest {
 	@Override
 	protected void populate() {
 		Manager manager = Manager.getInstance();
-		new User(manager, "Existent");
+		new User(manager, "Existent15Chars");
 	}
 
 	//1
@@ -36,15 +33,15 @@ public class LoginServiceTest extends AbstractServiceTest {
 
 	//2
 	@Test(expected = InvalidUsernameOrPasswordException.class)
-	public void wrongUserPassword() {
-		LoginService service = new LoginService("Existent", "New");
+	public void wrongPassword() {
+		LoginService service = new LoginService("Existent15Chars", "ExistentWrong");
 		service.execute();
 	}
 
 	//3
 	@Test
 	public void successUserLogin() {
-		LoginService service = new LoginService("Existent", "Existent");
+		LoginService service = new LoginService("Existent15Chars", "Existent15Chars");
 		service.execute();
 
 		Manager manager = Manager.getInstance();
@@ -52,7 +49,7 @@ public class LoginServiceTest extends AbstractServiceTest {
 		User user = manager.getLoginByToken(token).getCurrentUser();
 
 		assertThat("LoginToken is not a long", token, instanceOf(long.class));
-		assertEquals("User from Token does not match", user.getName(), "Existent");
+		assertEquals("User from Token does not match", user.getName(), "Existent15Chars");
 	}
 
 	//4
@@ -88,6 +85,32 @@ public class LoginServiceTest extends AbstractServiceTest {
 	public void emptyUsername() {
 		LoginService service = new LoginService("", "New");
 		service.execute();
+	}
+
+	//8
+	@Test(expected = PasswordTooSmallException.class)
+	public void PasswordTooSmall() {
+		Manager manager = Manager.getInstance();
+		new User(manager, "Exists");
+
+		LoginService service = new LoginService("Exists", "Exists");
+		service.execute();
+	}
+
+	//9
+	@Test
+	public void PasswordHas8Char() {
+		Manager manager = Manager.getInstance();
+		new User(manager, "Existent");
+
+		LoginService service = new LoginService("Existent", "Existent");
+		service.execute();
+
+		long token = service.result();
+		User user = manager.getLoginByToken(token).getCurrentUser();
+
+		assertThat("LoginToken is not a long", token, instanceOf(long.class));
+		assertEquals("User from Token does not match", user.getName(), "Existent");
 	}
 
 }
