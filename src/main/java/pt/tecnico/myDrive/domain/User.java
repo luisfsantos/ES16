@@ -83,6 +83,14 @@ public class User extends User_Base {
 		super.setName("Super User");
 		super.setUmask("rwxdr-x-");
 	}
+	
+	protected void initGuestUser( Manager manager){
+		super.setUsername("nobody");
+    	super.setManager(manager);
+		super.setPassword(null);
+		super.setName("Guest");
+		super.setUmask("rxwdr-x-");
+	}
 
 
 	@Override

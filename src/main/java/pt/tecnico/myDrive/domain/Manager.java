@@ -34,8 +34,10 @@ public class Manager extends Manager_Base {
         super.setIdCounter(0);
         
         DummyObject dummy = new DummyObject();
-        SuperUser superUser = new SuperUser(this, dummy); 
+        SuperUser superUser = new SuperUser(this, dummy);
+        GuestUser guestUser = new GuestUser(this, dummy);
         this.setSuperUser(superUser);
+        this.setGuestUser(guestUser);
         RootDirectory rootDirectory = new RootDirectory(this, superUser, dummy);
         this.setRootDirectory(rootDirectory);
         Directory homeDirectory = new Directory("home", superUser, rootDirectory);
@@ -148,6 +150,9 @@ public class Manager extends Manager_Base {
 	public SuperUser getSuperUser() {
 		throw new AccessDeniedException("get Super User", "Manager");
 	}
+	
+	FIXME
+	get/SetSuperUser/GuestUser
  	*/
     
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{

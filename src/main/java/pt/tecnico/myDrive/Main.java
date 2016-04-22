@@ -48,20 +48,19 @@ public class Main {
     		return;
     	}
 
-		User root = Manager.getInstance().fetchUser("root", "***");
-		Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("/", root);
-		log.trace(home.getName());
-    	/*
+    	
     	log.trace("Manager: " + Manager.getInstance());
     	User root = Manager.getInstance().fetchUser("root", "***");
     	User user1 = new User(Manager.getInstance(), "DAVID");
-    	Directory home = (Directory) Manager.getInstance().getRootDirectory().getFileByName("home");
+    	
+
+    	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("/home/DAVID", user1);
+    	log.trace("dir name = " + home.getName());
+    	
     	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
-    	App app1 = new App("APPME", user1, home, "batata");    	
     	Directory dir1 = new Directory("bin", user1, home);
     	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
     	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
-    	App app2 = new App("binapp", user1, dir1, "batata");  
     	
     	System.out.println("========================================================");
     	
@@ -93,27 +92,11 @@ public class Main {
     		Login l = Manager.getInstance().getLoginByToken(invToken);
     	}
 
+    	log.trace("Guest name = " + Manager.getInstance().getGuestUser().getName());
 
-
-    	dir1.remove();*/
-    	//file1.remove();
-    	//app1.remove();
-    	//Manager.getInstance().getRootDirectory().lookup("/home/DAVID").remove();
+    	dir1.remove();
 
     	System.out.println("========================================================");
-      	
-        /*DAVID
-	   	User user1 = new User(Manager.getInstance(), "DAVID");
-    	PlainFile file1 = new PlainFile("README", user1, Manager.getInstance().getHomeDirectory(), "batata");
-    	PlainFile file2 = new PlainFile("BLA", user1, Manager.getInstance().getHomeDirectory(), "batata");
-	   	Manager.getInstance().getHomeDirectory().showContent();
-	   	Manager.getInstance().getRootDirectory().lookup("/home/DAVID").showContent();
-	   	file1.setName("\0");
-	   	Manager.getInstance().getHomeDirectory().showContent();
-	   	System.out.println(file1.getLastModified());
-	   	DAVID*/
-	   	
-		
 
     	//xmlPrint();
 	}
