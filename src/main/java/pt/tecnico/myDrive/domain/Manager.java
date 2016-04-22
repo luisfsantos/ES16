@@ -35,14 +35,16 @@ public class Manager extends Manager_Base {
         
         DummyObject dummy = new DummyObject();
         SuperUser superUser = new SuperUser(this, dummy);
-        GuestUser guestUser = new GuestUser(this, dummy);
+       
         this.setSuperUser(superUser);
-        this.setGuestUser(guestUser);
         RootDirectory rootDirectory = new RootDirectory(this, superUser, dummy);
         this.setRootDirectory(rootDirectory);
         Directory homeDirectory = new Directory("home", superUser, rootDirectory);
         Directory rootHome = new Directory("root", superUser, homeDirectory);
         superUser.setHome(rootHome);
+        
+        GuestUser guestUser = new GuestUser(this, dummy);
+        this.setGuestUser(guestUser);
     }
 	
     

@@ -65,8 +65,9 @@ public class User extends User_Base {
 		this.setManager(manager);
 		this.setUmask(umask);
 
-		Directory home = (Directory) this.getManager().getRootDirectory().getFileByName("home");
+
 		SuperUser superUser = this.getManager().getSuperUser();
+		Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("/home", superUser);
 		Directory userHome = new Directory(username, superUser, home);
 		userHome.setOwner(this);
 		userHome.setPermissions(this.getUmask());
@@ -89,7 +90,14 @@ public class User extends User_Base {
     	super.setManager(manager);
 		super.setPassword(null);
 		super.setName("Guest");
-		super.setUmask("rxwdr-x-");
+		super.setUmask("rwxdr-x-");
+		
+		SuperUser superUser = this.getManager().getSuperUser();
+		Directory home = (Directory) manager.getRootDirectory().lookup("/home", superUser);
+		Directory userHome = new Directory("nobody", superUser, home);
+		userHome.setOwner(this);
+		userHome.setPermissions(this.getUmask());
+		this.setHome(userHome);
 	}
 
 

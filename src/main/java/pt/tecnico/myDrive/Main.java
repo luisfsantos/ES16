@@ -54,19 +54,17 @@ public class Main {
     	User user1 = new User(Manager.getInstance(), "DAVID");
     	
 
-    	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("/home/DAVID", user1);
-    	log.trace("dir name = " + home.getName());
-    	
-    	PlainFile file1 = new PlainFile("README", user1, home, "batata"); 	
-    	Directory dir1 = new Directory("bin", user1, home);
+    	Directory home1 = (Directory) Manager.getInstance().getRootDirectory().lookup("/home/DAVID", user1);
+    	log.trace("dir name = " + home1.getName());
+    	PlainFile file1 = new PlainFile("README", user1, home1, "batata"); 	
+    	Directory dir1 = new Directory("bin", user1, home1);
     	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
     	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
     	
     	System.out.println("========================================================");
     	
     	log.trace(Manager.getInstance().getRootDirectory().getName());
-    	log.trace(home.getName());
-    	log.trace(home.getFileSet().size());
+    	log.trace(home1.getName());
     	log.trace(Manager.getInstance().getRootDirectory().lookup("home/root", root).getName());
     	
     	Login login = new Login("DAVID", "DAVID");
@@ -92,8 +90,10 @@ public class Main {
     		Login l = Manager.getInstance().getLoginByToken(invToken);
     	}
 
-    	
+    	Directory home = (Directory) Manager.getInstance().getRootDirectory().lookup("/home", root);
+    	log.trace("/home size = " + home.getFileSet().size());
     	log.trace("Guest name = " + Manager.getInstance().getGuestUser().getName());
+    	log.trace("Guest home Dir = " + Manager.getInstance().getGuestUser().getHome().getName());
 
     	dir1.remove();
 
