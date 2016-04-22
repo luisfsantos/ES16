@@ -51,9 +51,28 @@ public class Manager extends Manager_Base {
     public Login getLoginByToken(long token) {
     	DateTime now = new DateTime();
     	for (Login login: super.getLoginSet()) {
+
     		if (login.validateToken(token)){
+				//FIXME
+				if(login.getCurrentUser().getName().equals("Guest")){
+					login.refreshLoginActivity();
+					return login;
+				}
+
+				if (login.getCurrentUser().getName().equals("Super User")){
+
+					if (login.getLastActivity().isBefore(now.minusMinutes(10))){
+						log.warn("Sudo trying to access with invalid token ");
+						return null;
+					}
+					else{
+						login.refreshLoginActivity();
+						return login;
+					}
+				}
+
     			if (login.getLastActivity().isBefore(now.minusHours(2))){
-    				log.warn("Try to accsess with invalid token ");
+    				log.warn("Try to access with invalid token ");
     				return null;
     			} else {
     				login.refreshLoginActivity();
@@ -61,7 +80,7 @@ public class Manager extends Manager_Base {
     			}
     		}
     	}
-    	log.warn("Try to accsess with invalid token ");
+    	log.warn("Try to access with invalid token ");
 		return null;
     }
     
