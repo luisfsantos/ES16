@@ -62,15 +62,6 @@ public class DeleteFileServiceTest extends TokenValidationServiceTest {
 		service.execute();
 	}
 	
-	/*<------------------To delete----------------->
-	// 4
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
-	public void inexistentFile() {
-		DeleteFileService service = new DeleteFileService(userToken, "inexistentFile");
-		service.execute();
-	}
-	*/
-	
 	
 	// 5
 	@Test(expected = CannotRemoveDirectoryException.class)
