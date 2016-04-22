@@ -31,8 +31,6 @@ public class LoginServiceTest extends AbstractServiceTest {
 		service.execute();
 	}
 
-
-
 	//3
 	@Test
 	public void successUserLogin() {
@@ -90,6 +88,22 @@ public class LoginServiceTest extends AbstractServiceTest {
 
 		LoginService service = new LoginService("Exists", "Exists");
 		service.execute();
+	}
+
+	//9
+	@Test
+	public void PasswordHas8Char() {
+		Manager manager = Manager.getInstance();
+		new User(manager, "Existent");
+
+		LoginService service = new LoginService("Existent", "Existent");
+		service.execute();
+
+		long token = service.result();
+		User user = manager.getLoginByToken(token).getCurrentUser();
+
+		assertThat("LoginToken is not a long", token, instanceOf(long.class));
+		assertEquals("User from Token does not match", user.getName(), "Existent");
 	}
 
 }
