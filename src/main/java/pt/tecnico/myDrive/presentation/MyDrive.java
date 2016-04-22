@@ -8,7 +8,10 @@ public class MyDrive extends Shell {
 	  }
 
 	  public MyDrive() { // add commands here
-	    super("MyDrive");
+		  super("MyDrive");
+		  /* eg:
+		  new CreateFile(this); // the CreateFile command class has to exist and extend from myDriveCommand
+		   */
 	  }
 
 }
