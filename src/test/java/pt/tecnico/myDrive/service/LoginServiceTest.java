@@ -31,6 +31,13 @@ public class LoginServiceTest extends AbstractServiceTest {
 		service.execute();
 	}
 
+	//2
+	@Test(expected = InvalidUsernameOrPasswordException.class)
+	public void wrongPassword() {
+		LoginService service = new LoginService("Existent15Chars", "ExistentWrong");
+		service.execute();
+	}
+
 	//3
 	@Test
 	public void successUserLogin() {
