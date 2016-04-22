@@ -5,6 +5,8 @@
 [EnvironmentVariable| String name; String value;]
 [User]^-[SuperUser]
 [SuperUser]
+[User]^-[GuestUser]
+[GuestUser]
 [File]^-[PlainFile]
 [PlainFile| String content;]
 [File]^-[Directory]
@@ -18,6 +20,7 @@
 [.pt.ist.fenixframework.DomainRoot]0..1 root - manager 0..1[Manager] // DomainRootHasManagerApplication
 [Manager]1 manager - user *[User] // ManagerHasUsers
 [Manager]  - superUser 1[SuperUser] // ManagerHasSuperUser
+[Manager]  - guestUser 1[GuestUser] // ManagerHasGuestUser
 [Manager]1 manager - rootDirectory 1[RootDirectory] // ManagerHasRootDirectory
 [Manager]1 manager - login *[Login] // ManagerHasLogins
 [Login]* login - currentUser 1[User] // LoginHasCurrentUser

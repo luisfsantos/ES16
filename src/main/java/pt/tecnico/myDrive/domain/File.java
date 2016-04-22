@@ -165,7 +165,7 @@ public abstract class File extends File_Base {
 		if(user.hasPermission(this, Mask.DELETE)){
 			this.remove();
 		}
-		else throw new InvalidPermissionException(this.getPermissions());
+		else throw new AccessDeniedException("delete", this.getName());
 	}
 
 	public void remove(){

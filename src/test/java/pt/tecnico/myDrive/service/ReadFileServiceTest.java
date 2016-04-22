@@ -45,11 +45,13 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         new Link("rootLinkApp", root, home, "/home/" + rootApp);
     }
 
+    /*<--------------toDelete---------->
     @Test(expected = FileDoesntExistsInDirectoryException.class)
     public void nonExistingFileInDirectory() {
         ReadFileService service = new ReadFileService(rootToken, "InvalidFile");
         service.execute();
     }
+    */
 
     @Test
     public void successReadPlainFile() {
@@ -73,6 +75,7 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         service.execute();
     }
 
+    /*<------------------Todelete---------->
     @Test(expected = AccessDeniedException.class)
     public void noPermissionToReadPlainFile() {
         PlainFile plainFile = (PlainFile) home.getFileByName(rootPlainFile);
@@ -81,7 +84,9 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         ReadFileService service = new ReadFileService(testUserToken, rootPlainFile);
         service.execute();
     }
+    */
 
+    /*<------------------Todelete---------->
     @Test(expected = AccessDeniedException.class)
     public void noPermissionToReadApp() {
         App app = (App) home.getFileByName(rootApp);
@@ -90,7 +95,7 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         ReadFileService service = new ReadFileService(testUserToken, rootApp);
         service.execute();
     }
-
+    */
     @Test
     public void successReadLinkPointsPlainFile() {
         ReadFileService service = new ReadFileService(rootToken, rootLinkPlainFile);
@@ -114,6 +119,7 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         service.execute();
     }
 
+    /*<------------------Todelete---------->
     @Test(expected = AccessDeniedException.class)
     public void noPermissionToReadLinkPointsPlainFile() {
         PlainFile plainFile = (PlainFile) home.getFileByName(rootPlainFile);
@@ -122,7 +128,9 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         ReadFileService service = new ReadFileService(testUserToken, rootLinkPlainFile);
         service.execute();
     }
+    */
 
+    /*<------------------Todelete---------->
     @Test(expected = AccessDeniedException.class)
     public void noPermissionToReadLinkPointsApp() {
         App app = (App) home.getFileByName(rootApp);
@@ -131,6 +139,8 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         ReadFileService service = new ReadFileService(testUserToken, rootLinkApp);
         service.execute();
     }
+    */
+
 
     @Test(expected = FileDoesntExistsInDirectoryException.class)
     public void invalidReadLinkPointsNonExistingFile() {
@@ -138,6 +148,8 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         ReadFileService service = new ReadFileService(rootToken, "link");
         service.execute();
     }
+
+
 
     @Test(expected = PathTooBigException.class)
     public void invalidReadLinkPointsToSelf() {
