@@ -10,17 +10,14 @@ import static org.junit.Assert.assertEquals;
 public class WriteFileServiceTest extends ReadWriteCommonTest {
 
 	private long token;
-	private long nopermtoken;
 	private User root;
-	private User usertest;
 	private Directory home;
 
 
-	String strA = "";
-	String strB = "";
-	String strC = "";
-	String Y22 = "yyyyyyyyyyyyyyy";
-	String Y23 = "yyyyyyyyyyyyyyyy";
+	private String strA = "";
+	private String strB = "";
+	private String strC = "";
+	private String Y22 = "yyyyyyyyyyyyyyy";
 
 
 	public MyDriveService createTestInstance(Long token, String name, String dummy) {
@@ -38,10 +35,9 @@ public class WriteFileServiceTest extends ReadWriteCommonTest {
 		rootlogin.setCurrentDir(home);
 		token = rootlogin.getToken();
 
-		usertest = new User(Manager.getInstance(), "usertest");
-		Login testLogin = new Login(usertest.getUsername(), usertest.getUsername());
+		User userTest = new User(Manager.getInstance(), "userTest");
+		Login testLogin = new Login(userTest.getUsername(), userTest.getUsername());
 		testLogin.setCurrentDir(home);
-		nopermtoken = testLogin.getToken();
 
 		int i;
 		for(i=0; i<333; i++){
@@ -63,7 +59,6 @@ public class WriteFileServiceTest extends ReadWriteCommonTest {
 		new PlainFile(Y22,root,dirC ,"valid");
 
 		new Link("link1024",root, home , strA+"/"+strB+"/"+strC+"/"+Y22);
-		new Link("link1025", root, home , strA+"/"+strB+"/"+strC+"/"+Y23);
 
 		new Link("loop1", root, home,"loop2");
 		new Link("loop2", root, home, "loop3");
