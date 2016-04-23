@@ -7,10 +7,9 @@ import pt.tecnico.myDrive.exception.*;
 
 
 import java.io.UnsupportedEncodingException;
-import java.security.Provider;
 import java.util.*;
 
-public class Directory extends Directory_Base implements Cloneable {
+public class Directory extends Directory_Base {
 	final int max_path = 1024;
 	
 	protected Directory() {
@@ -172,24 +171,17 @@ public class Directory extends Directory_Base implements Cloneable {
 		throw new CannotReadException("A directory cannot be read");
 	}
 
-	public Set<File> getFileSet(User user) {
+	public Map<String, File> getFileMap(User user) {
 		if (user.hasPermission(this, Mask.READ)) {
-			Set<File> newFileSet = new LinkedHashSet<>(super.getFileSet());
+			Map<String, File> fileMap = new LinkedHashMap<>();
 
-			Directory currDir, parentDir;
-			try {
-				currDir = (Directory) this.clone();
-				parentDir = (Directory) getParent().clone();
-
-				currDir.setDotName(".");
-				parentDir.setDotName("..");
-			} catch (CloneNotSupportedException e) {
-				throw new MyDrive_Exception(e);
+			fileMap.put(".", this);
+			fileMap.put("..", getParent());
+			for (File f : super.getFileSet()) {
+				fileMap.put(f.getName(), f);
 			}
 
-			newFileSet.add(currDir); newFileSet.add(parentDir);
-
-			return newFileSet;
+			return fileMap;
 		} else {
 			throw new AccessDeniedException("list directory contents", super.getName());
 		}

@@ -62,14 +62,6 @@ public abstract class File extends File_Base {
 		this.setLastModified(new DateTime());
 	}
 
-	void setDotName(String name) {
-		if (name.equals(".") || name.equals("..")) {
-			super.setName(name);
-			return;
-		}
-		throw new InvalidFileNameException(name);
-	}
-
 	
 	@Override
 	public void setParent(Directory parent){

@@ -110,9 +110,6 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 
 		assertEquals("Permissions of first element","rwxdrwxd",result.get(0).getUmask());
 
-		System.out.println(result.get(0).getName());
-		System.out.println(result.get(1).getName());
-
 		assertEquals("Dimension of first element is 2",2,result.get(0).getDimension());
 		assertEquals("Username of first element is Thor","Thor",result.get(0).getUsername());
 	}
