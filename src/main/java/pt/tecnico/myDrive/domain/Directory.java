@@ -3,19 +3,14 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.AccessDeniedException;
-import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
-import pt.tecnico.myDrive.exception.CannotReadException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
-import pt.tecnico.myDrive.exception.IsHomeDirectoryException;
-import pt.tecnico.myDrive.exception.PathTooBigException;
-import pt.tecnico.myDrive.exception.InvalidWriteException;
+import pt.tecnico.myDrive.exception.*;
 
 
 import java.io.UnsupportedEncodingException;
+import java.security.Provider;
 import java.util.*;
 
-public class Directory extends Directory_Base {
+public class Directory extends Directory_Base implements Cloneable {
 	final int max_path = 1024;
 	
 	protected Directory() {
@@ -28,8 +23,8 @@ public class Directory extends Directory_Base {
 	
 	public Directory(String name, Directory parent) {
 		this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
+
 	}
-	
 
 	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
 		this.xmlImport(manager, dirNode);
@@ -179,12 +174,27 @@ public class Directory extends Directory_Base {
 
 	public Set<File> getFileSet(User user) {
 		if (user.hasPermission(this, Mask.READ)) {
-			return super.getFileSet();
+			Set<File> newFileSet = new LinkedHashSet<>(super.getFileSet());
+
+			Directory currDir, parentDir;
+			try {
+				currDir = (Directory) this.clone();
+				parentDir = (Directory) getParent().clone();
+
+				currDir.setDotName(".");
+				parentDir.setDotName("..");
+			} catch (CloneNotSupportedException e) {
+				throw new MyDrive_Exception(e);
+			}
+
+			newFileSet.add(currDir); newFileSet.add(parentDir);
+
+			return newFileSet;
 		} else {
 			throw new AccessDeniedException("list directory contents", super.getName());
 		}
-
 	}
+
 
 	public Directory createPath(User owner, String path) {
 		if(path.startsWith("/")) {
