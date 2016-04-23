@@ -4,22 +4,20 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
-import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.CannotReadException;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.PathTooBigException;
 
-public class ReadFileServiceTest extends TokenValidationServiceTest {
+public class ReadFileServiceTest extends ReadWriteCommonTest {
     private Long rootToken;
-    private Long testUserToken;
     private Directory home;
     private User root;
-    private String rootPlainFile = "rootPlainFile";
-    private String rootApp = "rootApp";
-    private String rootLinkPlainFile = "rootLinkPlainFile";
-    private String rootLinkApp = "rootLinkApp";
     private String dummyContent = "dummyContent";
     private String fullyQualifiedName = "pt.tecnico.myDrive.Main";
+
+    public MyDriveService createTestInstance(Long token, String name, String content) {
+        return new ReadFileService(token, name);
+    }
 
     @Override
     protected void populate() {
@@ -30,19 +28,9 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         root = rootLogin.getCurrentUser();
         rootToken = rootLogin.getToken();
 
-        User testUser = new User(manager, "testUser");
-        Login testUserLogin = new Login(testUser.getName(), testUser.getName());
-        testUserToken = testUserLogin.getToken();
-
         home = (Directory) manager.getRootDirectory().getFileByName("home");
 
         rootLogin.setCurrentDir(home);
-        testUserLogin.setCurrentDir(home);
-
-        new PlainFile("rootPlainFile", root, home, dummyContent);
-        new App("rootApp", root, home, fullyQualifiedName);
-        new Link("rootLinkPlainFile", root, home, "/home/" + rootPlainFile);
-        new Link("rootLinkApp", root, home, "/home/" + rootApp);
     }
 
     @Test
@@ -91,30 +79,6 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
     }
 
 
-    @Test(expected = FileDoesntExistsInDirectoryException.class)
-    public void invalidReadLinkPointsNonExistingFile() {
-        new Link("link", root, home, "/home/invalidFile");
-        ReadFileService service = new ReadFileService(rootToken, "link");
-        service.execute();
-    }
-
-
-
-    @Test(expected = PathTooBigException.class)
-    public void invalidReadLinkPointsToSelf() {
-        new Link("link", root, home, "/home/link");
-        ReadFileService service = new ReadFileService(rootToken, "link");
-        service.execute();
-    }
-
-    @Test(expected = PathTooBigException.class)
-    public void invalidReadOfLoopGeneratedByLinks() {
-        new Link("link1", root, home, "/home/link2");
-        new Link("link2", root, home, "/home/link1");
-        ReadFileService service = new ReadFileService(rootToken, "link1");
-        service.execute();
-    }
-
     @Test
     public void successReadLinkPointValidBigPath() {
         String validLargePath = "";
@@ -131,22 +95,6 @@ public class ReadFileServiceTest extends TokenValidationServiceTest {
         service.execute();
 
         assertEquals("output don't match", dummyContent, service.result());
-    }
-
-    @Test(expected = PathTooBigException.class)
-    public void readLinkPointInvalidBigPath() {
-        String invalidLargePath = "";
-        for(int i = 0; i < (1022/2); i++) {
-            invalidLargePath += "/a";
-        }
-        Manager manager = Manager.getInstance();
-        Directory rootDir = manager.getRootDirectory();
-        Directory lastDir = rootDir.createPath(root, invalidLargePath);
-        new PlainFile("a", root, lastDir, dummyContent);
-        new Link("link", root, home, invalidLargePath + "/aa");
-
-        ReadFileService service = new ReadFileService(rootToken, "link");
-        service.execute();
     }
 
     @Test
