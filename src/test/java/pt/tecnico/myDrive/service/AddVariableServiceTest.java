@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import pt.tecnico.myDrive.domain.EnvironmentVariable;
 import pt.tecnico.myDrive.domain.Login;
+import pt.tecnico.myDrive.exception.InvalidEnvironmentVarNameException;
 
 public class AddVariableServiceTest  extends TokenValidationServiceTest {
 	Long token;
