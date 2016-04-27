@@ -91,7 +91,7 @@ public class PlainFile extends PlainFile_Base {
             setContent(content);
         }
         else {
-            throw new InvalidPermissionException("Write in App"); //not sure about argument
+            throw new AccessDeniedException("write", super.getName());
         }
     }
 }
