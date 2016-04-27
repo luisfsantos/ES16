@@ -6,27 +6,25 @@ import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
-public class WriteFileService extends MyDriveService{
+public class WriteFileService extends TokenValidationService{
 
-	private Long token;
+
 	private String filename;
 	private String content;
 
 	public WriteFileService(long token, String filename, String content){
-		this.token = token;
+		super(token);
 		this.filename = filename;
 		this.content = content;
 	}
 
-	public final void dispatch(){
+	@Override
+	protected void dispatch() throws MyDriveException{
+		super.dispatch();
+		User user = session.getCurrentUser();
 
-		Manager manager = Manager.getInstance();
-		Login login = manager.getLoginByToken(token);
-		User user = login.getCurrentUser();
-
-		if (login.validateToken(token)){
-			File f = login.getCurrentDir().lookup(filename,user);
+			File f = session.getCurrentDir().lookup(filename,user);
 			f.write(user,content);
-		}
+
 	}
 }
