@@ -41,9 +41,9 @@ public abstract class File extends File_Base {
 	
 	
 	@Override
-	public void setName(String name){
+	public void setName(String name) {
 		if(name == null)
-			throw new InvalidFileNameException(name);
+			throw new InvalidFileNameException(null);
 		if((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0) ||  name.equals(""))
 			throw new InvalidFileNameException(name);
 		if((getParent().getAbsolutePath().length() + 1 + name.length()) > 1024)
@@ -51,6 +51,7 @@ public abstract class File extends File_Base {
 
 		if (name.equals(".") || name.equals(".."))
 			throw new FileAlreadyExistsInDirectoryException(name, getParent().getName());
+
 		for (File f : getParent().getFileSet()) {
 			if(!f.equals(this) && f.getName().equals(name)){
 				throw new FileAlreadyExistsInDirectoryException(name, this.getParent().getName());
@@ -165,7 +166,7 @@ public abstract class File extends File_Base {
 		if(user.hasPermission(this, Mask.DELETE)){
 			this.remove();
 		}
-		else throw new InvalidPermissionException(this.getPermissions());
+		else throw new AccessDeniedException("delete", this.getName());
 	}
 
 	public void remove(){
