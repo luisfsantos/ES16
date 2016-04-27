@@ -31,7 +31,7 @@ public class CreateFileServiceTest extends TokenValidationServiceTest {
 		Manager m = Manager.getInstance();
 		super.populate();
 
-		new User(m, "lads");
+		new User(m, "ladslads");
 		Login l = new Login("root", "***");
 		root = l.getCurrentUser();
 		rootToken = l.getToken();
@@ -87,10 +87,10 @@ public class CreateFileServiceTest extends TokenValidationServiceTest {
 	// 7
 	@Test(expected = AccessDeniedException.class)
 	public void noPermission() {
-		Login l = new Login("lads", "lads");
-		Long ladsToken = l.getToken();
+		Login l = new Login("ladslads", "ladslads");
+		Long ladsladsToken = l.getToken();
 		l.setCurrentDir(home);
-		CreateFileService service = new CreateFileService(ladsToken, name, "dir", null);
+		CreateFileService service = new CreateFileService(ladsladsToken, name, "dir", null);
 		service.execute();
 	}
 	
