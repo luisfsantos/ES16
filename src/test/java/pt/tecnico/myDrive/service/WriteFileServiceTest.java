@@ -7,7 +7,7 @@ import pt.tecnico.myDrive.exception.*;
 import static org.junit.Assert.assertEquals;
 
 
-public class WriteFileServiceTest extends ReadWriteCommonTest {
+public class WriteFileServiceTest extends LinkCommonTest {
 
 	private long token;
 	private User root;

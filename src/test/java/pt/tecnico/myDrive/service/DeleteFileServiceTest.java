@@ -13,7 +13,7 @@ import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.*;
 
-public class DeleteFileServiceTest extends ReadWriteDeleteCommonTest {
+public class DeleteFileServiceTest extends PermissionsCommonTest {
 	private Long rootToken;
 	private Long userToken;
 	private Login rootLogin;

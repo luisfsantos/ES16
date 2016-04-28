@@ -5,10 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.CannotReadException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
-import pt.tecnico.myDrive.exception.PathTooBigException;
 
-public class ReadFileServiceTest extends ReadWriteCommonTest {
+public class ReadFileServiceTest extends LinkCommonTest {
     private Long rootToken;
     private Directory home;
     private User root;
