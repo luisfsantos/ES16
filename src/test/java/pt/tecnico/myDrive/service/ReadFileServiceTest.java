@@ -79,16 +79,8 @@ public class ReadFileServiceTest extends LinkCommonTest {
 
     @Test
     public void successReadLinkPointValidBigPath() {
-        String validLargePath = "";
-        for(int i = 0; i < (1024-2)/2; i++) {
-            validLargePath += "/a";
-        }
+        super.successReadLinkPointValidBigPath();
 
-        Manager manager = Manager.getInstance();
-        Directory rootDir = manager.getRootDirectory();
-        Directory lastDir = rootDir.createPath(root, validLargePath);
-        new PlainFile("a", root, lastDir, dummyContent);
-        new Link("link", root, home, validLargePath + "/a");
         ReadFileService service = new ReadFileService(rootToken, "link");
         service.execute();
 
@@ -97,8 +89,7 @@ public class ReadFileServiceTest extends LinkCommonTest {
 
     @Test
     public void successReadLinkPointPathContainsLink() {
-        new Link("link1", root, home, "/home/" + rootPlainFile);
-        new Link("link2", root, home, "/home/link1/");
+        super.successReadLinkPointPathContainsLink();
 
         ReadFileService service = new ReadFileService(rootToken, "link2");
         service.execute();
