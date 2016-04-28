@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class MyDrive extends Shell {
-	protected Map<String, Long> loggedIn = new HashMap<>(); //TODO must users have more than one active session?
+	protected Map<String, Long> loggedIn = new HashMap<>();
 
 	public static void main(String[] args) throws Exception {
 		MyDrive sh = new MyDrive();
