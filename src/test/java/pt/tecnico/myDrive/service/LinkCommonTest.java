@@ -8,7 +8,7 @@ import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.PathTooBigException;
 
-public abstract class ReadWriteCommonTest extends ReadWriteDeleteCommonTest {
+public abstract class LinkCommonTest extends PermissionsCommonTest {
 
     @Test(expected = FileDoesntExistsInDirectoryException.class)
     public void invalidLinkPointsNonExistingFile() {
@@ -48,7 +48,7 @@ public abstract class ReadWriteCommonTest extends ReadWriteDeleteCommonTest {
         new PlainFile("a", root, lastDir, dummyContent);
         new Link("link", root, home, invalidLargePath + "/aa");
 
-        ReadFileService service = new ReadFileService(rootToken, "link");
+        MyDriveService service = createTestInstance(rootToken, "link", dummyContent);
         service.execute();
     }
 

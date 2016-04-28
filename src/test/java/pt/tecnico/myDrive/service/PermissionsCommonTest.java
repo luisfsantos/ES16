@@ -5,7 +5,7 @@ import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 
-public abstract class ReadWriteDeleteCommonTest extends TokenValidationServiceTest {
+public abstract class PermissionsCommonTest extends TokenValidationServiceTest {
     Long rootToken;
     User root;
     private Long testUserToken;
