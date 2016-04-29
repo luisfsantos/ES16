@@ -26,7 +26,7 @@ public class Directory extends Directory_Base {
 	}
 
 	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
-		this.xmlImport(manager, dirNode);
+		super.xmlImport(manager, dirNode);
 	}
 	
 	@Override
