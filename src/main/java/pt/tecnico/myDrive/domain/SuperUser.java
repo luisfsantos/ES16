@@ -47,8 +47,8 @@ public class SuperUser extends SuperUser_Base {
 	public boolean isValidUserSession(DateTime recent){
 		DateTime now = new DateTime();
 		if (recent.isBefore(now.minusMinutes(10))){
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

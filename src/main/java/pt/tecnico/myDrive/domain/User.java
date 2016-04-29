@@ -248,8 +248,8 @@ public class User extends User_Base {
 	public boolean isValidUserSession(DateTime recent){
 		DateTime now = new DateTime();
 		if (recent.isBefore(now.minusHours(2))){
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }
