@@ -60,6 +60,8 @@ public class Main {
     	Directory dir1 = new Directory("bin", user1, home1);
     	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
     	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
+    	App app = new App("appp", user1, dir1, "pt.tecnico.myDrive");
+    	app.execute(user1, new String[1]);
     	
     	System.out.println("========================================================");
     	

@@ -81,4 +81,16 @@ public class App extends App_Base {
 			throw new AccessDeniedException("write", super.getName()); //not sure about argument
 		}
 	}
+	
+	@Override
+	public void execute(User user, String[] args) {
+		if (user.hasPermission(this, Mask.EXEC)) {
+			System.out.println("EXEC!!");
+			// TODO call run
+		}
+		else {
+			throw new AccessDeniedException("execute", this.getName()); 
+		}
+	}
+	
 }

@@ -94,6 +94,12 @@ public class PlainFile extends PlainFile_Base {
             throw new AccessDeniedException("write", super.getName());
         }
     }
+
+	@Override
+	public void execute(User user, String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 
