@@ -11,11 +11,12 @@ public abstract class PermissionsCommonTest extends TokenValidationServiceTest {
     private Long testUserToken;
     Directory home;
 
-    String rootPlainFile = "rootPlainFile";
-    String rootApp = "rootApp";
-    String rootLinkApp = "rootLinkApp";
-    String rootLinkPlainFile = "rootLinkPlainFile";
-    String dummyContent = "dummyContent";
+    final String PLAIN_FILE = "plainFile";
+    final String APP = "APP";
+    final String LINK_APP = "linkApp";
+    final String LINK_PLAIN_FILE = "linkPlainFile";
+    final String DUMMY_CONTENT = "dummyContent";
+    final String FULLY_QUALIFIED_NAME = "pt.tecnico.myDrive.Main";
 
     @Override
     protected void populate() {
@@ -34,11 +35,10 @@ public abstract class PermissionsCommonTest extends TokenValidationServiceTest {
         rootLogin.setCurrentDir(home);
         testUserLogin.setCurrentDir(home);
 
-        new PlainFile("rootPlainFile", root, home, dummyContent);
-        String fullyQualifiedName = "pt.tecnico.myDrive.Main";
-        new App(rootApp, root, home, fullyQualifiedName);
-        new Link(rootLinkPlainFile, root, home, "/home/" + rootPlainFile);
-        new Link(rootLinkApp, root, home, "/home/" + rootApp);
+        new PlainFile(PLAIN_FILE, root, home, DUMMY_CONTENT);
+        new App(APP, root, home, FULLY_QUALIFIED_NAME);
+        new Link(LINK_PLAIN_FILE, root, home, "/home/" + PLAIN_FILE);
+        new Link(LINK_APP, root, home, "/home/" + APP);
     }
 
     public abstract MyDriveService createTestInstance(Long token, String name, String content);
@@ -46,43 +46,43 @@ public abstract class PermissionsCommonTest extends TokenValidationServiceTest {
     @Test(expected = FileDoesntExistsInDirectoryException.class)
     public void nonExistingFileInDirectory() {
 
-        MyDriveService service = createTestInstance(rootToken, "InvalidFile", dummyContent);
+        MyDriveService service = createTestInstance(rootToken, "InvalidFile", DUMMY_CONTENT);
         service.execute();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void noPermissionInPlainFile() {
-        PlainFile plainFile = (PlainFile) home.getFileByName(rootPlainFile);
+        PlainFile plainFile = (PlainFile) home.getFileByName(PLAIN_FILE);
         plainFile.setPermissions("rwxd----");
 
-        MyDriveService service = createTestInstance(testUserToken, rootPlainFile, dummyContent);
+        MyDriveService service = createTestInstance(testUserToken, PLAIN_FILE, DUMMY_CONTENT);
         service.execute();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void noPermissionInApp() {
-        App app = (App) home.getFileByName(rootApp);
+        App app = (App) home.getFileByName(APP);
         app.setPermissions("rwxd----");
 
-        MyDriveService service = createTestInstance(testUserToken, rootApp, dummyContent);
+        MyDriveService service = createTestInstance(testUserToken, APP, DUMMY_CONTENT);
         service.execute();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void noPermissionInLinkPointsPlainFile() {
-        PlainFile plainFile = (PlainFile) home.getFileByName(rootPlainFile);
+        PlainFile plainFile = (PlainFile) home.getFileByName(PLAIN_FILE);
         plainFile.setPermissions("rwxd----");
 
-        MyDriveService service = createTestInstance(testUserToken, rootLinkPlainFile, dummyContent);
+        MyDriveService service = createTestInstance(testUserToken, LINK_PLAIN_FILE, DUMMY_CONTENT);
         service.execute();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void noPermissionInLinkPointsApp()  {
-        App app = (App) home.getFileByName(rootApp);
+        App app = (App) home.getFileByName(APP);
         app.setPermissions("rwxd----");
 
-        MyDriveService service = createTestInstance(testUserToken, rootLinkApp, dummyContent);
+        MyDriveService service = createTestInstance(testUserToken, LINK_APP, DUMMY_CONTENT);
         service.execute();
     }
 }

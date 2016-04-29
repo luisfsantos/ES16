@@ -7,44 +7,24 @@ import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.CannotReadException;
 
 public class ReadFileServiceTest extends LinkCommonTest {
-    private Long rootToken;
-    private Directory home;
-    private User root;
-    private String dummyContent = "dummyContent";
-    private String fullyQualifiedName = "pt.tecnico.myDrive.Main";
-
     public MyDriveService createTestInstance(Long token, String name, String content) {
         return new ReadFileService(token, name);
     }
 
-    @Override
-    protected void populate() {
-    	super.populate();
-        Manager manager = Manager.getInstance();
-
-        Login rootLogin = new Login("root", "***");
-        root = rootLogin.getCurrentUser();
-        rootToken = rootLogin.getToken();
-
-        home = (Directory) manager.getRootDirectory().getFileByName("home");
-
-        rootLogin.setCurrentDir(home);
-    }
-
     @Test
     public void successReadPlainFile() {
-        ReadFileService service = new ReadFileService(rootToken, rootPlainFile);
+        ReadFileService service = new ReadFileService(rootToken, PLAIN_FILE);
         service.execute();
 
-        assertEquals("output don't match", dummyContent, service.result());
+        assertEquals("output don't match", DUMMY_CONTENT, service.result());
     }
 
     @Test
     public void successReadApp() {
-        ReadFileService service = new ReadFileService(rootToken, rootApp);
+        ReadFileService service = new ReadFileService(rootToken, APP);
         service.execute();
 
-        assertEquals("output don't match", fullyQualifiedName, service.result());
+        assertEquals("output don't match", FULLY_QUALIFIED_NAME, service.result());
     }
 
     @Test(expected = CannotReadException.class)
@@ -55,18 +35,18 @@ public class ReadFileServiceTest extends LinkCommonTest {
 
     @Test
     public void successReadLinkPointsPlainFile() {
-        ReadFileService service = new ReadFileService(rootToken, rootLinkPlainFile);
+        ReadFileService service = new ReadFileService(rootToken, LINK_PLAIN_FILE);
         service.execute();
 
-        assertEquals("output don't match", dummyContent, service.result());
+        assertEquals("output don't match", DUMMY_CONTENT, service.result());
     }
 
     @Test
     public void successReadLinkPointsApp() {
-        ReadFileService service = new ReadFileService(rootToken, rootLinkApp);
+        ReadFileService service = new ReadFileService(rootToken, LINK_APP);
         service.execute();
 
-        assertEquals("output don't match", fullyQualifiedName, service.result());
+        assertEquals("output don't match", FULLY_QUALIFIED_NAME, service.result());
     }
 
     @Test(expected = CannotReadException.class)
@@ -79,21 +59,31 @@ public class ReadFileServiceTest extends LinkCommonTest {
 
     @Test
     public void successReadLinkPointValidBigPath() {
-        super.successReadLinkPointValidBigPath();
+        String validLargePath = "";
+        for(int i = 0; i < (1024-2)/2; i++) {
+            validLargePath += "/a";
+        }
+
+        Manager manager = Manager.getInstance();
+        Directory rootDir = manager.getRootDirectory();
+        Directory lastDir = rootDir.createPath(root, validLargePath);
+        new PlainFile("a", root, lastDir, DUMMY_CONTENT);
+        new Link("link", root, home, validLargePath + "/a");
 
         ReadFileService service = new ReadFileService(rootToken, "link");
         service.execute();
 
-        assertEquals("output don't match", dummyContent, service.result());
+        assertEquals("output don't match", DUMMY_CONTENT, service.result());
     }
 
     @Test
     public void successReadLinkPointPathContainsLink() {
-        super.successReadLinkPointPathContainsLink();
+        new Link("link1", root, home, "/home/" + PLAIN_FILE);
+        new Link("link2", root, home, "/home/link1/");
 
         ReadFileService service = new ReadFileService(rootToken, "link2");
         service.execute();
 
-        assertEquals("output don't match", dummyContent, service.result());
+        assertEquals("output don't match", DUMMY_CONTENT, service.result());
     }
 }
