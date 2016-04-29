@@ -7,21 +7,22 @@ import pt.tecnico.myDrive.exception.*;
 import static org.junit.Assert.assertEquals;
 
 
-public class WriteFileServiceTest extends TokenValidationServiceTest {
+public class WriteFileServiceTest extends ReadWriteCommonTest {
 
 	private long token;
-	private long nopermtoken;
 	private User root;
-	private User usertest;
 	private Directory home;
 
 
-	String strA = "";
-	String strB = "";
-	String strC = "";
-	String Y22 = "yyyyyyyyyyyyyyy";
-	String Y23 = "yyyyyyyyyyyyyyyy";
+	private String strA = "";
+	private String strB = "";
+	private String strC = "";
+	private String Y22 = "yyyyyyyyyyyyyyy";
 
+
+	public MyDriveService createTestInstance(Long token, String name, String dummy) {
+		return new WriteFileService(token, name, dummy);
+	}
 
 	@Override
 	protected void populate() {
@@ -34,10 +35,9 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		rootlogin.setCurrentDir(home);
 		token = rootlogin.getToken();
 
-		usertest = new User(Manager.getInstance(), "usertest");
-		Login testLogin = new Login(usertest.getUsername(), usertest.getUsername());
+		User userTest = new User(Manager.getInstance(), "userTest");
+		Login testLogin = new Login(userTest.getUsername(), userTest.getUsername());
 		testLogin.setCurrentDir(home);
-		nopermtoken = testLogin.getToken();
 
 		int i;
 		for(i=0; i<333; i++){
@@ -59,7 +59,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		new PlainFile(Y22,root,dirC ,"valid");
 
 		new Link("link1024",root, home , strA+"/"+strB+"/"+strC+"/"+Y22);
-		new Link("link1025", root, home , strA+"/"+strB+"/"+strC+"/"+Y23);
 
 		new Link("loop1", root, home,"loop2");
 		new Link("loop2", root, home, "loop3");
@@ -76,52 +75,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		new PlainFile("textfile",root, home, "valid");
 
 		new Link("linktoNE",root, home, "batata");
-	}
-
-
-	//TEST 1
-	@Test(expected = InvalidPermissionException.class)
-	public void invalidPermissionsPlain(){
-		WriteFileService service = new WriteFileService(nopermtoken, "validplain", "");
-		service.execute();
-	}
-
-	//TEST 2
-	@Test(expected = InvalidPermissionException.class)
-	public void invalidPermissionsApp(){
-		WriteFileService service = new WriteFileService(nopermtoken, "validapp", "pt.tecnico.myDrive.domain.App");
-		service.execute();
-	}
-
-	//TEST 3
-	@Test(expected = InvalidPermissionException.class)
-	public void invalidPermissionsLink(){
-		WriteFileService service = new WriteFileService(nopermtoken, "validlink", "/home");
-		service.execute();
-	}
-
-	//TEST 4
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
-	public void notExistsPlain(){
-		WriteFileService service = new WriteFileService(token, "notexists", "");
-		service.execute();
-
-	}
-
-	//TEST 5
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
-	public void notExistsApp(){
-		WriteFileService service = new WriteFileService(token, "notexists", "pt.tecnico.myDrive.domain.App");
-		service.execute();
-
-	}
-
-	//TEST 6
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
-	public void notExistsLink(){
-		WriteFileService service = new WriteFileService(token, "notexists", "/home");
-		service.execute();
-
 	}
 
 	//TEST 7
@@ -174,13 +127,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 	@Test(expected=InvalidWriteException.class)
 	public void insuccessWriteDir(){
 		WriteFileService service = new WriteFileService(token, "root", "/home");
-		service.execute();
-	}
-
-	//TEST 13
-	@Test(expected = PathTooBigException.class)
-	public void insuccessWriteLinkLoop(){
-		WriteFileService service = new WriteFileService(token, "loop1", "writelink");
 		service.execute();
 	}
 

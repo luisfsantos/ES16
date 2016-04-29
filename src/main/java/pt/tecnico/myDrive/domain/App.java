@@ -1,10 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.InvalidContentException;
-import pt.tecnico.myDrive.exception.InvalidPermissionException;
-import pt.tecnico.myDrive.exception.IsNotJavaFullyQualifiedNameException;
+import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
@@ -25,7 +22,7 @@ public class App extends App_Base {
     public App(Manager manager, Element appNode) throws UnsupportedEncodingException {
 		String method = new String(appNode.getChildText("method").getBytes("UTF-8"));
 		setContent(method);
-		this.xmlImport(manager, appNode);
+		super.xmlImport(manager, appNode);
     }
     
     @Override
@@ -81,7 +78,7 @@ public class App extends App_Base {
 			setContent(content);
 		}
 		else {
-			throw new InvalidPermissionException("Write in App"); //not sure about argument
+			throw new AccessDeniedException("write", super.getName()); //not sure about argument
 		}
 	}
 }
