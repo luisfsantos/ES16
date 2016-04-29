@@ -10,6 +10,7 @@ import pt.tecnico.myDrive.exception.InvalidPermissionException;
 import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 
 public class PlainFile extends PlainFile_Base {
 
@@ -96,7 +97,7 @@ public class PlainFile extends PlainFile_Base {
     }
 
 	@Override
-	public void execute(User user, String[] args) {
+	public void execute(User user, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		if (user.hasPermission(this, Mask.EXEC)) {
 			// TODO 
 		}

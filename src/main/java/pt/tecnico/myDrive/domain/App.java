@@ -4,6 +4,7 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Pattern;
 
 public class App extends App_Base {
@@ -83,10 +84,9 @@ public class App extends App_Base {
 	}
 	
 	@Override
-	public void execute(User user, String[] args) {
+	public void execute(User user, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		if (user.hasPermission(this, Mask.EXEC)) {
-			System.out.println("EXEC!!");
-			// TODO call run
+			ReflectClass.run(this.viewContent(), args);
 		}
 		else {
 			throw new AccessDeniedException("execute", this.getName()); 

@@ -2,6 +2,7 @@ package pt.tecnico.myDrive;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -60,8 +61,28 @@ public class Main {
     	Directory dir1 = new Directory("bin", user1, home1);
     	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
     	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
-    	App app = new App("appp", user1, dir1, "pt.tecnico.myDrive");
-    	app.execute(user1, new String[1]);
+    	App app = new App("appp", user1, dir1, "pt.tecnico.myDrive.domain.ReflectClass.bye");
+    	try {
+			app.execute(user1, new String[1]);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
     	System.out.println("========================================================");
     	

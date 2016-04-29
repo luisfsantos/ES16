@@ -4,6 +4,7 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 
 public class Link extends Link_Base {
 
@@ -81,7 +82,7 @@ public class Link extends Link_Base {
     }
 
 	@Override
-	public void execute(User user, String[] args) {
+	public void execute(User user, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		File file = this.resolveLink(user);
         if (file == null) {
             throw new CannotReadException("File does not exist");
