@@ -19,9 +19,5 @@ public class ReflectClass {
 		    }
 		    meth.invoke(null, (Object)args); // static method (ignore return)
 		  }
-	  
-	    public static void bye(String[] args) {
-	        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!! Godbye !!!!!!!!!!!!!!!!!!!!!!!");
-	    }
-	
+	  	
 }

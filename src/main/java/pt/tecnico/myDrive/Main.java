@@ -60,10 +60,13 @@ public class Main {
     	PlainFile file1 = new PlainFile("README", user1, home1, "batata"); 	
     	Directory dir1 = new Directory("bin", user1, home1);
     	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
-    	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
-    	App app = new App("appp", user1, dir1, "pt.tecnico.myDrive.domain.ReflectClass.bye");
+    	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "/home/DAVID/bin/appp 1aaa fff\n/home/DAVID/bin/appp 2www o iii\n/home/DAVID/bin/appp 3hhh");
+    	App app = new App("appp", user1, dir1, "pt.tecnico.myDrive.Main.bye");
     	try {
-			app.execute(user1, new String[1]);
+    		String[] s = new String[1]; 
+    		s[0] = "0AAA";
+			app.execute(user1, s);
+			file3.execute(user1, s);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,6 +127,10 @@ public class Main {
 
     	//xmlPrint();
 	}
+    
+    public static void bye(String[] args) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!! "+ args[0] + " !!!!!!!!!!!!!!!!!!!!!!!");
+    }
 
 	@Atomic
 	public static void print() {

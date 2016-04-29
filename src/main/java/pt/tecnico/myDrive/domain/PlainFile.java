@@ -11,6 +11,7 @@ import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 public class PlainFile extends PlainFile_Base {
 
@@ -99,7 +100,13 @@ public class PlainFile extends PlainFile_Base {
 	@Override
 	public void execute(User user, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		if (user.hasPermission(this, Mask.EXEC)) {
-			// TODO 
+			String[] content = this.viewContent().split(System.getProperty("line.separator"));
+			for (String line: content) {
+				String[] lineContent = line.split(" ");
+				File destFile =  this.getParent().lookup(lineContent[0], user);
+				String[] arguments = Arrays.copyOfRange(lineContent, 1, lineContent.length);
+				destFile.execute(user, arguments);
+			}
 		}
 		else {
 			throw new AccessDeniedException("execute", this.getName()); 
