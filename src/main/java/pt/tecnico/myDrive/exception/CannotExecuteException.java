@@ -1,7 +1,8 @@
 package pt.tecnico.myDrive.exception;
 
 public class CannotExecuteException extends MyDriveException {
-    private String name;
+	private static final long serialVersionUID = 1L;
+	private String name;
 
     public CannotExecuteException(String name) {
         this.name = name;
@@ -13,7 +14,7 @@ public class CannotExecuteException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "Can not execute:" + getName();
+        return "Cannot execute:" + getName();
     }
 
 }

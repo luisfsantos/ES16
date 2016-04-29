@@ -97,9 +97,14 @@ public class PlainFile extends PlainFile_Base {
 
 	@Override
 	public void execute(User user, String[] args) {
-		// TODO Auto-generated method stub
-		
+		if (user.hasPermission(this, Mask.EXEC)) {
+			// TODO 
+		}
+		else {
+			throw new AccessDeniedException("execute", this.getName()); 
+		}
 	}
+	
 }
 
 
