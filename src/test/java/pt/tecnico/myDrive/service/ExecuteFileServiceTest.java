@@ -1,47 +1,27 @@
 package pt.tecnico.myDrive.service;
 
+import mockit.Mocked;
+import mockit.Verifications;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.CannotExecuteException;
 import pt.tecnico.myDrive.exception.CannotExecutePlainFileException;
-import pt.tecnico.myDrive.exception.InvalidArgumentsLengthException;
 import pt.tecnico.myDrive.exception.InvalidPathException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import static org.junit.Assert.assertEquals;
-
-@SuppressWarnings("Duplicates")
 public class ExecuteFileServiceTest extends LinkCommonTest {
     private final String INVALID = "invalid path";
-    private final String[] ARGS = {"Hello", "World"};
-    private final String[] EMPTY_ARGS = {};
+    private final String[] ARGS = {"Hello", "World!"};
+    private final String[] ARGS_EMPTY = {};
     private final String APP = "execApp";
     private final String PLAIN_FILE = "execPlainFile";
     private final String LINK = "execLink";
-    private final String APP_METHOD = "pt.tecnico.myDrive.Hello.hello";
-    private final String PLAIN_FILE_CONTENT = APP_METHOD + " " + "Hello" + " " + "World";
+    private final String APP_METHOD = "pt.tecnico.myDrive.service.Hello.hello";
     private final String APP_METHOD_EMPTY = "pt.tecnico.myDrive.Hello.helloEmpty";
-    private final String APP_METHOD_RES = "Method: Hello World";
+    private final String PLAIN_FILE_CONTENT = APP_METHOD + " " + "Hello" + " " + "World";
 
     @Override
     public MyDriveService createTestInstance(Long token, String name, String arguments) {
         return new ExecuteFileService(token, "./"+name, null);
-    }
-
-    private PrintStream console = System.out;
-    private ByteArrayOutputStream auxRedirectSout(boolean redirect) {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        if(redirect) {
-            result = new ByteArrayOutputStream();
-            System.setOut(new PrintStream(result));
-
-        } else {
-            System.out.flush();
-            System.setOut(console);
-        }
-        return result;
     }
 
     @Test(expected = InvalidPathException.class)
@@ -65,48 +45,43 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
     }
 
     @Test
-    public void successRunAppMethodArgsNotEmpty() {
+    public void successRunAppMethodArgsNotEmpty(@Mocked Hello helloMock) {
         new App(APP, root, home, APP_METHOD);
-        ByteArrayOutputStream result = auxRedirectSout(true);
 
         ExecuteFileService service = new ExecuteFileService(rootToken, "./"+APP, ARGS);
         service.execute();
 
-        assertEquals("Output don't match", APP_METHOD_RES , result.toString());
-
-        auxRedirectSout(false);
+        new Verifications() {{
+            helloMock.hello(ARGS); times = 1;
+        }};
     }
 
     @Test
-    public void successRunAppMethodArgsEmpty() {
+    public void successRunAppMethodArgsEmpty(@Mocked Hello helloMock) {
         new App(APP, root, home, APP_METHOD_EMPTY);
-        ByteArrayOutputStream result = auxRedirectSout(true);
 
-        ExecuteFileService service = new ExecuteFileService(rootToken, "./"+APP, EMPTY_ARGS);
+        ExecuteFileService service = new ExecuteFileService(rootToken, "./"+APP, ARGS_EMPTY);
         service.execute();
 
-        final String APP_METHOD_RES_EMPTY = "Method:";
-        assertEquals("Output don't match", APP_METHOD_RES_EMPTY, result.toString());
-
-        auxRedirectSout(false);
+        new Verifications() {{
+            helloMock.helloEmpty(); times = 1;
+        }};
     }
 
     @Test
-    public void successRunAppMain() {
+    public void successRunAppMain(@Mocked Hello helloMock) {
         final String APP_MAIN = "pt.tecnico.myDrive.Hello";
         new App(APP, root, home, APP_MAIN);
-        ByteArrayOutputStream result = auxRedirectSout(true);
 
         ExecuteFileService service = new ExecuteFileService(rootToken, "./"+APP, ARGS);
         service.execute();
 
-        final String APP_MAIN_RES = "Main: Hello World";
-        assertEquals("Output don't match", APP_MAIN_RES, result.toString());
-
-        auxRedirectSout(false);
+        new Verifications() {{
+            helloMock.main(ARGS); times = 1;
+        }};
     }
 
-    @Test(expected = InvalidArgumentsLengthException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void invalidRunAppWrongArguments() {
         new App(APP, root, home, APP_METHOD_EMPTY);
 
@@ -115,16 +90,15 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
     }
 
     @Test
-    public void successRunPlainFile() {
+    public void successRunPlainFile(@Mocked Hello helloMock) {
         new PlainFile(PLAIN_FILE, root, home, PLAIN_FILE_CONTENT);
-        ByteArrayOutputStream result = auxRedirectSout(true);
 
-        ExecuteFileService service = new ExecuteFileService(rootToken, "./"+PLAIN_FILE, EMPTY_ARGS);
+        ExecuteFileService service = new ExecuteFileService(rootToken, "./"+PLAIN_FILE, ARGS_EMPTY);
         service.execute();
 
-        assertEquals("Output don't match", APP_METHOD_RES, result.toString());
-
-        auxRedirectSout(false);
+        new Verifications() {{
+            helloMock.hello(ARGS); times = 1;
+        }};
     }
 
     @Test(expected = CannotExecutePlainFileException.class)
@@ -136,35 +110,33 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
     }
 
     @Test
-    public void successRunLinkPointApp() {
-        new App(APP, root, home, APP_METHOD_EMPTY);
+    public void successRunLinkPointApp(@Mocked Hello helloMock) {
+        new App(APP, root, home, APP_METHOD);
         new Link(LINK, root, home, "/home/"+APP);
-        ByteArrayOutputStream result = auxRedirectSout(true);
 
         ExecuteFileService service = new ExecuteFileService(rootToken, "./"+LINK, ARGS);
         service.execute();
 
-        assertEquals("Output don't match", APP_METHOD_RES, result.toString());
-
-        auxRedirectSout(false);
+        new Verifications() {{
+            helloMock.hello(ARGS); times = 1;
+        }};
     }
 
     @Test
-    public void successRunLinkPointPlainFile() {
+    public void successRunLinkPointPlainFile(@Mocked Hello helloMock) {
         new PlainFile(PLAIN_FILE, root, home, PLAIN_FILE_CONTENT);
         new Link(LINK, root, home, "/home/"+PLAIN_FILE);
-        ByteArrayOutputStream result = auxRedirectSout(true);
 
         ExecuteFileService service = new ExecuteFileService(rootToken, "./"+PLAIN_FILE, ARGS);
         service.execute();
 
-        assertEquals("Output don't match", APP_METHOD_RES, result.toString());
-
-        auxRedirectSout(false);
+        new Verifications() {{
+            helloMock.hello(ARGS); times = 1;
+        }};
     }
 
     @Test
-    public void successRunLinkPointValidBigPathApp() {
+    public void successRunLinkPointValidBigPathApp(@Mocked Hello helloMock) {
         String validLargePath = "";
         for(int i = 0; i < (1024-2)/2; i++) {
             validLargePath += "/a";
@@ -176,30 +148,26 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         new App("a", root, lastDir, APP_METHOD);
         new Link(LINK, root, home, validLargePath + "/a");
 
-        ByteArrayOutputStream result = auxRedirectSout(true);
-
         ExecuteFileService service = new ExecuteFileService(rootToken, "./"+LINK, ARGS);
         service.execute();
 
-        assertEquals("output don't match", APP_METHOD_RES, result.toString());
-
-        auxRedirectSout(false);
+        new Verifications() {{
+            helloMock.hello(ARGS); times = 1;
+        }};
     }
 
     @Test
-    public void successRunLinkPointPathContainsLink() {
+    public void successRunLinkPointPathContainsLink(@Mocked Hello helloMock) {
         new App(APP, root, home, APP_METHOD);
         new Link("link1", root, home, "/home/" + APP);
         new Link("link2", root, home, "/home/link1/");
 
-        ByteArrayOutputStream result = auxRedirectSout(true);
-
         ExecuteFileService service = new ExecuteFileService(rootToken, "./link2", ARGS);
         service.execute();
 
-        assertEquals("output don't match", DUMMY_CONTENT, result.toString());
-
-        auxRedirectSout(false);
+        new Verifications() {{
+            helloMock.hello(ARGS); times = 1;
+        }};
     }
 
 }
