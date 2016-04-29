@@ -22,7 +22,7 @@ public class Link extends Link_Base {
     public Link(Manager manager, Element linkNode) throws UnsupportedEncodingException {
         String value = new String(linkNode.getChildText("value").getBytes("UTF-8"));
         setContent(value);
-        this.xmlImport(manager, linkNode);
+        super.xmlImport(manager, linkNode);
     }
 
     protected File lookup(String path, User user, int psize) {

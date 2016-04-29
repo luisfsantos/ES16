@@ -134,32 +134,17 @@ public abstract class File extends File_Base {
 	public void xmlImport(Manager manager, Element fileNode) throws UnsupportedEncodingException {
 		String path = fileNode.getChildText("path");
 		String name = fileNode.getChildText("name");
-		String owner = fileNode.getChildText("owner");
-		String perm = fileNode.getChildText("perm");
+		if (name == null || path == null) throw new ImportDocumentException("Missing name or path value");
 
-		if (name == null || path == null) {
-			throw new ImportDocumentException("Missing name or path value");
-		}
-
-		setName(new String(name.getBytes("UTF-8")));
-
-		
+		path = new String(path.getBytes());
+		name = new String(name.getBytes());
 		User ownerUser = manager.fetchUser(fileNode);
-		if (ownerUser == null) {
-			throw new UserDoesNotExistException(owner);
-		}
-		setOwner(ownerUser);
-		setId(ownerUser.getNextIdCounter());
-		
+		String perm = fileNode.getChildText("perm");
+		perm = (perm != null) ? new String(perm.getBytes("UTF-8")) : "rwxd----";
 
-		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
-		else setPermissions("rwxd----");
+		Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(), path);
 
-		setLastModified(new DateTime());
-
-		Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(),
-				new String(path.getBytes("UTF-8")));
-		parentDir.addFile(this);
+		initFile(name, perm, ownerUser, parentDir);
 	}
 
 	public void delete(User user){
