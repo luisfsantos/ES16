@@ -14,7 +14,7 @@ public abstract class LinkCommonTest extends PermissionsCommonTest {
     public void invalidLinkPointsNonExistingFile() {
         new Link("link", root, home, "/home/invalidFile");
 
-        MyDriveService service = createTestInstance(rootToken, "link", dummyContent);
+        MyDriveService service = createTestInstance(rootToken, "link", DUMMY_CONTENT);
         service.execute();
     }
 
@@ -23,7 +23,7 @@ public abstract class LinkCommonTest extends PermissionsCommonTest {
     public void invalidLinkPointsToSelf() {
         new Link("link", root, home, "/home/link");
 
-        MyDriveService service = createTestInstance(rootToken, "link", dummyContent);
+        MyDriveService service = createTestInstance(rootToken, "link", DUMMY_CONTENT);
         service.execute();
     }
 
@@ -32,7 +32,7 @@ public abstract class LinkCommonTest extends PermissionsCommonTest {
         new Link("l1", root, home, "/home/l2");
         new Link("l2", root, home, "/home/l1");
 
-        MyDriveService service = createTestInstance(rootToken, "l1", dummyContent);
+        MyDriveService service = createTestInstance(rootToken, "l1", DUMMY_CONTENT);
         service.execute();
     }
 
@@ -45,29 +45,11 @@ public abstract class LinkCommonTest extends PermissionsCommonTest {
         Manager manager = Manager.getInstance();
         Directory rootDir = manager.getRootDirectory();
         Directory lastDir = rootDir.createPath(root, invalidLargePath);
-        new PlainFile("a", root, lastDir, dummyContent);
+        new PlainFile("a", root, lastDir, DUMMY_CONTENT);
         new Link("link", root, home, invalidLargePath + "/aa");
 
-        MyDriveService service = createTestInstance(rootToken, "link", dummyContent);
+        MyDriveService service = createTestInstance(rootToken, "link", DUMMY_CONTENT);
         service.execute();
-    }
-
-    public void successReadLinkPointValidBigPath() {
-        String validLargePath = "";
-        for(int i = 0; i < (1024-2)/2; i++) {
-            validLargePath += "/a";
-        }
-
-        Manager manager = Manager.getInstance();
-        Directory rootDir = manager.getRootDirectory();
-        Directory lastDir = rootDir.createPath(root, validLargePath);
-        new PlainFile("a", root, lastDir, dummyContent);
-        new Link("link", root, home, validLargePath + "/a");
-    }
-
-    public void successReadLinkPointPathContainsLink() {
-        new Link("link1", root, home, "/home/" + rootPlainFile);
-        new Link("link2", root, home, "/home/link1/");
     }
 
 }
