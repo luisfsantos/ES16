@@ -11,13 +11,9 @@ import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
-import pt.tecnico.myDrive.exception.CannotRemoveDirectoryException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
-import pt.tecnico.myDrive.exception.IsHomeDirectoryException;
-import pt.tecnico.myDrive.exception.RootDirectoryCannotBeModified;
-import pt.tecnico.myDrive.exception.InvalidPermissionException;
+import pt.tecnico.myDrive.exception.*;
 
-public class DeleteFileServiceTest extends TokenValidationServiceTest {
+public class DeleteFileServiceTest extends ReadWriteDeleteCommonTest {
 	private Long rootToken;
 	private Long userToken;
 	private Login rootLogin;
@@ -30,6 +26,10 @@ public class DeleteFileServiceTest extends TokenValidationServiceTest {
 	private App appTest;
 	private PlainFile plainFileTest;
 	private PlainFile noPermissionFile;
+
+	public MyDriveService createTestInstance(Long token, String name, String dummy) {
+		return new DeleteFileService(token, name);
+	}
 	
 	@Override
 	protected void populate() {
@@ -53,24 +53,7 @@ public class DeleteFileServiceTest extends TokenValidationServiceTest {
 		appTest = new App("appTest", userLogin.getCurrentUser(), dirContent, "pt.tecnico.myDrive.domain.App");
 		plainFileTest = new PlainFile("plainFileTest", userLogin.getCurrentUser(), dirContent, "contentPlainFile2");
 	}
-	
-	// 3
-	@Test(expected = InvalidPermissionException.class)
-	public void noPermission(){
-		userLogin.setCurrentDir(homeDir);
-		DeleteFileService service = new DeleteFileService(userToken, noPermissionFile.getName());
-		service.execute();
-	}
-	
-	
-	// 4
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
-	public void inexistantFile() {
-		DeleteFileService service = new DeleteFileService(userToken, "inexistantFile");
-		service.execute();
-	}
-	
-	
+
 	// 5
 	@Test(expected = CannotRemoveDirectoryException.class)
 	public void thisDirectory(){

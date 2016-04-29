@@ -30,7 +30,7 @@ public class PlainFile extends PlainFile_Base {
     public PlainFile(Manager manager, Element plainNode) throws UnsupportedEncodingException {
         String contents = new String(plainNode.getChildText("contents").getBytes("UTF-8"));
         setContent(contents);
-        this.xmlImport(manager, plainNode);
+        super.xmlImport(manager, plainNode);
     }
 
     public File lookup(String path, User user) throws IsNotDirOrLinkException{
@@ -91,7 +91,7 @@ public class PlainFile extends PlainFile_Base {
             setContent(content);
         }
         else {
-            throw new InvalidPermissionException("Write in App"); //not sure about argument
+            throw new AccessDeniedException("write", super.getName());
         }
     }
 }

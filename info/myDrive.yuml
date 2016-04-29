@@ -17,6 +17,7 @@
 [Link]
 [PlainFile]^-[App]
 [App]
+[ExecAssociation| String extension;]
 [.pt.ist.fenixframework.DomainRoot]0..1 root - manager 0..1[Manager] // DomainRootHasManagerApplication
 [Manager]1 manager - user *[User] // ManagerHasUsers
 [Manager]  - superUser 1[SuperUser] // ManagerHasSuperUser
@@ -29,3 +30,5 @@
 [User]1 owner - file *[File] // UserHasFiles
 [User]0..1 homeOwner - home 1[Directory] // UserHasHome
 [File]* file - parent 1[Directory] // DirectoryContainsFiles
+[User]1 user - execAssociation 0..*[ExecAssociation] // UserHasExecAssociations
+[App]1 defaultApp - association 0..*[ExecAssociation] // ExecAssociationHasApp

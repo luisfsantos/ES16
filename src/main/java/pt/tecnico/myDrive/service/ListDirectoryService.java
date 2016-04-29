@@ -4,10 +4,7 @@ import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.service.dto.FileDto;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ListDirectoryService extends TokenValidationService {
 
@@ -20,24 +17,16 @@ public class ListDirectoryService extends TokenValidationService {
     @Override
     protected void dispatch() throws MyDriveException {
         super.dispatch();
-        Directory currDir = session.getCurrentDir();
-        Directory parent = currDir.getParent();
         lsDir = new ArrayList<>();
 
-        FileDto newDto = new FileDto("Directory", currDir.getPermissions(), currDir.getSize(),
-                currDir.getOwnerUsername(), currDir.getId(),
-                currDir.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"), ".");
-        lsDir.add(newDto);
+        Map<String, File> dirContentMap = session.getCurrentDir().getFileMap(session.getCurrentUser());
+        Set<Map.Entry<String, File>> dirContentSet = dirContentMap.entrySet();
 
-        newDto = new FileDto("Directory", parent.getPermissions(), parent.getSize(), parent.getOwnerUsername(),
-                parent.getId(), parent.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"), "..");
-        lsDir.add(newDto);
+        for (Map.Entry<String, File> f : dirContentSet) {
 
-        Set<File> dirContent = currDir.getFileSet(session.getCurrentUser());
-        for (File f : dirContent) {
-
-            newDto = new FileDto(f.getType(), f.getPermissions(), f.getSize(), f.getOwnerUsername(), f.getId(),
-                    f.getLastModified().toString("dd-MM-YYYY-HH:mm:ss"), f.getName());
+            FileDto newDto = new FileDto(f.getValue().getType(), f.getValue().getPermissions(), f.getValue().getSize(),
+                    f.getValue().getOwnerUsername(), f.getValue().getId(),
+                    f.getValue().getLastModified().toString("dd-MM-YYYY-HH:mm:ss"), f.getKey());
             lsDir.add(newDto);
         }
 
