@@ -10,6 +10,9 @@ import pt.tecnico.myDrive.exception.InvalidPermissionException;
 import pt.tecnico.myDrive.exception.InvalidUsernameException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
+import pt.tecnico.myDrive.exception.ImportDocumentException;
+
+import org.joda.time.DateTime;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -31,6 +34,9 @@ public class User extends User_Base {
 
 	public User(Manager manager, Element userNode) throws UnsupportedEncodingException {
 		String username = userNode.getAttributeValue("username");
+		if (username == null) throw new ImportDocumentException("Missing username");
+
+		username = new String (username.getBytes());
 		String password = userNode.getChildText("password");
 		String name = userNode.getChildText("name");
 		String mask = userNode.getChildText("mask");
@@ -40,24 +46,32 @@ public class User extends User_Base {
 		name = (name != null) ? new String(name.getBytes("UTF-8")) : username;
 		mask = (mask != null) ? new String(mask.getBytes("UTF-8")) : "rwxd----";
 
-		setUsername(username);
-		setManager(manager);
-		setPassword(new String(password.getBytes("UTF-8")));
-		setName(new String(name.getBytes("UTF-8")));
-		setUmask(new String(mask.getBytes("UTF-8")));
+		initUserXMLImport(manager, username, password, name, mask, home);
+	}
 
+	private void initUserXMLImport(Manager manager, String username, String password, String name, String umask,
+								   String home) throws UnsupportedEncodingException {
+		this.setUsername(username);
+		this.setManager(manager);
+		this.setUmask(umask);
+
+		SuperUser superUser = this.getManager().getSuperUser();
+		String homeName = username;
+		Directory homeParent = (Directory) manager.getRootDirectory().lookup("/home", superUser);
 		if (home != null) {
 			home = new String(home.getBytes("UTF-8"));
 			int last = home.lastIndexOf('/');
 			String parentPath = home.substring(0, last);
-			String dirName = home.substring(last + 1);
-			Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(), parentPath);
-			Directory homeDir = new Directory(dirName, this, parentDir);
-			setHome(homeDir);
-		} else {
-			Directory homeDir = (Directory) manager.getRootDirectory().getFileByName("home");
-			setHome(new Directory(username, this, homeDir));
+			homeName = home.substring(last + 1);
+			homeParent = manager.getRootDirectory().createPath(superUser, parentPath);
 		}
+		Directory userHome = new Directory(homeName, superUser, homeParent);
+		userHome.setOwner(this);
+		userHome.setPermissions(this.getUmask());
+
+		this.setHome(userHome);
+		this.setPassword(password);
+		this.setName(name);
 	}
 
 	protected void initUser(Manager manager, String username, String password, String name, String umask) {
@@ -151,7 +165,6 @@ public class User extends User_Base {
 		}
 	}
 
-
 	@Override
 	public void addLogin(Login login){
 		throw new AccessDeniedToManipulateLoginException();
@@ -242,5 +255,13 @@ public class User extends User_Base {
 		userElement.addContent(maskElement);
 
 		return userElement;
+	}
+
+	public boolean isValidUserSession(DateTime recent){
+		DateTime now = new DateTime();
+		if (recent.isBefore(now.minusHours(2))){
+			return false;
+		}
+		return true;
 	}
 }

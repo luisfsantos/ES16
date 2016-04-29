@@ -44,6 +44,10 @@ class Link extends PlainFile;
 
 class App extends PlainFile;
 
+class ExecAssociation {
+    String extension;
+}
+
 
 relation DomainRootHasManagerApplication {
 	.pt.ist.fenixframework.DomainRoot playsRole root {
@@ -152,6 +156,16 @@ relation DirectoryContainsFiles {
 	Directory playsRole parent {
 	multiplicity 1;
 	}
+}
+
+relation UserHasExecAssociations {
+    User playsRole user { multiplicity 1; }
+    ExecAssociation playsRole execAssociation { multiplicity 0..*; }
+}
+
+relation ExecAssociationHasApp {
+    App playsRole defaultApp { multiplicity 1; }
+    ExecAssociation playsRole association { multiplicity 0..*; }
 }
 
 
