@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.domain;
 
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.UserCannotBeModified;
 
 public class GuestUser extends GuestUser_Base {
@@ -42,5 +43,9 @@ public class GuestUser extends GuestUser_Base {
 	public void setManager(Manager manager){
 		throw new UserCannotBeModified(this.getName());
 	}
-    
+
+	@Override
+	public boolean isValidUserSession(DateTime recent){
+		return true;
+	}
 }

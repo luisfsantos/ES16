@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.AccessDeniedToGetPasswordException;
 import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
 import pt.tecnico.myDrive.exception.EmptyUsernameException;
@@ -242,5 +243,13 @@ public class User extends User_Base {
 		userElement.addContent(maskElement);
 
 		return userElement;
+	}
+
+	public boolean isValidUserSession(DateTime recent){
+		DateTime now = new DateTime();
+		if (recent.isBefore(now.minusHours(2))){
+			return true;
+		}
+		return false;
 	}
 }
