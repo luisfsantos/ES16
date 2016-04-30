@@ -62,30 +62,12 @@ public class Main {
     	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
     	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "/home/DAVID/bin/appp 1aaa fff\n/home/DAVID/bin/appp 2www o iii\n/home/DAVID/bin/appp 3hhh");
     	App app = new App("appp", user1, dir1, "pt.tecnico.myDrive.Main.bye");
-    	try {
-    		String[] s = new String[1]; 
-    		s[0] = "0AAA";
-			app.execute(user1, s);
-			file3.execute(user1, s);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		String[] s = new String[1]; 
+		s[0] = "0AAA";
+		app.execute(user1, s);
+		file3.execute(user1, s);
+	
     	
     	System.out.println("========================================================");
     	

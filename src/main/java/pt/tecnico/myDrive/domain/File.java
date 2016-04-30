@@ -162,7 +162,7 @@ public abstract class File extends File_Base {
 	}
 
 	public abstract void write(User u, String content);
-	public abstract void execute(User user, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException;
+	public abstract void execute(User user, String[] args);
 
 	public abstract File lookup(String path, User user);
 	abstract File lookup(String path, User user, int psize);

@@ -98,12 +98,12 @@ public class PlainFile extends PlainFile_Base {
     }
 
 	@Override
-	public void execute(User user, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public void execute(User user, String[] args) {
 		if (user.hasPermission(this, Mask.EXEC)) {
 			String[] content = this.viewContent().split(System.getProperty("line.separator"));
 			for (String line: content) {
 				String[] lineContent = line.split(" ");
-				File destFile =  this.getParent().lookup(lineContent[0], user);
+				File destFile =  this.getParent().lookup(lineContent[0], user);		// FIXME exception
 				String[] arguments = Arrays.copyOfRange(lineContent, 1, lineContent.length);
 				destFile.execute(user, arguments);
 			}

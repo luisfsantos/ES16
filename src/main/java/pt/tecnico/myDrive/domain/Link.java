@@ -82,7 +82,7 @@ public class Link extends Link_Base {
     }
 
 	@Override
-	public void execute(User user, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public void execute(User user, String[] args) {
 		File file = this.resolveLink(user);
         if (file == null) {
             throw new CannotReadException("File does not exist");

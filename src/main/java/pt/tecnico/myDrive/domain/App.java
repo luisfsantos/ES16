@@ -84,9 +84,23 @@ public class App extends App_Base {
 	}
 	
 	@Override
-	public void execute(User user, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public void execute(User user, String[] args) {
 		if (user.hasPermission(this, Mask.EXEC)) {
-			ReflectClass.run(this.viewContent(), args);
+			try {
+				ReflectClass.run(this.viewContent(), args);
+			} catch (ClassNotFoundException e) {
+				throw new ExecClassNotFountException(e.getMessage());
+			} catch (SecurityException e) {
+				throw new ExecSecurityException(e.getMessage());
+			} catch (NoSuchMethodException e) {
+				throw new ExecMethodNotFountException(e.getMessage());
+			} catch (IllegalArgumentException e) {
+				throw new ExecIllegalArgumentException(e.getMessage());
+			} catch (IllegalAccessException e) {
+				throw new ExecIllegalAccessException(e.getMessage());
+			} catch (InvocationTargetException e) {
+				throw new ExecInvocationTargetException(e.getMessage());
+			}
 		}
 		else {
 			throw new AccessDeniedException("execute", this.getName()); 
