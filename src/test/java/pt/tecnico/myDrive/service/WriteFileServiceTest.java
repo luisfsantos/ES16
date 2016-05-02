@@ -1,23 +1,34 @@
 package pt.tecnico.myDrive.service;
 
+import mockit.*;
+import mockit.integration.junit4.JMockit;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
 
 import static org.junit.Assert.assertEquals;
 
 
+@RunWith(JMockit.class)
 public class WriteFileServiceTest extends LinkCommonTest {
-
-	private long token;
+	private Long token;
 	private User root;
 	private Directory home;
-
 
 	private String strA = "";
 	private String strB = "";
 	private String strC = "";
 	private String Y22 = "yyyyyyyyyyyyyyy";
+
+	private Login rootlogin;
+	private Link linkMock;
+	private PlainFile pfile;
+
+	private final String linkMockStr = "linkMock";
+	private final String contentMockStr = "mocktest";
+	private final String pathEnVVar = "/$DAVID";
+	private final String pathTranslated = "/home/pfMock";
 
 
 	public MyDriveService createTestInstance(Long token, String name, String dummy) {
@@ -29,11 +40,15 @@ public class WriteFileServiceTest extends LinkCommonTest {
 		Manager manager = Manager.getInstance();
 		super.populate();
 
-		Login rootlogin = new Login("root", "***");
+		rootlogin = new Login("root", "***");
 		root = rootlogin.getCurrentUser();
 		home = (Directory) manager.getRootDirectory().lookup("home", root);
 		rootlogin.setCurrentDir(home);
 		token = rootlogin.getToken();
+
+
+		pfile = new PlainFile("pfMock", root, home, "test");
+		linkMock = new Link(linkMockStr, root, home, pathEnVVar);
 
 		User userTest = new User(Manager.getInstance(), "userTest");
 		Login testLogin = new Login(userTest.getUsername(), userTest.getUsername());
@@ -177,7 +192,27 @@ public class WriteFileServiceTest extends LinkCommonTest {
 		WriteFileService service = new WriteFileService(token, "linktoNE", "batata");
 		service.execute();
 	}
-}
 
+
+
+	/*------------------------------------>MOCKUP TESTS - ENVIRONMENT LINKS <-----------------------------------------*/
+	@Test
+	public void successWriteEnvLink(@Mocked final Manager m) throws Exception{
+		new Expectations(linkMock){
+			{
+
+				m.getInstance().getLoginByToken(token); result = rootlogin; times=1;
+				linkMock.resolveLink(root); result = pfile; times=1;
+			}
+		};
+		rootlogin.setCurrentDir(home);
+
+		WriteFileService service = new WriteFileService(token, linkMock.getName(), contentMockStr);
+		service.execute();
+
+		assertEquals("write not executed successfully", contentMockStr, pfile.read(root));
+
+	}
+}
 
 
