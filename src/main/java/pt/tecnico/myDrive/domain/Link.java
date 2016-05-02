@@ -46,6 +46,10 @@ public class Link extends Link_Base {
     }
     
     public File resolveLink(User user) {
+
+		String path = decodeEnvPath(this.viewContent());
+		this.setContent(path);
+
     	int max_content = 1024;
     	max_content -= Math.max(viewContent().lastIndexOf("/"), 0);
     	File endpoint = this.getParent().lookup(viewContent(), user);
@@ -82,6 +86,9 @@ public class Link extends Link_Base {
 
     }
 
+	//MOCKEDUP METHOD
+	public String decodeEnvPath(String envPath) throws EnvironmentVarDoesNotExistException{
+		return this.viewContent();	}
 
 
 
