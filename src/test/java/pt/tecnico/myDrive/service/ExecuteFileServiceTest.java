@@ -121,7 +121,7 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         new PlainFile(PLAIN_FILE, root, home, PLAIN_FILE_CONTENT);
         new Link(LINK, root, home, "/home/"+PLAIN_FILE);
 
-        ExecuteFileService service = new ExecuteFileService(rootToken, "./"+PLAIN_FILE, ARGS);
+        ExecuteFileService service = new ExecuteFileService(rootToken, "./"+LINK, ARGS);
         service.execute();
 
         new Verifications() {{
