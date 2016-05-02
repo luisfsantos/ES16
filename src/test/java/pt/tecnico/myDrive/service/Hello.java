@@ -10,7 +10,7 @@ public class Hello {
         System.out.println("hello: " + args[0] + " " + args[1] + "!");
     }
 
-    public static void helloEmpty() {
+    public static void helloEmpty(String[] args) {
         System.out.println("helloEmpty: Hello World!");
     }
 

@@ -6,7 +6,7 @@ import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.CannotExecuteException;
 import pt.tecnico.myDrive.exception.CannotExecutePlainFileException;
-import pt.tecnico.myDrive.exception.InvalidPathException;
+import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 
 public class ExecuteFileServiceTest extends LinkCommonTest {
     private final String INVALID = "invalid path";
@@ -14,17 +14,18 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
     private final String[] ARGS_EMPTY = {};
     private final String APP = "execApp";
     private final String PLAIN_FILE = "execPlainFile";
+    private final String PLAIN_FILE_CONTENT = "/home/"+APP + " Hello World!";
     private final String LINK = "execLink";
     private final String APP_METHOD = "pt.tecnico.myDrive.service.Hello.hello";
-    private final String APP_METHOD_EMPTY = "pt.tecnico.myDrive.Hello.helloEmpty";
-    private final String PLAIN_FILE_CONTENT = APP_METHOD + " " + "Hello" + " " + "World";
+    private final String APP_MAIN = "pt.tecnico.myDrive.service.Hello";
+    private final String APP_METHOD_EMPTY = "pt.tecnico.myDrive.service.Hello.helloEmpty";
 
     @Override
     public MyDriveService createTestInstance(Long token, String name, String arguments) {
         return new ExecuteFileService(token, "./"+name, null);
     }
 
-    @Test(expected = InvalidPathException.class)
+    @Test(expected = FileDoesntExistsInDirectoryException.class)
     public void invalidPath() {
         ExecuteFileService service = new ExecuteFileService(rootToken, INVALID, ARGS);
         service.execute();
@@ -52,7 +53,7 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         service.execute();
 
         new Verifications() {{
-            helloMock.hello(ARGS); times = 1;
+            Hello.hello(ARGS); times = 1;
         }};
     }
 
@@ -64,44 +65,36 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         service.execute();
 
         new Verifications() {{
-            helloMock.helloEmpty(); times = 1;
+            Hello.helloEmpty(ARGS_EMPTY); times = 1;
         }};
     }
 
     @Test
     public void successRunAppMain(@Mocked Hello helloMock) {
-        final String APP_MAIN = "pt.tecnico.myDrive.Hello";
         new App(APP, root, home, APP_MAIN);
 
         ExecuteFileService service = new ExecuteFileService(rootToken, "./"+APP, ARGS);
         service.execute();
 
         new Verifications() {{
-            helloMock.main(ARGS); times = 1;
+            Hello.main(ARGS); times = 1;
         }};
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void invalidRunAppWrongArguments() {
-        new App(APP, root, home, APP_METHOD_EMPTY);
-
-        ExecuteFileService service = new ExecuteFileService(rootToken, "./"+APP, ARGS);
-        service.execute();
     }
 
     @Test
     public void successRunPlainFile(@Mocked Hello helloMock) {
+        new App(APP, root, home, APP_METHOD);
         new PlainFile(PLAIN_FILE, root, home, PLAIN_FILE_CONTENT);
 
         ExecuteFileService service = new ExecuteFileService(rootToken, "./"+PLAIN_FILE, ARGS_EMPTY);
         service.execute();
 
         new Verifications() {{
-            helloMock.hello(ARGS); times = 1;
+            Hello.hello(ARGS); times = 1;
         }};
     }
 
-    @Test(expected = CannotExecutePlainFileException.class)
+    @Test(expected = FileDoesntExistsInDirectoryException.class)
     public void invalidContentRunPlainFile() {
         new PlainFile(PLAIN_FILE, root, home, INVALID);
 
@@ -118,12 +111,13 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         service.execute();
 
         new Verifications() {{
-            helloMock.hello(ARGS); times = 1;
+            Hello.hello(ARGS); times = 1;
         }};
     }
 
     @Test
     public void successRunLinkPointPlainFile(@Mocked Hello helloMock) {
+        new App(APP, root, home, APP_METHOD);
         new PlainFile(PLAIN_FILE, root, home, PLAIN_FILE_CONTENT);
         new Link(LINK, root, home, "/home/"+PLAIN_FILE);
 
@@ -131,7 +125,7 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         service.execute();
 
         new Verifications() {{
-            helloMock.hello(ARGS); times = 1;
+            Hello.hello(ARGS); times = 1;
         }};
     }
 
@@ -152,7 +146,7 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         service.execute();
 
         new Verifications() {{
-            helloMock.hello(ARGS); times = 1;
+            Hello.hello(ARGS); times = 1;
         }};
     }
 
@@ -166,7 +160,7 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         service.execute();
 
         new Verifications() {{
-            helloMock.hello(ARGS); times = 1;
+            Hello.hello(ARGS); times = 1;
         }};
     }
 
