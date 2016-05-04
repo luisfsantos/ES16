@@ -28,6 +28,7 @@ public class MyDrive extends Shell {
 
 	public MyDrive() { // add commands here
 	  super("MyDrive");
+	  new LoginCommand(this);
 	  /* eg:
 	  new CreateFile(this); // the CreateFile command class has to exist and extend from MyDriveCommand
 	   */
