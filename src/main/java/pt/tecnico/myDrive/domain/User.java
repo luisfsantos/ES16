@@ -102,7 +102,7 @@ public class User extends User_Base {
 	protected void initGuestUser( Manager manager){
 		super.setUsername("nobody");
     	super.setManager(manager);
-		super.setPassword(null);
+		super.setPassword("");
 		super.setName("Guest");
 		super.setUmask("rwxdr-x-");
 		

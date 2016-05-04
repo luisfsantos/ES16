@@ -33,8 +33,8 @@ public class MyDrive extends Shell {
 	   */
 	}
 	
-	public void setupGuestUser() {
-        LoginService guestLogin = new LoginService("root", "***"); // ("nobody", "") cause nullPointerException because nobody has password == NULL
+	private void setupGuestUser() {
+        LoginService guestLogin = new LoginService("nobody", ""); 
         guestLogin.execute();
         activeToken = guestLogin.result();
         this.addLogin("nobody", activeToken);

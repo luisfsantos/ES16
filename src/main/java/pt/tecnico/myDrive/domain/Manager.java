@@ -56,12 +56,12 @@ public class Manager extends Manager_Base {
 					login.refreshLoginActivity();
 					return login;
 				} else {
-					log.warn("Trying to access with invalid token HEYHEY");
+					log.warn("Trying to access with invalid token");
 					return null;
 				}
 			}
 		}
-		log.warn("Trying to access with invalid token ");
+		log.warn("Trying to access with invalid token");
 		return null;
 	}
     
