@@ -10,11 +10,13 @@ import pt.tecnico.myDrive.service.LoginService;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MyDrive extends Shell {
 	protected Long activeToken;
-	protected Map<String, Long> loggedIn = new HashMap<>();
+	protected Map<String, List<Long>> loggedIn = new HashMap<String, List<Long>>();
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 1) {
@@ -26,6 +28,7 @@ public class MyDrive extends Shell {
 	    sh.execute();
 	  }
 
+	
 	public MyDrive() { // add commands here
 	  super("MyDrive");
 	  new LoginCommand(this);
@@ -42,11 +45,18 @@ public class MyDrive extends Shell {
 	}
 
 	public void addLogin(String username, Long newToken) {
-		loggedIn.put(username, newToken);
+		if (loggedIn.containsKey(username)) {
+			loggedIn.get(username).add(newToken);
+		} else {
+			ArrayList<Long> sessions = new ArrayList<Long>();
+			sessions.add(newToken);
+			loggedIn.put(username, sessions);
+		}
+		
 	}
 
-	public void getUserToken(String username) {
-		loggedIn.get(username);
+	public List<Long> getUserToken(String username) {
+		return loggedIn.get(username);
 	}
 
 	@Atomic
