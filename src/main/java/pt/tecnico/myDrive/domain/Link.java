@@ -47,12 +47,11 @@ public class Link extends Link_Base {
     
     public File resolveLink(User user) {
 
-		String path = decodeEnvPath(this.viewContent());
-		this.setContent(path);
-
+		String decodedPath = decodeEnvPath();
     	int max_content = 1024;
-    	max_content -= Math.max(viewContent().lastIndexOf("/"), 0);
-    	File endpoint = this.getParent().lookup(viewContent(), user);
+
+    	max_content -= Math.max(decodedPath.lastIndexOf("/"), 0);
+    	File endpoint = this.getParent().lookup(decodedPath, user);
     	while ((endpoint instanceof Link) && max_content > 0) {
     		if (((Link) endpoint).viewContent().contains("/")) {
     			max_content -= ((Link) endpoint).viewContent().lastIndexOf("/");
@@ -77,18 +76,19 @@ public class Link extends Link_Base {
 
     @Override
     public void write(User u, String content) {
-            File f = this.resolveLink(u);
-            if (f == null) {
-                throw new CannotReadException("File does not exist");
-            } else {
-                f.write(u,content);
-            }
+		File f = this.resolveLink(u);
+		if (f == null) {
+			throw new CannotReadException("File does not exist");
+		} else {
+			f.write(u,content);
+		}
 
     }
 
 	//MOCKEDUP METHOD
-	public String decodeEnvPath(String envPath) throws EnvironmentVarDoesNotExistException{
-		return this.viewContent();	}
+	public String decodeEnvPath() throws EnvironmentVarDoesNotExistException{
+		return this.viewContent();
+	}
 
 
 

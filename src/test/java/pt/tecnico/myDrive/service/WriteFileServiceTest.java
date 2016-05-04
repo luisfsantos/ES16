@@ -197,30 +197,22 @@ public class WriteFileServiceTest extends ReadWriteCommonTest {
 	/*------------------------------------>MOCKUP TESTS - ENVIRONMENT LINKS <-----------------------------------------*/
 	@Test
 	public void successWriteEnvLink(@Mocked final Manager m) throws Exception{
-
-		new Expectations(linkMock){
-			{
+		new Expectations(linkMock){{
 				m.getInstance().getLoginByToken(token); result = rootlogin; times=1;
-				linkMock.decodeEnvPath(pathEnvVar); result = pathTranslated; times=1;
-			}
-		};
-
+				linkMock.decodeEnvPath(); result = pathTranslated; times=1;
+		}};
 		WriteFileService service = new WriteFileService(token, linkMockStr, contentMockStr);
 		service.execute();
-
 		assertEquals("write not executed successfully", contentMockStr, pfile.read(root));
-
 	}
 
 	@Test(expected = EnvironmentVarDoesNotExistException.class)
 	public void insuccessWriteEnvLink(@Mocked final Manager m){
-
 		new Expectations(linkMock){{
 			m.getInstance().getLoginByToken(token); result = rootlogin; times=1;
-			linkMock.decodeEnvPath(pathEnvVar);
+			linkMock.decodeEnvPath();
 			result = new EnvironmentVarDoesNotExistException(envVar); times=1;
 		}};
-
 		WriteFileService service = new WriteFileService(token, linkMockStr, contentMockStr);
 		service.execute();
 	}
@@ -237,8 +229,6 @@ public class WriteFileServiceTest extends ReadWriteCommonTest {
 			link.decodeEnvPath(pathEnvVar);
 		}};
 	}*/
-
-
 }
 
 
