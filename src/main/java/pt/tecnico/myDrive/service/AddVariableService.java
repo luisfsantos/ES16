@@ -27,12 +27,11 @@ public class AddVariableService extends TokenValidationService {
  	protected void dispatch() throws MyDriveException {
 		super.dispatch();
 
+		session.addEnvironmentVariable(varName, value);
+
 		Set<EnvironmentVariable> environmentVariables = session.getEnvironmentVariableSet();
 
 		for (EnvironmentVariable i : environmentVariables) {
-			if(i.getName().equals(varName)) {
-				i.setValue(value);
-			}
 			VariableDto newDto = new VariableDto(i.getName(), i.getValue());
 			variables.add(newDto);
 
