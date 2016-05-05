@@ -87,6 +87,15 @@ public class Login extends Login_Base {
 		}
 		return false;
 	}
+	
+	public EnvironmentVariable getEnvironmentVariable(String name) {
+		for (EnvironmentVariable e : getEnvironmentVariableSet()) {
+			if (e.getName().equals(name)) {
+				return e;
+			}
+		}
+		return null;
+	}
     
     void refreshLoginActivity() {
     	super.setLastActivity(new DateTime());
