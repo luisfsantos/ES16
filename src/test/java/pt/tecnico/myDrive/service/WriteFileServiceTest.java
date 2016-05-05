@@ -1,43 +1,59 @@
 package pt.tecnico.myDrive.service;
 
+import mockit.*;
+import mockit.integration.junit4.JMockit;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(JMockit.class)
+public class WriteFileServiceTest extends ReadWriteCommonTest {
 
-public class WriteFileServiceTest extends TokenValidationServiceTest {
-
-	private long token;
-	private long nopermtoken;
+	private Long token;
 	private User root;
-	private User usertest;
 	private Directory home;
 
+	private String strA = "";
+	private String strB = "";
+	private String strC = "";
+	private String Y22 = "yyyyyyyyyyyyyyy";
 
-	String strA = "";
-	String strB = "";
-	String strC = "";
-	String Y22 = "yyyyyyyyyyyyyyy";
-	String Y23 = "yyyyyyyyyyyyyyyy";
+	private Login rootlogin;
+	private Link linkMock;
+	private PlainFile pfile;
 
+	private final String linkMockStr = "linkMock";
+	private final String contentMockStr = "mocktest";
+	private final String envVar = "$DAVID";
+	private final String pathEnvVar = "/$DAVID";
+	private final String pathTranslated = "/home/pfMock";
+
+
+	public MyDriveService createTestInstance(Long token, String name, String dummy) {
+		return new WriteFileService(token, name, dummy);
+	}
 
 	@Override
 	protected void populate() {
 		Manager manager = Manager.getInstance();
 		super.populate();
 
-		Login rootlogin = new Login("root", "***");
+		rootlogin = new Login("root", "***");
 		root = rootlogin.getCurrentUser();
 		home = (Directory) manager.getRootDirectory().lookup("home", root);
 		rootlogin.setCurrentDir(home);
 		token = rootlogin.getToken();
 
-		usertest = new User(Manager.getInstance(), "usertest");
-		Login testLogin = new Login(usertest.getUsername(), usertest.getUsername());
+
+		pfile = new PlainFile("pfMock", root, home, "test");
+		linkMock = new Link(linkMockStr, root, home, pathEnvVar);
+
+		User userTest = new User(Manager.getInstance(), "userTest");
+		Login testLogin = new Login(userTest.getUsername(), userTest.getUsername());
 		testLogin.setCurrentDir(home);
-		nopermtoken = testLogin.getToken();
 
 		int i;
 		for(i=0; i<333; i++){
@@ -59,7 +75,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		new PlainFile(Y22,root,dirC ,"valid");
 
 		new Link("link1024",root, home , strA+"/"+strB+"/"+strC+"/"+Y22);
-		new Link("link1025", root, home , strA+"/"+strB+"/"+strC+"/"+Y23);
 
 		new Link("loop1", root, home,"loop2");
 		new Link("loop2", root, home, "loop3");
@@ -76,52 +91,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		new PlainFile("textfile",root, home, "valid");
 
 		new Link("linktoNE",root, home, "batata");
-	}
-
-
-	//TEST 1
-	@Test(expected = InvalidPermissionException.class)
-	public void invalidPermissionsPlain(){
-		WriteFileService service = new WriteFileService(nopermtoken, "validplain", "");
-		service.execute();
-	}
-
-	//TEST 2
-	@Test(expected = InvalidPermissionException.class)
-	public void invalidPermissionsApp(){
-		WriteFileService service = new WriteFileService(nopermtoken, "validapp", "pt.tecnico.myDrive.domain.App");
-		service.execute();
-	}
-
-	//TEST 3
-	@Test(expected = InvalidPermissionException.class)
-	public void invalidPermissionsLink(){
-		WriteFileService service = new WriteFileService(nopermtoken, "validlink", "/home");
-		service.execute();
-	}
-
-	//TEST 4
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
-	public void notExistsPlain(){
-		WriteFileService service = new WriteFileService(token, "notexists", "");
-		service.execute();
-
-	}
-
-	//TEST 5
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
-	public void notExistsApp(){
-		WriteFileService service = new WriteFileService(token, "notexists", "pt.tecnico.myDrive.domain.App");
-		service.execute();
-
-	}
-
-	//TEST 6
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
-	public void notExistsLink(){
-		WriteFileService service = new WriteFileService(token, "notexists", "/home");
-		service.execute();
-
 	}
 
 	//TEST 7
@@ -177,13 +146,6 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		service.execute();
 	}
 
-	//TEST 13
-	@Test(expected = PathTooBigException.class)
-	public void insuccessWriteLinkLoop(){
-		WriteFileService service = new WriteFileService(token, "loop1", "writelink");
-		service.execute();
-	}
-
 
 	//TEST 14
 	@Test
@@ -231,7 +193,42 @@ public class WriteFileServiceTest extends TokenValidationServiceTest {
 		WriteFileService service = new WriteFileService(token, "linktoNE", "batata");
 		service.execute();
 	}
-}
 
+	/*------------------------------------>MOCKUP TESTS - ENVIRONMENT LINKS <-----------------------------------------*/
+	@Test
+	public void successWriteEnvLink(@Mocked final Manager m) throws Exception{
+		new Expectations(linkMock){{
+				m.getInstance().getLoginByToken(token); result = rootlogin; times=1;
+				linkMock.decodeEnvPath(); result = pathTranslated; times=1;
+		}};
+		WriteFileService service = new WriteFileService(token, linkMockStr, contentMockStr);
+		service.execute();
+		assertEquals("write not executed successfully", contentMockStr, pfile.read(root));
+	}
+
+	@Test(expected = EnvironmentVarDoesNotExistException.class)
+	public void insuccessWriteEnvLink(@Mocked final Manager m){
+		new Expectations(linkMock){{
+			m.getInstance().getLoginByToken(token); result = rootlogin; times=1;
+			linkMock.decodeEnvPath();
+			result = new EnvironmentVarDoesNotExistException(envVar); times=1;
+		}};
+		WriteFileService service = new WriteFileService(token, linkMockStr, contentMockStr);
+		service.execute();
+	}
+
+	/*
+	@Test
+	public void verifyEnvLink() {
+		Link link = (Link) home.lookup("validlink", root);
+
+		WriteFileService service = new WriteFileService(token, link.getName(), contentMockStr);
+		service.execute();
+
+		new Verifications(){{
+			link.decodeEnvPath(pathEnvVar);
+		}};
+	}*/
+}
 
 

@@ -14,7 +14,8 @@ import pt.tecnico.myDrive.service.dto.VariableDto;
 
 public class AddVariableServiceTest  extends TokenValidationServiceTest {
 	Long token;
-	String existantName = "ExistantName";
+	String existantName1 = "aexistantName";
+	String existantName2 = "ZexistantName";
 	String existantValue = "ExistantValue";
 	String inexistantName = "InexistantName";
 	String validString = "ValidString";
@@ -25,7 +26,8 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 		Login rootLogin = new Login("root", "***");
 		token = rootLogin.getToken();
 		
-		new EnvironmentVariable (rootLogin, existantName, existantValue);
+		new EnvironmentVariable (rootLogin, existantName2, existantValue);
+		new EnvironmentVariable (rootLogin, existantName1, existantValue);
 	}
 	
 	// test 3
@@ -42,61 +44,67 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 		service.execute();
 	}
 	
+	
 	// test 5
+	@Test(expected = InvalidEnvironmentVarNameException.class)
+	public void emptyStringName() {
+		AddVariableService service = new AddVariableService(token, inexistantName, validString);
+		service.execute();
+	}
+	
+	
+	// test 6
 	@Test
-	public void emptyString() {
+	public void emptyStringValue() {
 		AddVariableService service = new AddVariableService(token, inexistantName, "");
 		service.execute();
 		List<VariableDto> res = service.result();
-		assertEquals("Invalid number of variables", 2, res.size());
-		int indexExistant = 0;
-		int count = 0;
-		for (VariableDto var: res) {
-			if (var.getName().equals(existantName)){
-				indexExistant = count;
-			}
-			count++;
-		}
-		assertEquals("Invalid existant name", existantName, res.get(indexExistant).getName());
-		assertEquals("Invalid inexistant name", inexistantName, res.get(1 - indexExistant).getName());
+		assertEquals("Invalid number of variables", 3, res.size());
+
+		assertEquals("Invalid existant name or order", existantName1, res.get(0).getName());
+		assertEquals("Invalid existant value", existantValue, res.get(0).getValue());
 		
-		assertEquals("Invalid existant value", existantValue, res.get(indexExistant).getValue());
-		assertEquals("Invalid inexistant value", "", res.get(1 - indexExistant).getValue());
+		assertEquals("Invalid existant name or order", inexistantName, res.get(1).getName());
+		assertEquals("Invalid existant value", "", res.get(1).getValue());
+		
+		assertEquals("Invalid existant name or order", existantName2, res.get(2).getName());
+		assertEquals("Invalid existant value", existantValue, res.get(2).getValue());
+
 	}
 	
-	// test 6
+	// test 7
 	@Test
 	public void validString() {
 		AddVariableService service = new AddVariableService(token, inexistantName, validString);
 		service.execute();
 		List<VariableDto> res = service.result();
-		assertEquals("Invalid number of variables", 2, res.size());
+		assertEquals("Invalid number of variables", 3, res.size());
 		
-		int indexExistant = 0;
-		int count = 0;
-		for (VariableDto var: res) {
-			if (var.getName().equals(existantName)){
-				indexExistant = count;
-			}
-			count++;
-		}
-		assertEquals("Invalid existant name", existantName, res.get(indexExistant).getName());
-		assertEquals("Invalid inexistant name", inexistantName, res.get(1 - indexExistant).getName());
+		assertEquals("Invalid existant name or order", existantName1, res.get(0).getName());
+		assertEquals("Invalid existant value", existantValue, res.get(0).getValue());
 		
-		assertEquals("Invalid existant value", existantValue, res.get(indexExistant).getValue());
-		assertEquals("Invalid inexistant value", validString, res.get(1 - indexExistant).getValue());
+		assertEquals("Invalid existant name or order", inexistantName, res.get(1).getName());
+		assertEquals("Invalid existant value", validString, res.get(1).getValue());
+		
+		assertEquals("Invalid existant name or order", existantName2, res.get(2).getName());
+		assertEquals("Invalid existant value", existantValue, res.get(2).getValue());
 		
 	}
 	
-	// test 7
+	// test 8
 	@Test
 	public void existantName() {
-		AddVariableService service = new AddVariableService(token, existantName, validString);
+		AddVariableService service = new AddVariableService(token, existantName2, validString);
 		service.execute();
 		List<VariableDto> res = service.result();
-		assertEquals("Invalid number of variables", 1, res.size());
-		assertEquals("Invalid existant name", existantName, res.get(0).getName());
-		assertEquals("Invalid existant value", validString, res.get(0).getValue());
+		assertEquals("Invalid number of variables", 2, res.size());
+		
+		assertEquals("Invalid existant name or order", existantName1, res.get(0).getName());
+		assertEquals("Invalid existant value", existantValue, res.get(0).getValue());
+		
+		assertEquals("Invalid existant name or order", existantName2, res.get(1).getName());
+		assertEquals("Invalid existant value", validString, res.get(1).getValue());
+
 	}
 	
 }
