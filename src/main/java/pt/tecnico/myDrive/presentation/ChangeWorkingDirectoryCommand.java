@@ -20,13 +20,9 @@ public class ChangeWorkingDirectoryCommand extends MyDriveCommand{
             println("Wrong arguments!!!\nUSAGE: cwd [path]");
             return;
         }
-        try {
             cwd.execute();
             String absolutePath = cwd.result();
             println(absolutePath);
-        }
-        catch (MyDriveException error){
-            println(error.getMessage());
-        }
+
     }
 }
