@@ -48,7 +48,7 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 	// test 5
 	@Test(expected = InvalidEnvironmentVarNameException.class)
 	public void emptyStringName() {
-		AddVariableService service = new AddVariableService(token, inexistantName, validString);
+		AddVariableService service = new AddVariableService(token, "", validString);
 		service.execute();
 	}
 	
