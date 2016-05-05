@@ -6,12 +6,14 @@ import org.jdom2.input.SAXBuilder;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Manager;
+import pt.tecnico.myDrive.service.LoginService;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
 public class MyDrive extends Shell {
+	protected Long activeToken;
 	protected Map<String, Long> loggedIn = new HashMap<>();
 
 	public static void main(String[] args) throws Exception {
@@ -20,6 +22,7 @@ public class MyDrive extends Shell {
 		}
 
 		MyDrive sh = new MyDrive();
+		sh.setupGuestUser();
 	    sh.execute();
 	  }
 
@@ -28,6 +31,13 @@ public class MyDrive extends Shell {
 	  /* eg:
 	  new CreateFile(this); // the CreateFile command class has to exist and extend from MyDriveCommand
 	   */
+	}
+	
+	private void setupGuestUser() {
+        LoginService guestLogin = new LoginService("nobody", ""); 
+        guestLogin.execute();
+        activeToken = guestLogin.result();
+        this.addLogin("nobody", activeToken);
 	}
 
 	public void addLogin(String username, Long newToken) {

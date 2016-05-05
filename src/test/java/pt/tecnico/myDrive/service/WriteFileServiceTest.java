@@ -1,23 +1,35 @@
 package pt.tecnico.myDrive.service;
 
+import mockit.*;
+import mockit.integration.junit4.JMockit;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
 
 import static org.junit.Assert.assertEquals;
 
 
-public class WriteFileServiceTest extends ReadWriteCommonTest {
-
-	private long token;
+@RunWith(JMockit.class)
+public class WriteFileServiceTest extends LinkCommonTest {
+	private Long token;
 	private User root;
 	private Directory home;
-
 
 	private String strA = "";
 	private String strB = "";
 	private String strC = "";
 	private String Y22 = "yyyyyyyyyyyyyyy";
+
+	private Login rootlogin;
+	private Link linkMock;
+	private PlainFile pfile;
+
+	private final String linkMockStr = "linkMock";
+	private final String contentMockStr = "mocktest";
+	private final String envVar = "$DAVID";
+	private final String pathEnvVar = "/$DAVID";
+	private final String pathTranslated = "/home/pfMock";
 
 
 	public MyDriveService createTestInstance(Long token, String name, String dummy) {
@@ -29,11 +41,15 @@ public class WriteFileServiceTest extends ReadWriteCommonTest {
 		Manager manager = Manager.getInstance();
 		super.populate();
 
-		Login rootlogin = new Login("root", "***");
+		rootlogin = new Login("root", "***");
 		root = rootlogin.getCurrentUser();
 		home = (Directory) manager.getRootDirectory().lookup("home", root);
 		rootlogin.setCurrentDir(home);
 		token = rootlogin.getToken();
+
+
+		pfile = new PlainFile("pfMock", root, home, "test");
+		linkMock = new Link(linkMockStr, root, home, pathEnvVar);
 
 		User userTest = new User(Manager.getInstance(), "userTest");
 		Login testLogin = new Login(userTest.getUsername(), userTest.getUsername());
@@ -177,7 +193,42 @@ public class WriteFileServiceTest extends ReadWriteCommonTest {
 		WriteFileService service = new WriteFileService(token, "linktoNE", "batata");
 		service.execute();
 	}
-}
 
+	/*------------------------------------>MOCKUP TESTS - ENVIRONMENT LINKS <-----------------------------------------*/
+	@Test
+	public void successWriteEnvLink(@Mocked final Manager m) throws Exception{
+		new Expectations(linkMock){{
+				m.getInstance().getLoginByToken(token); result = rootlogin; times=1;
+				linkMock.decodeEnvPath(); result = pathTranslated; times=1;
+		}};
+		WriteFileService service = new WriteFileService(token, linkMockStr, contentMockStr);
+		service.execute();
+		assertEquals("write not executed successfully", contentMockStr, pfile.read(root));
+	}
+
+	@Test(expected = EnvironmentVarDoesNotExistException.class)
+	public void insuccessWriteEnvLink(@Mocked final Manager m){
+		new Expectations(linkMock){{
+			m.getInstance().getLoginByToken(token); result = rootlogin; times=1;
+			linkMock.decodeEnvPath();
+			result = new EnvironmentVarDoesNotExistException(envVar); times=1;
+		}};
+		WriteFileService service = new WriteFileService(token, linkMockStr, contentMockStr);
+		service.execute();
+	}
+
+	/*
+	@Test
+	public void verifyEnvLink() {
+		Link link = (Link) home.lookup("validlink", root);
+
+		WriteFileService service = new WriteFileService(token, link.getName(), contentMockStr);
+		service.execute();
+
+		new Verifications(){{
+			link.decodeEnvPath(pathEnvVar);
+		}};
+	}*/
+}
 
 
