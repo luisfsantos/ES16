@@ -72,11 +72,12 @@ public class Login extends Login_Base {
 		if (value == null) {
 			throw new InvalidEnvironmentVarValueException("null");
 		}
-		/*if (hasEnvironmentVariable(name)) {
-
-		}*/
-		EnvironmentVariable environmentVariable = new EnvironmentVariable(this, name, value);
-		super.addEnvironmentVariable(environmentVariable);
+		if (hasEnvironmentVariable(name)) {
+			getEnvironmentVariable(name).setValue(value);
+		} else {
+			EnvironmentVariable environmentVariable = new EnvironmentVariable(this, name, value);
+			super.addEnvironmentVariable(environmentVariable);
+		}
 	}
 
 	public boolean hasEnvironmentVariable(String name) {
@@ -87,7 +88,7 @@ public class Login extends Login_Base {
 		}
 		return false;
 	}
-	
+
 	public EnvironmentVariable getEnvironmentVariable(String name) {
 		for (EnvironmentVariable e : getEnvironmentVariableSet()) {
 			if (e.getName().equals(name)) {
