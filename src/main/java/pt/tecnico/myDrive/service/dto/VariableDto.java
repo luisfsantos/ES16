@@ -25,5 +25,9 @@ public class VariableDto {
 	public void setValue(String value) {
 		this.value = value;
 	}
-		
+	
+	public int compareTo(VariableDto other) {
+		return getName().compareToIgnoreCase(other.getName());
+	}
+
 }
