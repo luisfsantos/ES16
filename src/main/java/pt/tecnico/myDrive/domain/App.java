@@ -4,6 +4,7 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Pattern;
 
 public class App extends App_Base {
@@ -81,4 +82,29 @@ public class App extends App_Base {
 			throw new AccessDeniedException("write", super.getName()); //not sure about argument
 		}
 	}
+	
+	@Override
+	public void execute(User user, String[] args) {
+		if (user.hasPermission(this, Mask.EXEC)) {
+			try {
+				ReflectClass.run(this.viewContent(), args);
+			} catch (ClassNotFoundException e) {
+				throw new ExecClassNotFountException(e.getMessage());
+			} catch (SecurityException e) {
+				throw new ExecSecurityException(e.getMessage());
+			} catch (NoSuchMethodException e) {
+				throw new ExecMethodNotFountException(e.getMessage());
+			} catch (IllegalArgumentException e) {
+				throw new ExecIllegalArgumentException(e.getMessage());
+			} catch (IllegalAccessException e) {
+				throw new ExecIllegalAccessException(e.getMessage());
+			} catch (InvocationTargetException e) {
+				throw new ExecInvocationTargetException(e.getMessage());
+			}
+		}
+		else {
+			throw new AccessDeniedException("execute", this.getName()); 
+		}
+	}
+	
 }
