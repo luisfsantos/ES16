@@ -1,6 +1,6 @@
 package pt.tecnico.myDrive.service.dto;
 
-public class VariableDto {
+public class VariableDto implements Comparable<VariableDto>{
 	private String name;
 	private String value;
 	
@@ -25,7 +25,7 @@ public class VariableDto {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	public int compareTo(VariableDto other) {
 		return getName().compareToIgnoreCase(other.getName());
 	}
