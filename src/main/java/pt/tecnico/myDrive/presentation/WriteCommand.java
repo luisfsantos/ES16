@@ -18,6 +18,7 @@ public class WriteCommand extends MyDriveCommand {
     @Override
     void execute(String[] args){
         MyDrive drive = (MyDrive) this.shell();
+
         if (args.length != 2){
             println("Invalid arguments!\nCorrect usage: update path text");
             return;
