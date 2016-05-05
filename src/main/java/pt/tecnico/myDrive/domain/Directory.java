@@ -179,7 +179,8 @@ public class Directory extends Directory_Base {
 		throw new CannotReadException("A directory cannot be read");
 	}
 
-	public Map<String, File> getFileMap(User user) {
+	@Override
+	public Map<String, File> getDirContentMap(User user) {
 		if (user.hasPermission(this, Mask.READ)) {
 			Map<String, File> fileMap = new LinkedHashMap<>();
 
@@ -191,7 +192,7 @@ public class Directory extends Directory_Base {
 
 			return fileMap;
 		} else {
-			throw new AccessDeniedException("list directory contents", super.getName());
+			throw new AccessDeniedException("list directory contents on", super.getName());
 		}
 	}
 
