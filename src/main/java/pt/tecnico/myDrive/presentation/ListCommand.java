@@ -26,8 +26,7 @@ public class ListCommand extends MyDriveCommand {
             service.execute();
             for (FileDto dto : service.result()) {
                 String entry = dto.getType() + " " + dto.getUmask() + " " + dto.getDimension() + " " +
-                        dto.getUsername() + " " + dto.getId() + " " + dto.getLastModified() + " " + dto.getLastModified() +
-                        " " + dto.getName();
+                        dto.getUsername() + " " + dto.getId() + " " + dto.getLastModified() + " " + dto.getName();
                 println(entry);
             }
         } catch (MyDriveException e) {

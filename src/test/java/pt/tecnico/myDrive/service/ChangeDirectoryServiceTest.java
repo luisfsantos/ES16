@@ -11,7 +11,7 @@ import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.FileDoesNotExistInDirectoryException;
 import pt.tecnico.myDrive.exception.IsNotDirectoryException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.PathTooBigException;
@@ -101,7 +101,7 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 	}
 	
 	// 9
-	@Test (expected = FileDoesntExistsInDirectoryException.class)
+	@Test (expected = FileDoesNotExistInDirectoryException.class)
 	public void nonExistantDirectory() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "notExistant");
 		service.execute();

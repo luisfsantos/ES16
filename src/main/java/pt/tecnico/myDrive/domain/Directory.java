@@ -34,7 +34,7 @@ public class Directory extends Directory_Base {
 		throw new AccessDeniedException("read", super.getName());
 	}
 
-	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
+	public File getFileByName(String name) throws FileDoesNotExistInDirectoryException {
 		if (name.equals("."))
 			return this;
 		if (name.equals(".."))
@@ -44,13 +44,13 @@ public class Directory extends Directory_Base {
 			if (file.getName().equals(name))
 				return file;
 		}
-		throw new FileDoesntExistsInDirectoryException(name, getName());
+		throw new FileDoesNotExistInDirectoryException(name, getName());
 	}
 
 	public boolean hasFile(String name){
 		try{
 			getFileByName(name);
-		} catch (FileDoesntExistsInDirectoryException e) {
+		} catch (FileDoesNotExistInDirectoryException e) {
 			return false;
 		}
 		return true;

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.FileDoesNotExistInDirectoryException;
 import pt.tecnico.myDrive.exception.InvalidPathException;
 import pt.tecnico.myDrive.exception.IsNotDirectoryException;
 import pt.tecnico.myDrive.service.dto.FileDto;
@@ -132,7 +132,7 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		service.execute();
 	}
 
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
+	@Test(expected = FileDoesNotExistInDirectoryException.class)
 	public void invalidFile() {
 		ListDirectoryService service = new ListDirectoryService(login.getToken(), "/home/invalidFile");
 		service.execute();

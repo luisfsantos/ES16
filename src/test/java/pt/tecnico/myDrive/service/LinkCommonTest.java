@@ -5,12 +5,12 @@ import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.Link;
 import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.PlainFile;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.FileDoesNotExistInDirectoryException;
 import pt.tecnico.myDrive.exception.PathTooBigException;
 
 public abstract class LinkCommonTest extends PermissionsCommonTest {
 
-    @Test(expected = FileDoesntExistsInDirectoryException.class)
+    @Test(expected = FileDoesNotExistInDirectoryException.class)
     public void invalidLinkPointsNonExistingFile() {
         new Link("link", root, home, "/home/invalidFile");
 

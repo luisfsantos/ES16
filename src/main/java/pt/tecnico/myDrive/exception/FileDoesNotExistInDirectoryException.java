@@ -1,13 +1,13 @@
 package pt.tecnico.myDrive.exception;
 
-public class FileDoesntExistsInDirectoryException extends MyDriveException {
+public class FileDoesNotExistInDirectoryException extends MyDriveException {
 
     private static final long serialVersionUID = 1L;
 
     private String fileName;
     private String dirName;
 
-    public FileDoesntExistsInDirectoryException(String fileName, String dirName) {
+    public FileDoesNotExistInDirectoryException(String fileName, String dirName) {
         this.fileName = fileName;
         this.dirName = dirName;
     }
@@ -22,7 +22,7 @@ public class FileDoesntExistsInDirectoryException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "\""+getFileName()+"\""+" doesn't exists in directory "+"\""+getDirName()+"\"";
+        return "\""+getFileName()+"\""+" does not exist in directory "+"\""+getDirName()+"\"";
     }
 }
 
