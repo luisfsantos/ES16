@@ -33,6 +33,7 @@ public class MyDrive extends Shell {
 		super("MyDrive");
 		new LoginCommand(this);
 		new ListCommand(this);
+		new WriteCommand(this);
 	}
 	
 	private void setupGuestUser() {

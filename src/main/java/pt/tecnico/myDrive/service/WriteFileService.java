@@ -23,8 +23,8 @@ public class WriteFileService extends TokenValidationService{
 		super.dispatch();
 		User user = session.getCurrentUser();
 
-			File f = session.getCurrentDir().lookup(filename,user);
-			f.write(user,content);
+		File f = session.getCurrentDir().lookup(filename,user);
+		f.write(user,content);
 
 	}
 }
