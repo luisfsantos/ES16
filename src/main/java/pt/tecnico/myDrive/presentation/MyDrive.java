@@ -21,12 +21,12 @@ public class MyDrive extends Shell {
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 1) {
-			xmlScan(new java.io.File(args[0]));
+			xmlScan(new java.io.File(args[0])); //service will have to create an empty database...
 		}
-
 		MyDrive sh = new MyDrive();
-		sh.execute();
 		sh.setupGuestUser();
+		sh.execute();
+		
 
 	  }
 

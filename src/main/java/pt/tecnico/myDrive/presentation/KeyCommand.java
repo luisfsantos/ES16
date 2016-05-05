@@ -1,7 +1,5 @@
 package pt.tecnico.myDrive.presentation;
 
-import pt.tecnico.myDrive.exception.MyDriveException;
-
 /**
  * Created by lads on 05-05-2016.
  */
@@ -19,9 +17,13 @@ public class KeyCommand extends MyDriveCommand {
             print("Token: "); println(myDrive.getActiveToken().toString());
         }
         else if (args.length == 1) {
-            myDrive.swapUser(args[0]);
-            print("Username: "); println(myDrive.getActiveUser());
-            print("Token: "); println(myDrive.getActiveToken().toString());
+            if(myDrive.swapUser(args[0])) {
+            	print("Username: "); println(myDrive.getActiveUser());
+                print("Token: "); println(myDrive.getActiveToken().toString());
+            } else {
+            	throw new RuntimeException(args[0] + " is not logged in");
+            }
+            
         }
         else {
             println("Wrong arguments!!!\nUSAGE: token [username]");
