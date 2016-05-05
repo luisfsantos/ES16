@@ -34,9 +34,8 @@ public class AddVariableService extends TokenValidationService {
 		for (EnvironmentVariable i : environmentVariables) {
 			VariableDto newDto = new VariableDto(i.getName(), i.getValue());
 			variables.add(newDto);
-
 		}
-
+		Collections.sort(variables);
  	}
  	
  	public final List<VariableDto> result() {
