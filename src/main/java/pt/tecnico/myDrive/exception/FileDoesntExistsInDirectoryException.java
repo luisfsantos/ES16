@@ -22,7 +22,7 @@ public class FileDoesntExistsInDirectoryException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "File " + getFileName() + " doesn't exists in directory " + getDirName();
+        return "\""+getFileName()+"\""+" doesn't exists in directory "+"\""+getDirName()+"\"";
     }
 }
 

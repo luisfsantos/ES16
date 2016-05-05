@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MyDrive extends Shell {
-	protected Long activeToken;
-	protected Map<String, List<Long>> loggedIn = new HashMap<String, List<Long>>();
+	private Long activeToken;
+	private Map<String, List<Long>> loggedIn = new HashMap<String, List<Long>>();
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 1) {
@@ -30,11 +30,9 @@ public class MyDrive extends Shell {
 
 	
 	public MyDrive() { // add commands here
-	  super("MyDrive");
-	  new LoginCommand(this);
-	  /* eg:
-	  new CreateFile(this); // the CreateFile command class has to exist and extend from MyDriveCommand
-	   */
+		super("MyDrive");
+		new LoginCommand(this);
+		new ListCommand(this);
 	}
 	
 	private void setupGuestUser() {
@@ -57,6 +55,10 @@ public class MyDrive extends Shell {
 
 	public List<Long> getUserToken(String username) {
 		return loggedIn.get(username);
+	}
+
+	public Long getActiveToken() {
+		return activeToken;
 	}
 
 	@Atomic

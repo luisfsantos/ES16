@@ -6,7 +6,6 @@ import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -166,7 +165,7 @@ public abstract class File extends File_Base {
 	public abstract String getType();
 
 	public Map<String, File> getDirContentMap(User user) {
-		throw new IsNotDirOrLinkException(getName());
+		throw new IsNotDirectoryException(getName());
 	}
 }
 

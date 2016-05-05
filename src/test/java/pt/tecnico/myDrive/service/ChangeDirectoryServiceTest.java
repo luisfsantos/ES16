@@ -12,7 +12,7 @@ import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
-import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
+import pt.tecnico.myDrive.exception.IsNotDirectoryException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.PathTooBigException;
 
@@ -130,7 +130,7 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 	}
 	
 	// 13
-	@Test (expected = IsNotDirOrLinkException.class)
+	@Test (expected = IsNotDirectoryException.class)
 	public void fileInPath() {
 		ChangeDirectoryService service = new ChangeDirectoryService(rootToken, "file/ola");
 		service.execute();

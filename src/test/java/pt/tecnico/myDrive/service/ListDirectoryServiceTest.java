@@ -7,7 +7,7 @@ import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 import pt.tecnico.myDrive.exception.InvalidPathException;
-import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
+import pt.tecnico.myDrive.exception.IsNotDirectoryException;
 import pt.tecnico.myDrive.service.dto.FileDto;
 
 import java.util.List;
@@ -138,7 +138,7 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		service.execute();
 	}
 
-	@Test(expected = IsNotDirOrLinkException.class)
+	@Test(expected = IsNotDirectoryException.class)
 	public void listNonDirFileShouldThrowException() {
 		ListDirectoryService service = new ListDirectoryService(login.getToken(), "application");
 		service.execute();
