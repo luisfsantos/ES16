@@ -82,7 +82,7 @@ public abstract class Shell {
 	  c.execute(Arrays.copyOfRange(arg, 1, arg.length));
 	} catch (RuntimeException e) {
 	  System.err.println(arg[0]+": "+e);
-	  e.printStackTrace(); // debug
+	  //e.printStackTrace(); // debug
 	}
       } else
 	if (arg[0].length() > 0)
