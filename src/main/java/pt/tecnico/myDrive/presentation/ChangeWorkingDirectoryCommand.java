@@ -4,7 +4,7 @@ import pt.tecnico.myDrive.service.ChangeDirectoryService;
 
 public class ChangeWorkingDirectoryCommand extends MyDriveCommand{
 
-    public ChangeWorkingDirectoryCommand(Shell sh) {
+    public ChangeWorkingDirectoryCommand(MyDrive sh) {
         super(sh, "cwd", "Change working directory, usage: cwd [path]");
     }
 

@@ -6,7 +6,7 @@ import pt.tecnico.myDrive.service.dto.FileDto;
 
 public class ListCommand extends MyDriveCommand {
 
-    public ListCommand(Shell sh) {
+    public ListCommand(MyDrive sh) {
         super(sh, "ls", "list directory content, usage: ls [path]");
     }
 

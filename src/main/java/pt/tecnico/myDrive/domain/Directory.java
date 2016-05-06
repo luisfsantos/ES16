@@ -57,14 +57,8 @@ public class Directory extends Directory_Base {
 	}
 
 
-	public String resolvePathWithEnvVar(String path){
-		return path;
-	}
 
 	public File lookup(String path, User user) {
-
-		path = resolvePathWithEnvVar(path);
-
 		if(path.length() <= max_path) {
 			return lookup(path, user, max_path);
 		} else {

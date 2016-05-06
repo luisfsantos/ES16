@@ -6,7 +6,7 @@ import pt.tecnico.myDrive.service.LoginService;
 
 public class LoginCommand extends MyDriveCommand {
 
-	public LoginCommand(Shell sh) {
+	public LoginCommand(MyDrive sh) {
 		super(sh, "login", "create new session, usage: login username [password]");
 	}
 
