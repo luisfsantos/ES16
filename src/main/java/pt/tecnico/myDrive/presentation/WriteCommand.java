@@ -1,10 +1,5 @@
 package pt.tecnico.myDrive.presentation;
 
-
-import pt.tecnico.myDrive.domain.Directory;
-import pt.tecnico.myDrive.domain.Login;
-import pt.tecnico.myDrive.domain.Manager;
-import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.service.WriteFileService;
 
@@ -28,7 +23,8 @@ public class WriteCommand extends MyDriveCommand {
 
         try{
             service.execute();
-        }catch(MyDriveException e){
+        }
+        catch(MyDriveException e){
             println(e.getMessage());
         }
     }
