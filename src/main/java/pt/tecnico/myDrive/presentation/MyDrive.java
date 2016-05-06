@@ -35,9 +35,9 @@ public class MyDrive extends Shell {
 		super("MyDrive");
 		new LoginCommand(this);
 		new ListCommand(this);
+		new ChangeWorkingDirectoryCommand(this);
 		new WriteCommand(this);
 		new KeyCommand(this);
-
 	}
 	
 	private void setupGuestUser() {

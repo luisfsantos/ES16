@@ -86,7 +86,7 @@ public abstract class Shell {
         println(e.getMessage());
     } catch (RuntimeException e) {
 	  System.err.println(arg[0]+": "+e);
-	  e.printStackTrace(); // debug
+	  //e.printStackTrace(); // debug
 	}
       } else
 	if (arg[0].length() > 0)
