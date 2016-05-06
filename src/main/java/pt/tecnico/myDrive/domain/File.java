@@ -11,6 +11,7 @@ import pt.tecnico.myDrive.exception.InvalidPermissionException;
 import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Pattern;
 
 public abstract class File extends File_Base {
@@ -41,9 +42,9 @@ public abstract class File extends File_Base {
 	
 	
 	@Override
-	public void setName(String name){
+	public void setName(String name) {
 		if(name == null)
-			throw new InvalidFileNameException(name);
+			throw new InvalidFileNameException(null);
 		if((name.indexOf('/') >= 0) || (name.indexOf('\0') >= 0) ||  name.equals(""))
 			throw new InvalidFileNameException(name);
 		if((getParent().getAbsolutePath().length() + 1 + name.length()) > 1024)
@@ -51,6 +52,7 @@ public abstract class File extends File_Base {
 
 		if (name.equals(".") || name.equals(".."))
 			throw new FileAlreadyExistsInDirectoryException(name, getParent().getName());
+
 		for (File f : getParent().getFileSet()) {
 			if(!f.equals(this) && f.getName().equals(name)){
 				throw new FileAlreadyExistsInDirectoryException(name, this.getParent().getName());
@@ -133,39 +135,24 @@ public abstract class File extends File_Base {
 	public void xmlImport(Manager manager, Element fileNode) throws UnsupportedEncodingException {
 		String path = fileNode.getChildText("path");
 		String name = fileNode.getChildText("name");
-		String owner = fileNode.getChildText("owner");
-		String perm = fileNode.getChildText("perm");
+		if (name == null || path == null) throw new ImportDocumentException("Missing name or path value");
 
-		if (name == null || path == null) {
-			throw new ImportDocumentException("Missing name or path value");
-		}
-
-		setName(new String(name.getBytes("UTF-8")));
-
-		
+		path = new String(path.getBytes());
+		name = new String(name.getBytes());
 		User ownerUser = manager.fetchUser(fileNode);
-		if (ownerUser == null) {
-			throw new UserDoesNotExistException(owner);
-		}
-		setOwner(ownerUser);
-		setId(ownerUser.getNextIdCounter());
-		
+		String perm = fileNode.getChildText("perm");
+		perm = (perm != null) ? new String(perm.getBytes("UTF-8")) : "rwxd----";
 
-		if(perm != null) setPermissions(new String(perm.getBytes("UTF-8")));
-		else setPermissions("rwxd----");
+		Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(), path);
 
-		setLastModified(new DateTime());
-
-		Directory parentDir = manager.getRootDirectory().createPath(manager.getSuperUser(),
-				new String(path.getBytes("UTF-8")));
-		parentDir.addFile(this);
+		initFile(name, perm, ownerUser, parentDir);
 	}
 
 	public void delete(User user){
 		if(user.hasPermission(this, Mask.DELETE)){
 			this.remove();
 		}
-		else throw new InvalidPermissionException(this.getPermissions());
+		else throw new AccessDeniedException("delete", this.getName());
 	}
 
 	public void remove(){
@@ -175,6 +162,7 @@ public abstract class File extends File_Base {
 	}
 
 	public abstract void write(User u, String content);
+	public abstract void execute(User user, String[] args);
 
 	public abstract File lookup(String path, User user);
 	abstract File lookup(String path, User user, int psize);

@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.UserCannotBeModified;
 
 public class SuperUser extends SuperUser_Base {
@@ -39,6 +40,15 @@ public class SuperUser extends SuperUser_Base {
     
     @Override
 	public boolean hasPermission(File file, Mask mask){
+		return true;
+	}
+
+	@Override
+	public boolean isValidUserSession(DateTime recent){
+		DateTime now = new DateTime();
+		if (recent.isBefore(now.minusMinutes(10))){
+			return false;
+		}
 		return true;
 	}
 }

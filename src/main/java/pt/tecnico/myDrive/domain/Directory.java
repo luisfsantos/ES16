@@ -3,13 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.AccessDeniedException;
-import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
-import pt.tecnico.myDrive.exception.CannotReadException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
-import pt.tecnico.myDrive.exception.IsHomeDirectoryException;
-import pt.tecnico.myDrive.exception.PathTooBigException;
-import pt.tecnico.myDrive.exception.InvalidWriteException;
+import pt.tecnico.myDrive.exception.*;
 
 
 import java.io.UnsupportedEncodingException;
@@ -28,11 +22,11 @@ public class Directory extends Directory_Base {
 	
 	public Directory(String name, Directory parent) {
 		this.initFile(name, Manager.getInstance().getSuperUser().getUmask(), Manager.getInstance().getSuperUser(), parent);
+
 	}
-	
 
 	public Directory(Manager manager, Element dirNode) throws UnsupportedEncodingException {
-		this.xmlImport(manager, dirNode);
+		super.xmlImport(manager, dirNode);
 	}
 	
 	@Override
@@ -62,7 +56,15 @@ public class Directory extends Directory_Base {
 		return true;
 	}
 
+
+	public String resolvePathWithEnvVar(String path){
+		return path;
+	}
+
 	public File lookup(String path, User user) {
+
+		path = resolvePathWithEnvVar(path);
+
 		if(path.length() <= max_path) {
 			return lookup(path, user, max_path);
 		} else {
@@ -177,14 +179,22 @@ public class Directory extends Directory_Base {
 		throw new CannotReadException("A directory cannot be read");
 	}
 
-	public Set<File> getFileSet(User user) {
+	public Map<String, File> getFileMap(User user) {
 		if (user.hasPermission(this, Mask.READ)) {
-			return super.getFileSet();
+			Map<String, File> fileMap = new LinkedHashMap<>();
+
+			fileMap.put(".", this);
+			fileMap.put("..", getParent());
+			for (File f : super.getFileSet()) {
+				fileMap.put(f.getName(), f);
+			}
+
+			return fileMap;
 		} else {
 			throw new AccessDeniedException("list directory contents", super.getName());
 		}
-
 	}
+
 
 	public Directory createPath(User owner, String path) {
 		if(path.startsWith("/")) {
@@ -238,6 +248,12 @@ public class Directory extends Directory_Base {
 			}
 		}
 	}
+
+	@Override
+	public void execute(User user, String[] args) {
+		throw new CannotExecuteException(this.getName()); 
+		}
+
 
 }
 
