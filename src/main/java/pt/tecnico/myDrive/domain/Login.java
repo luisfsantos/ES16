@@ -6,10 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
-import pt.tecnico.myDrive.exception.InvalidEnvironmentVarNameException;
-import pt.tecnico.myDrive.exception.InvalidEnvironmentVarValueException;
-import pt.tecnico.myDrive.exception.InvalidUsernameOrPasswordException;
+import pt.tecnico.myDrive.exception.*;
 
 public class Login extends Login_Base {
     
@@ -66,7 +63,7 @@ public class Login extends Login_Base {
 
 
 	public void addEnvironmentVariable(String name, String value) {
-		if (name == null) {
+		if (name == null || name.equals("")) {
 			throw new InvalidEnvironmentVarNameException("null");
 		}
 		if (value == null) {
@@ -81,12 +78,12 @@ public class Login extends Login_Base {
 	}
 
 	public boolean hasEnvironmentVariable(String name) {
-		for (EnvironmentVariable e : getEnvironmentVariableSet()) {
-			if (e.getName().equals(name)) {
-				return true;
-			}
+		try {
+			getEnvironmentVariable(name);
+		} catch (EnvironmentVarDoesNotExistException e) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public EnvironmentVariable getEnvironmentVariable(String name) {
