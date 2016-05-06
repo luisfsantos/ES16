@@ -92,7 +92,7 @@ public class Login extends Login_Base {
 				return e;
 			}
 		}
-		return null;
+		throw new EnvironmentVarDoesNotExistException(name);
 	}
     
     void refreshLoginActivity() {
