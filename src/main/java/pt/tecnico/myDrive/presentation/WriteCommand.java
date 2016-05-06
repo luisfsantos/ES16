@@ -10,7 +10,7 @@ import pt.tecnico.myDrive.service.WriteFileService;
 
 public class WriteCommand extends MyDriveCommand {
 
-    public WriteCommand(Shell sh){
+    public WriteCommand(MyDrive sh){
         super(sh, "update", "Replaces the file contents of the file" +
                 " referred by the path with text, usage: update path text");
     }

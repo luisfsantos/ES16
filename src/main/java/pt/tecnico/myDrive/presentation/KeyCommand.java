@@ -5,7 +5,7 @@ package pt.tecnico.myDrive.presentation;
  */
 public class KeyCommand extends MyDriveCommand {
 
-    public KeyCommand(Shell sh) {
+    public KeyCommand(MyDrive sh) {
         super(sh, "token", "change the current user or list token of the current user, usage: token [username]");
     }
 
