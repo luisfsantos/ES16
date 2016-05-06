@@ -1,6 +1,8 @@
 package pt.tecnico.myDrive.presentation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pt.tecnico.myDrive.exception.MyDriveException;
+
 import java.io.*;
 import java.util.*;
 import java.lang.reflect.*;
@@ -80,7 +82,9 @@ public abstract class Shell {
       if (c != null) {
 	try {
 	  c.execute(Arrays.copyOfRange(arg, 1, arg.length));
-	} catch (RuntimeException e) {
+	} catch (MyDriveException e) {
+        println(e.getMessage());
+    } catch (RuntimeException e) {
 	  System.err.println(arg[0]+": "+e);
 	  e.printStackTrace(); // debug
 	}
