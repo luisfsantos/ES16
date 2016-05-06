@@ -1,6 +1,5 @@
 package pt.tecnico.myDrive.presentation;
 
-import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.service.ChangeDirectoryService;
 
 public class ChangeWorkingDirectoryCommand extends MyDriveCommand{
@@ -13,7 +12,10 @@ public class ChangeWorkingDirectoryCommand extends MyDriveCommand{
     void execute(String[] args) {
         MyDrive md = (MyDrive) this.shell();
         ChangeDirectoryService cwd;
-        if (args.length == 1 ) {
+        if (args.length == 0 ) {
+            cwd = new ChangeDirectoryService(md.getActiveToken(), ".");
+        }
+        else if (args.length == 1 ) {
             cwd = new ChangeDirectoryService(md.getActiveToken(), args[0]);
         }
         else {
