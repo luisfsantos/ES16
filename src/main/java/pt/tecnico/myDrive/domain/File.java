@@ -11,6 +11,7 @@ import pt.tecnico.myDrive.exception.InvalidPermissionException;
 import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Pattern;
 
 public abstract class File extends File_Base {
@@ -161,6 +162,7 @@ public abstract class File extends File_Base {
 	}
 
 	public abstract void write(User u, String content);
+	public abstract void execute(User user, String[] args);
 
 	public abstract File lookup(String path, User user);
 	abstract File lookup(String path, User user, int psize);

@@ -3,9 +3,8 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
-
-import pt.tecnico.myDrive.exception.CannotReadException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 
 public class Link extends Link_Base {
 
@@ -85,11 +84,18 @@ public class Link extends Link_Base {
 
     }
 
+	@Override
+	public void execute(User user, String[] args) {
+		File file = this.resolveLink(user);
+        if (file == null) {
+            throw new CannotReadException("File does not exist");
+        } else {
+            file.execute(user, args);
+        }
+	}
+
 	//MOCKEDUP METHOD
 	public String decodeEnvPath() throws EnvironmentVarDoesNotExistException{
 		return this.viewContent();
 	}
-
-
-
 }

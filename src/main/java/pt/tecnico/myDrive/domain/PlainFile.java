@@ -10,6 +10,8 @@ import pt.tecnico.myDrive.exception.InvalidPermissionException;
 import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 public class PlainFile extends PlainFile_Base {
 
@@ -94,6 +96,23 @@ public class PlainFile extends PlainFile_Base {
             throw new AccessDeniedException("write", super.getName());
         }
     }
+
+	@Override
+	public void execute(User user, String[] args) {
+		if (user.hasPermission(this, Mask.EXEC)) {
+			String[] content = this.viewContent().split(System.getProperty("line.separator"));
+			for (String line: content) {
+				String[] lineContent = line.split(" ");
+				File destFile =  this.getParent().lookup(lineContent[0], user);		// FIXME exception
+				String[] arguments = Arrays.copyOfRange(lineContent, 1, lineContent.length);
+				destFile.execute(user, arguments);
+			}
+		}
+		else {
+			throw new AccessDeniedException("execute", this.getName()); 
+		}
+	}
+	
 }
 
 

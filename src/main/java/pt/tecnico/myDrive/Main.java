@@ -2,6 +2,7 @@ package pt.tecnico.myDrive;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -59,7 +60,14 @@ public class Main {
     	PlainFile file1 = new PlainFile("README", user1, home1, "batata"); 	
     	Directory dir1 = new Directory("bin", user1, home1);
     	PlainFile file2 = new PlainFile("binfile", user1, dir1, "batata");
-    	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "batata");
+    	PlainFile file3 = new PlainFile("binfile2", user1, dir1, "/home/DAVID/bin/appp 1aaa fff\n/home/DAVID/bin/appp 2www o iii\n/home/DAVID/bin/appp 3hhh");
+    	App app = new App("appp", user1, dir1, "pt.tecnico.myDrive.Main.bye");
+
+		String[] s = new String[1]; 
+		s[0] = "0AAA";
+		app.execute(user1, s);
+		file3.execute(user1, s);
+	
     	
     	System.out.println("========================================================");
     	
@@ -101,6 +109,10 @@ public class Main {
 
     	//xmlPrint();
 	}
+    
+    public static void bye(String[] args) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!! "+ args[0] + " !!!!!!!!!!!!!!!!!!!!!!!");
+    }
 
 	@Atomic
 	public static void print() {

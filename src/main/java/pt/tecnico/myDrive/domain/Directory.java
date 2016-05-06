@@ -249,5 +249,11 @@ public class Directory extends Directory_Base {
 		}
 	}
 
+	@Override
+	public void execute(User user, String[] args) {
+		throw new CannotExecuteException(this.getName()); 
+		}
+
+
 }
 

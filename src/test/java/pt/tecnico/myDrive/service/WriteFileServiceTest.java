@@ -9,9 +9,9 @@ import pt.tecnico.myDrive.exception.*;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(JMockit.class)
-public class WriteFileServiceTest extends ReadWriteCommonTest {
 
+@RunWith(JMockit.class)
+public class WriteFileServiceTest extends LinkCommonTest {
 	private Long token;
 	private User root;
 	private Directory home;
