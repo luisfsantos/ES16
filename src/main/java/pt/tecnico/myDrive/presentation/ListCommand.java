@@ -1,6 +1,5 @@
 package pt.tecnico.myDrive.presentation;
 
-import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.service.ListDirectoryService;
 import pt.tecnico.myDrive.service.dto.FileDto;
 
@@ -22,15 +21,11 @@ public class ListCommand extends MyDriveCommand {
             return;
         }
 
-        try {
-            service.execute();
-            for (FileDto dto : service.result()) {
-                String entry = dto.getType() + " " + dto.getUmask() + " " + dto.getDimension() + " " +
-                        dto.getUsername() + " " + dto.getId() + " " + dto.getLastModified() + " " + dto.getName();
-                println(entry);
-            }
-        } catch (MyDriveException e) {
-            println(e.getMessage());
+        service.execute();
+        for (FileDto dto : service.result()) {
+            String entry = dto.getType() + " " + dto.getUmask() + " " + dto.getDimension() + " " +
+                    dto.getUsername() + " " + dto.getId() + " " + dto.getLastModified() + " " + dto.getName();
+            println(entry);
         }
     }
 }
