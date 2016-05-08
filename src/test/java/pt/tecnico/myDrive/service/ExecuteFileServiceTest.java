@@ -1,7 +1,6 @@
 package pt.tecnico.myDrive.service;
 
-import mockit.Mocked;
-import mockit.Verifications;
+import mockit.*;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.CannotExecuteException;
@@ -10,6 +9,7 @@ import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 
 public class ExecuteFileServiceTest extends LinkCommonTest {
     private final String INVALID = "invalid path";
+    private ExecuteFileService service;
     private final String[] ARGS = {"Hello", "World!"};
     private final String[] ARGS_EMPTY = {};
     private final String APP = "execApp";
@@ -162,6 +162,30 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         new Verifications() {{
             Hello.hello(ARGS); times = 1;
         }};
+    }
+
+    /*
+        Mock Tests for Execute Association
+     */
+
+    @Test
+    public void successRunPlainFileWithAssociation () {
+        PlainFile testPlain = new PlainFile("testing.rtdf", root, home, "test");
+        testPlain.setPermissions("--------");
+        App app = new App(APP, root, home, APP_METHOD);
+
+        new MockUp<ExecuteFileService>() {
+            @Mock
+            void dispatch() { testPlain.execute(testUser, ARGS); }
+        };
+
+        new Expectations(testUser) {{
+            testUser.getDefaultApp("rtdf"); result = app;
+        }};
+
+        service = new ExecuteFileService(testUserToken, "testing.rtdf", ARGS);
+        service.execute();
+
     }
 
 }

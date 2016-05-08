@@ -168,5 +168,13 @@ public abstract class File extends File_Base {
 	abstract File lookup(String path, User user, int psize);
 	public abstract int getSize();
 	public abstract String getType();
+
+	public String getExtension() {
+		return this.getName().substring(this.getName().lastIndexOf(".") + 1);
+	}
+
+	public boolean hasExtension() {
+		return this.getName().lastIndexOf(".") >= 0;
+	}
 }
 

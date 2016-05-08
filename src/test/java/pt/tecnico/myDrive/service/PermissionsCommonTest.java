@@ -8,7 +8,8 @@ import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
 public abstract class PermissionsCommonTest extends TokenValidationServiceTest {
     Long rootToken;
     User root;
-    private Long testUserToken;
+    User testUser;
+    Long testUserToken;
     Directory home;
 
     final String PLAIN_FILE = "plainFile";
@@ -28,7 +29,7 @@ public abstract class PermissionsCommonTest extends TokenValidationServiceTest {
         root = rootLogin.getCurrentUser();
         rootToken = rootLogin.getToken();
 
-        User testUser = new User(manager, "testUser");
+        testUser = new User(manager, "testUser");
         Login testUserLogin = new Login(testUser.getName(), testUser.getName());
         testUserToken = testUserLogin.getToken();
 

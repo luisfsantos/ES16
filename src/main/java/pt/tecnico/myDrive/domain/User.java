@@ -2,15 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 
-import pt.tecnico.myDrive.exception.AccessDeniedToGetPasswordException;
-import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
-import pt.tecnico.myDrive.exception.EmptyUsernameException;
-import pt.tecnico.myDrive.exception.InvalidHomeDirectoryException;
-import pt.tecnico.myDrive.exception.InvalidPermissionException;
-import pt.tecnico.myDrive.exception.InvalidUsernameException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-
-import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.*;
 
 import org.joda.time.DateTime;
 import java.io.UnsupportedEncodingException;
@@ -263,5 +255,10 @@ public class User extends User_Base {
 			return false;
 		}
 		return true;
+	}
+
+	//Mocked method for testing executeAssociation
+	public File getDefaultApp(String extension) {
+		throw new AccessDeniedException("execute", "file");
 	}
 }

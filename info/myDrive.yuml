@@ -30,5 +30,5 @@
 [User]1 owner - file *[File] // UserHasFiles
 [User]0..1 homeOwner - home 1[Directory] // UserHasHome
 [File]* file - parent 1[Directory] // DirectoryContainsFiles
-[User]1 user - execAssociation 0..*[ExecAssociation] // UserHasExecAssociations
-[App]1 defaultApp - association 0..*[ExecAssociation] // ExecAssociationHasApp
+[User]1 user - defaultApp 0..*[ExecAssociation] // UserHasExecAssociations
+[File]1 executable - association 0..*[ExecAssociation] // ExecAssociationHasApp
