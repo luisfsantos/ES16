@@ -37,6 +37,7 @@ public class MyDrive extends Shell {
 		new ListCommand(this);
 		new WriteCommand(this);
 		new KeyCommand(this);
+		new ExecuteCommand(this);
 
 	}
 	
