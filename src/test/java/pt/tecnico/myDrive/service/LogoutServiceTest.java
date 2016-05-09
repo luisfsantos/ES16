@@ -5,7 +5,7 @@ import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.domain.Manager;
 import static org.junit.Assert.assertNull;
 
-public class LogoutGuestServiceTest extends AbstractServiceTest{
+public class LogoutServiceTest extends AbstractServiceTest{
 
     private Manager manager;
     private Long guestToken;
@@ -24,7 +24,7 @@ public class LogoutGuestServiceTest extends AbstractServiceTest{
 
     @Test
     public void verifyLogoutGuestCorrectToken(){
-        LogoutGuestService service = new LogoutGuestService(guestToken);
+        LogoutService service = new LogoutService(guestToken);
         service.execute();
 
         Login log = manager.getLoginByToken(guestToken);
