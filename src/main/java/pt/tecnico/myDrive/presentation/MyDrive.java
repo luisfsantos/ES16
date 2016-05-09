@@ -35,6 +35,7 @@ public class MyDrive extends Shell {
 		super("MyDrive");
 		new LoginCommand(this);
 		new ListCommand(this);
+		new ChangeWorkingDirectoryCommand(this);
 		new WriteCommand(this);
 		new KeyCommand(this);
 		new ExecuteCommand(this);
@@ -48,11 +49,19 @@ public class MyDrive extends Shell {
         this.addLogin("nobody", activeToken);
 	}
 
+
+	public Long logoutGuestUser () {
+		Long guestToken = loggedIn.get("nobody");
+		if (guestToken != null) {
+			loggedIn.remove("nobody");
+		}
+		return guestToken;
+	}
+
 	public void addLogin(String username, Long newToken) {
 		loggedIn.put(username, newToken);
 		activeToken = newToken;
 		activeUser = username;
-		
 	}
 
 	public boolean swapUser(String username) {
