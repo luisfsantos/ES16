@@ -46,12 +46,20 @@ public class MyDrive extends Shell {
         activeToken = guestLogin.result();
         this.addLogin("nobody", activeToken);
 	}
+	
+	
+	public Long logoutGuestUser () {
+		Long guestToken = loggedIn.get("nobody");
+		if (guestToken != null) {
+			loggedIn.remove("nobody");
+		}
+		return guestToken;
+	}
 
 	public void addLogin(String username, Long newToken) {
 		loggedIn.put(username, newToken);
 		activeToken = newToken;
 		activeUser = username;
-		
 	}
 
 	public boolean swapUser(String username) {
