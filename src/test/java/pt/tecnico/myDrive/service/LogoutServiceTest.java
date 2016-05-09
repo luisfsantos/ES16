@@ -5,7 +5,7 @@ import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.domain.Manager;
 import static org.junit.Assert.assertNull;
 
-public class LogoutServiceTest extends AbstractServiceTest{
+public class LogoutServiceTest extends TokenValidationServiceTest{
 
     private Manager manager;
     private Long guestToken;
@@ -13,13 +13,11 @@ public class LogoutServiceTest extends AbstractServiceTest{
 
     @Override
     protected void populate() {
+        super.populate();
         manager = Manager.getInstance();
 
         Login guestLogin = new Login("nobody", "");
         guestToken = guestLogin.getToken();
-
-        Login rootLogin = new Login("root", "***");
-        rootToken = rootLogin.getToken();
     }
 
     @Test
@@ -31,13 +29,5 @@ public class LogoutServiceTest extends AbstractServiceTest{
 
         assertNull("guest login is not null", log);
     }
-
-/*
-    @Test(expected = InvalidGuestToken.class)
-    public void verifyLogoutGuestIncorrectToken(){
-        LogoutGuestService service = new LogoutGuestService(rootToken);
-        service.execute();
-    }
-*/
 
 }
