@@ -216,19 +216,6 @@ public class WriteFileServiceTest extends LinkCommonTest {
 		WriteFileService service = new WriteFileService(token, linkMockStr, contentMockStr);
 		service.execute();
 	}
-
-	/*
-	@Test
-	public void verifyEnvLink() {
-		Link link = (Link) home.lookup("validlink", root);
-
-		WriteFileService service = new WriteFileService(token, link.getName(), contentMockStr);
-		service.execute();
-
-		new Verifications(){{
-			link.decodeEnvPath(pathEnvVar);
-		}};
-	}*/
 }
 
 
