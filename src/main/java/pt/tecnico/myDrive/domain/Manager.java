@@ -66,9 +66,8 @@ public class Manager extends Manager_Base {
 	}
     
     public void removeInactiveLogins() {
-    	DateTime now = new DateTime();
     	for (Login login: super.getLoginSet()) {
-			if (login.getLastActivity().isBefore(now.minusHours(2))){
+			if (! login.getCurrentUser().isValidUserSession(login.getLastActivity()) ){
 				login.remove();
 			} 
     	}
