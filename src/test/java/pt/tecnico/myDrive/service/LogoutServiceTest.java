@@ -9,7 +9,6 @@ public class LogoutServiceTest extends TokenValidationServiceTest{
 
     private Manager manager;
     private Long guestToken;
-    private Long rootToken;
 
     @Override
     protected void populate() {
