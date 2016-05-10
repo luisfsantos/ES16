@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.service;
 import mockit.*;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.AssociationDoesNotExist;
 import pt.tecnico.myDrive.exception.CannotExecuteException;
 import pt.tecnico.myDrive.exception.CannotExecutePlainFileException;
 import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
@@ -203,6 +204,27 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
 
         new Expectations(testUser) {{
             testUser.getDefaultApp(EXTENSION); result = app;
+        }};
+
+        service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
+        service.execute();
+
+    }
+
+    @Test (expected = AssociationDoesNotExist.class)
+    public void insuccessRunPlainFileWithAssociation () {
+        String EXTENSION = "plain";
+        PlainFile testPlain = new PlainFile("testing."+EXTENSION, root, home, "test");
+        testPlain.setPermissions("--------");
+        App app = new App(APP, root, home, APP_METHOD);
+
+        new MockUp<ExecuteFileService>() {
+            @Mock
+            void dispatch() { testPlain.execute(testUser, ARGS); }
+        };
+
+        new Expectations(testUser) {{
+            testUser.getDefaultApp(EXTENSION); result = new AssociationDoesNotExist(EXTENSION);
         }};
 
         service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
