@@ -1,7 +1,14 @@
 package pt.tecnico.myDrive.service;
 
-
+import static org.junit.Assert.*;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.junit.Test;
 import pt.tecnico.myDrive.domain.Manager;
+import org.jdom2.Document;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 public class ImportServiceTest extends AbstractServiceTest{
 
@@ -39,13 +46,6 @@ public class ImportServiceTest extends AbstractServiceTest{
 	+"  <name>bin</name>"
 	+"  <perm>rwxd--x-</perm>"
 	+"</dir>"
-	+"<app id=\"9\">"
-	+"  <path>/home/jtb/bin</path>"
-	+"  <name>hello</name>"
-	+"  <owner>jtb</owner>"
-	+"  <perm>rwxd--x-</perm>"
-	+"  <method>pt.tecnico.myDrive.app.Hello</method>"
-	+"</app>"
 	+"</myDrive>";
 
 
@@ -54,7 +54,20 @@ public class ImportServiceTest extends AbstractServiceTest{
 		Manager manager = Manager.getInstance();
 	}
 
+	@Test
+	public void success() throws JDOMException, IOException {
+		Document doc = new SAXBuilder().build(new StringReader(xml));
+		ImportService service = new ImportService(doc);
+		service.execute();
 
+		Manager manager = Manager.getInstance();
+
+		assertTrue(manager.hasUser("jtb"));
+		assertEquals(manager.fetchUser("jtb", "fermento").getHome().getFileByName("profile").read(manager.fetchUser("jtb", "fermento")), "Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República.");
+		assertEquals(manager.fetchUser("jtb", "fermento").getHome().getFileByName("documents").getPermissions(), "rwxdr-x-");
+		assertEquals(manager.fetchUser("jtb", "fermento").getHome().getFileByName("doc").read(manager.fetchUser("jtb", "fermento")), "/home/jtb/documents");
+		assertEquals(manager.fetchUser("jtb", "fermento").getHome().getFileByName("bin").getPermissions(), "rwxd--x-");
+	}
 
 
 
