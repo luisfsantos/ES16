@@ -37,10 +37,11 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 		service.execute();
 	}
 	
+	
 	// test 4
 	@Test
-	public void nullValue() {
-		AddVariableService service = new AddVariableService(token, inexistantName, null);
+	public void nullValueExistName() {
+		AddVariableService service = new AddVariableService(token, existantName1, null);
 		service.execute();
 		
 		List<VariableDto> res = service.result();
@@ -49,12 +50,21 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 		assertEquals("Invalid existant name or order", existantName1, res.get(0).getName());
 		assertEquals("Invalid existant value", existantValue, res.get(0).getValue());
 		
-		assertEquals("Invalid existant name or order", existantName2, res.get(2).getName());
-		assertEquals("Invalid existant value", existantValue, res.get(2).getValue());
+		assertEquals("Invalid existant name or order", existantName2, res.get(1).getName());
+		assertEquals("Invalid existant value", existantValue, res.get(1).getValue());
 	}
 	
 	
 	// test 5
+	@Test(expected = InvalidEnvironmentVarValueException.class)
+	public void nullValueInexistName() {
+		AddVariableService service = new AddVariableService(token, inexistantName, null);
+		service.execute();
+	}
+	
+	
+	
+	// test 6
 	@Test
 	public void nullNameAndValue() {
 		AddVariableService service = new AddVariableService(token, null, null);
@@ -66,12 +76,12 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 		assertEquals("Invalid existant name or order", existantName1, res.get(0).getName());
 		assertEquals("Invalid existant value", existantValue, res.get(0).getValue());
 		
-		assertEquals("Invalid existant name or order", existantName2, res.get(2).getName());
-		assertEquals("Invalid existant value", existantValue, res.get(2).getValue());
+		assertEquals("Invalid existant name or order", existantName2, res.get(1).getName());
+		assertEquals("Invalid existant value", existantValue, res.get(1).getValue());
 	}
 	
 	
-	// test 6
+	// test 7
 	@Test(expected = InvalidEnvironmentVarNameException.class)
 	public void emptyStringName() {
 		AddVariableService service = new AddVariableService(token, "", validString);
@@ -79,7 +89,7 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 	}
 	
 	
-	// test 7
+	// test 8
 	@Test
 	public void emptyStringValue() {
 		AddVariableService service = new AddVariableService(token, inexistantName, "");
@@ -98,7 +108,7 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 
 	}
 	
-	// test 8
+	// test 9
 	@Test
 	public void validString() {
 		AddVariableService service = new AddVariableService(token, inexistantName, validString);
@@ -117,7 +127,7 @@ public class AddVariableServiceTest  extends TokenValidationServiceTest {
 		
 	}
 	
-	// test 9
+	// test 10
 	@Test
 	public void existantName() {
 		AddVariableService service = new AddVariableService(token, existantName2, validString);
