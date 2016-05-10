@@ -170,7 +170,8 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
 
     @Test
     public void successRunPlainFileWithAssociation () {
-        PlainFile testPlain = new PlainFile("testing.rtdf", root, home, "test");
+        String EXTENSION = "plain";
+        PlainFile testPlain = new PlainFile("testing."+EXTENSION, root, home, "test");
         testPlain.setPermissions("--------");
         App app = new App(APP, root, home, APP_METHOD);
 
@@ -180,10 +181,31 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         };
 
         new Expectations(testUser) {{
-            testUser.getDefaultApp("rtdf"); result = app;
+            testUser.getDefaultApp(EXTENSION); result = app;
         }};
 
-        service = new ExecuteFileService(testUserToken, "testing.rtdf", ARGS);
+        service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
+        service.execute();
+
+    }
+
+    @Test
+    public void successRunAppFileWithAssociation () {
+        String EXTENSION = "app";
+        App testApp = new App("testing."+EXTENSION, root, home, APP_METHOD);
+        testApp.setPermissions("--------");
+        App app = new App(APP, root, home, APP_METHOD);
+
+        new MockUp<ExecuteFileService>() {
+            @Mock
+            void dispatch() { testApp.execute(testUser, ARGS); }
+        };
+
+        new Expectations(testUser) {{
+            testUser.getDefaultApp(EXTENSION); result = app;
+        }};
+
+        service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
         service.execute();
 
     }
