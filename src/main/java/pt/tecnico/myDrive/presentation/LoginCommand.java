@@ -1,7 +1,5 @@
 package pt.tecnico.myDrive.presentation;
 
-import java.util.List;
-
 import pt.tecnico.myDrive.service.LoginService;
 import pt.tecnico.myDrive.service.LogoutService;
 
