@@ -211,6 +211,28 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
 
     }
 
+    //should ignore the extention as it adds nothing to a link
+    @Test
+    public void successRunLinkFileWithAssociation (@Mocked Hello helloMock) {
+        String EXTENSION = "link";
+        Link testLink = new Link("testing."+EXTENSION, root, home, APP);
+        testLink.setPermissions("--------");
+        App app = new App(APP, root, home, APP_METHOD);
+
+        new MockUp<ExecuteFileService>() {
+            @Mock
+            void dispatch() { testLink.execute(testUser, ARGS); }
+        };
+
+        service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
+        service.execute();
+
+        new Verifications() {{
+            Hello.hello(ARGS); times = 1;
+        }};
+
+    }
+
     @Test (expected = AssociationDoesNotExist.class)
     public void insuccessRunPlainFileWithAssociation () {
         String EXTENSION = "plain";
