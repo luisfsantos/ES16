@@ -10,7 +10,7 @@ public class ListCommand extends MyDriveCommand {
     }
 
     @Override
-    void execute(String[] args) {
+    public void execute(String[] args) {
         MyDrive myDrive = (MyDrive) this.shell();
         ListDirectoryService service;
 

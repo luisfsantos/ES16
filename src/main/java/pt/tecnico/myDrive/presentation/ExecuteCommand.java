@@ -10,7 +10,7 @@ public class ExecuteCommand extends MyDriveCommand {
 	}
 
 	@Override
-	void execute(String[] args) {
+	public void execute(String[] args) {
 		MyDrive myDrive = (MyDrive) this.shell();
 		ExecuteFileService service;
 

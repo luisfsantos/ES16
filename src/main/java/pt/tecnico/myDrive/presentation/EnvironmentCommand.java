@@ -10,7 +10,7 @@ public class EnvironmentCommand extends MyDriveCommand {
 	}
 
 	@Override
-	void execute(String[] args) {
+	public void execute(String[] args) {
 		MyDrive md = (MyDrive) this.shell();
 		AddVariableService avs;
 		if (args.length == 0) {

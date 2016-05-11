@@ -10,7 +10,7 @@ public class LoginCommand extends MyDriveCommand {
 	}
 
 	@Override
-	void execute(String[] args) {
+	public void execute(String[] args) {
 		MyDrive md = (MyDrive) this.shell();
 		if (args.length == 1 ) {
 			if (args[0].equals("nobody") && md.getActiveUser().equals("nobody")) {

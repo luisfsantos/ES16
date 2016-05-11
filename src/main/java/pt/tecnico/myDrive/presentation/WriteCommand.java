@@ -11,7 +11,7 @@ public class WriteCommand extends MyDriveCommand {
     }
 
     @Override
-    void execute(String[] args) {
+    public void execute(String[] args) {
         MyDrive drive = (MyDrive) this.shell();
 
         if (args.length != 2) {

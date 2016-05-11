@@ -9,7 +9,7 @@ public class KeyCommand extends MyDriveCommand {
         super(sh, "token", "change the current user or list token of the current user, usage: token [username]");
     }
 
-    void execute(String[] args) {
+    public void execute(String[] args) {
         MyDrive myDrive = (MyDrive) this.shell();
 
         if (args.length == 0) {

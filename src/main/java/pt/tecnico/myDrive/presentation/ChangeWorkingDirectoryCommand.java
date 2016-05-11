@@ -9,7 +9,7 @@ public class ChangeWorkingDirectoryCommand extends MyDriveCommand{
     }
 
     @Override
-    void execute(String[] args) {
+    public void execute(String[] args) {
         MyDrive md = (MyDrive) this.shell();
         ChangeDirectoryService cwd;
         if (args.length == 0 ) {
