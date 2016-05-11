@@ -6,11 +6,9 @@ import org.joda.time.DateTime;
 
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 
-import pt.tecnico.myDrive.exception.InvalidPermissionException;
-import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
+import pt.tecnico.myDrive.exception.IsNotDirectoryException;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 public class PlainFile extends PlainFile_Base {
@@ -35,12 +33,12 @@ public class PlainFile extends PlainFile_Base {
         super.xmlImport(manager, plainNode);
     }
 
-    public File lookup(String path, User user) throws IsNotDirOrLinkException{
-        throw new IsNotDirOrLinkException(this.getName());
+    public File lookup(String path, User user) throws IsNotDirectoryException {
+        throw new IsNotDirectoryException(this.getName());
     }
 
-    File lookup(String path, User user, int psize) throws IsNotDirOrLinkException{
-        throw new IsNotDirOrLinkException(this.getName());
+    File lookup(String path, User user, int psize) throws IsNotDirectoryException {
+        throw new IsNotDirectoryException(this.getName());
     }
 
     @Override

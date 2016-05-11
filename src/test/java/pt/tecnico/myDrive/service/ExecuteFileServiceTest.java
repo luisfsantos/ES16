@@ -5,8 +5,7 @@ import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.AssociationDoesNotExist;
 import pt.tecnico.myDrive.exception.CannotExecuteException;
-import pt.tecnico.myDrive.exception.CannotExecutePlainFileException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.FileDoesNotExistInDirectoryException;
 
 public class ExecuteFileServiceTest extends LinkCommonTest {
     private final String INVALID = "invalid path";
@@ -26,7 +25,7 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         return new ExecuteFileService(token, "./"+name, null);
     }
 
-    @Test(expected = FileDoesntExistsInDirectoryException.class)
+    @Test(expected = FileDoesNotExistInDirectoryException.class)
     public void invalidPath() {
         ExecuteFileService service = new ExecuteFileService(rootToken, INVALID, ARGS);
         service.execute();
@@ -95,7 +94,7 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         }};
     }
 
-    @Test(expected = FileDoesntExistsInDirectoryException.class)
+    @Test(expected = FileDoesNotExistInDirectoryException.class)
     public void invalidContentRunPlainFile() {
         new PlainFile(PLAIN_FILE, root, home, INVALID);
 

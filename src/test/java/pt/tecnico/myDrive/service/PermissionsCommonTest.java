@@ -3,7 +3,7 @@ package pt.tecnico.myDrive.service;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
-import pt.tecnico.myDrive.exception.FileDoesntExistsInDirectoryException;
+import pt.tecnico.myDrive.exception.FileDoesNotExistInDirectoryException;
 
 public abstract class PermissionsCommonTest extends TokenValidationServiceTest {
     Long rootToken;
@@ -44,7 +44,7 @@ public abstract class PermissionsCommonTest extends TokenValidationServiceTest {
 
     public abstract MyDriveService createTestInstance(Long token, String name, String content);
 
-    @Test(expected = FileDoesntExistsInDirectoryException.class)
+    @Test(expected = FileDoesNotExistInDirectoryException.class)
     public void nonExistingFileInDirectory() {
 
         MyDriveService service = createTestInstance(rootToken, "InvalidFile", DUMMY_CONTENT);
