@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Set;
 
 import pt.tecnico.myDrive.domain.EnvironmentVariable;
+import pt.tecnico.myDrive.exception.InvalidEnvironmentVarNameException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.service.dto.VariableDto;
 
 public class AddVariableService extends TokenValidationService {
 	
-	private Long token;
  	private String varName;
  	private String value;
  	private List<VariableDto> variables = new ArrayList<>();
@@ -26,8 +26,16 @@ public class AddVariableService extends TokenValidationService {
  	@Override 
  	protected void dispatch() throws MyDriveException {
 		super.dispatch();
-
-		session.addEnvironmentVariable(varName, value);
+		
+		if ( varName != null && !session.hasEnvironmentVariable(varName) ) {
+			session.addEnvironmentVariable(varName, value); 				// new var
+		}
+		if ( varName == null && value != null ) {
+			throw new InvalidEnvironmentVarNameException(varName);			// exception
+		}	
+		if (session.hasEnvironmentVariable(varName) && value != null ) {
+			session.addEnvironmentVariable(varName, value);					// set new value
+		}
 
 		Set<EnvironmentVariable> environmentVariables = session.getEnvironmentVariableSet();
 

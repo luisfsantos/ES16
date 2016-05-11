@@ -16,6 +16,6 @@ public class InvalidPathException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return getPath() + " is not a valid path";
+        return "\""+getPath()+"\""+" is not a valid path";
     }
 }

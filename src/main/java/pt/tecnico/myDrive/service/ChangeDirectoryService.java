@@ -1,8 +1,7 @@
 package pt.tecnico.myDrive.service;
 
 import pt.tecnico.myDrive.domain.*;
-import pt.tecnico.myDrive.exception.InvalidPermissionException;
-import pt.tecnico.myDrive.exception.IsNotDirOrLinkException;
+import pt.tecnico.myDrive.exception.IsNotDirectoryException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ChangeDirectoryService extends TokenValidationService{
@@ -31,7 +30,7 @@ public class ChangeDirectoryService extends TokenValidationService{
             session.setCurrentDir((Directory) newDir);
             result = newDir.getAbsolutePath();
         }else{
-            throw new IsNotDirOrLinkException(newDir.getName());
+            throw new IsNotDirectoryException(newDir.getName());
         }
     }
 
