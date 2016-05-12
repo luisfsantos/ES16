@@ -20,7 +20,7 @@ public class IntegrationTest extends AbstractServiceTest {
     private final String username = "ladslads";
     private User root;
     private final String APP_METHOD = "pt.tecnico.myDrive.service.Hello.hello";
-    private final String[] ARGS = {"Hello", "World!"};
+    private final String[] ARGS = {"Integration", "Test!!"};
     private final String[] plain = {"plain", "plain", "plain"};
     private final String[] link = {"link", "link", "plain"};
     private final String[] app = {"app", "app", APP_METHOD};
