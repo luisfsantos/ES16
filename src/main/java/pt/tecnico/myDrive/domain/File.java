@@ -3,15 +3,10 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.AccessDeniedException;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsInDirectoryException;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.InvalidFileNameException;
-import pt.tecnico.myDrive.exception.InvalidPermissionException;
-import pt.tecnico.myDrive.exception.UserDoesNotExistException;
+import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public abstract class File extends File_Base {
@@ -168,5 +163,9 @@ public abstract class File extends File_Base {
 	abstract File lookup(String path, User user, int psize);
 	public abstract int getSize();
 	public abstract String getType();
+
+	public Map<String, File> getDirContentMap(User user) {
+		throw new IsNotDirectoryException(getName());
+	}
 }
 

@@ -1,9 +1,13 @@
 package pt.tecnico.myDrive.service;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
+import pt.tecnico.myDrive.exception.FileDoesNotExistInDirectoryException;
+import pt.tecnico.myDrive.exception.InvalidPathException;
+import pt.tecnico.myDrive.exception.IsNotDirectoryException;
 import pt.tecnico.myDrive.service.dto.FileDto;
 
 import java.util.List;
@@ -112,5 +116,31 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 
 		assertEquals("Dimension of first element is 2",2,result.get(0).getDimension());
 		assertEquals("Username of first element is Thor","Thor",result.get(0).getUsername());
+	}
+
+	@Test
+	public void successListDirectoryFromPath() {
+		ListDirectoryService service = new ListDirectoryService(login.getToken(), "/home/root");
+		service.execute();
+
+		assertNotNull("dto is null", service.result());
+	}
+
+	@Test(expected = InvalidPathException.class)
+	public void invalidPath() {
+		ListDirectoryService service = new ListDirectoryService(login.getToken(), "/home/invalidDir/invalidFile");
+		service.execute();
+	}
+
+	@Test(expected = FileDoesNotExistInDirectoryException.class)
+	public void invalidFile() {
+		ListDirectoryService service = new ListDirectoryService(login.getToken(), "/home/invalidFile");
+		service.execute();
+	}
+
+	@Test(expected = IsNotDirectoryException.class)
+	public void listNonDirFileShouldThrowException() {
+		ListDirectoryService service = new ListDirectoryService(login.getToken(), "application");
+		service.execute();
 	}
 }

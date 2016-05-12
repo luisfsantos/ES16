@@ -34,7 +34,7 @@ public class Directory extends Directory_Base {
 		throw new AccessDeniedException("read", super.getName());
 	}
 
-	public File getFileByName(String name) throws FileDoesntExistsInDirectoryException{
+	public File getFileByName(String name) throws FileDoesNotExistInDirectoryException {
 		if (name.equals("."))
 			return this;
 		if (name.equals(".."))
@@ -44,27 +44,21 @@ public class Directory extends Directory_Base {
 			if (file.getName().equals(name))
 				return file;
 		}
-		throw new FileDoesntExistsInDirectoryException(name, getName());
+		throw new FileDoesNotExistInDirectoryException(name, getName());
 	}
 
 	public boolean hasFile(String name){
 		try{
 			getFileByName(name);
-		} catch (FileDoesntExistsInDirectoryException e) {
+		} catch (FileDoesNotExistInDirectoryException e) {
 			return false;
 		}
 		return true;
 	}
 
 
-	public String resolvePathWithEnvVar(String path){
-		return path;
-	}
 
 	public File lookup(String path, User user) {
-
-		path = resolvePathWithEnvVar(path);
-
 		if(path.length() <= max_path) {
 			return lookup(path, user, max_path);
 		} else {
@@ -179,7 +173,8 @@ public class Directory extends Directory_Base {
 		throw new CannotReadException("A directory cannot be read");
 	}
 
-	public Map<String, File> getFileMap(User user) {
+	@Override
+	public Map<String, File> getDirContentMap(User user) {
 		if (user.hasPermission(this, Mask.READ)) {
 			Map<String, File> fileMap = new LinkedHashMap<>();
 
@@ -191,7 +186,7 @@ public class Directory extends Directory_Base {
 
 			return fileMap;
 		} else {
-			throw new AccessDeniedException("list directory contents", super.getName());
+			throw new AccessDeniedException("list directory contents on", super.getName());
 		}
 	}
 
