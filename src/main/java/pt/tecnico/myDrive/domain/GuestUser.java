@@ -45,7 +45,7 @@ public class GuestUser extends GuestUser_Base {
 	}
 
 	@Override
-	public boolean validatePassword(String password){
-		return getUserPassword().equals(password);
+	public boolean canLogin(String password){
+		return super.validatePassword(password);
 	}
 }
