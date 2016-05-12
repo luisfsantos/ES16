@@ -9,6 +9,8 @@ import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
 
+import static org.junit.Assert.assertEquals;
+
 public class IntegrationTest extends AbstractServiceTest {
 
     private Long rootToken;
@@ -43,6 +45,8 @@ public class IntegrationTest extends AbstractServiceTest {
         login.execute();
         Long lads = login.result();
 
+        //FIXME import service test
+
         new ChangeDirectoryService(lads, "/home").execute();
 
         new ChangeDirectoryService(lads, "/home/"+username).execute();
@@ -59,6 +63,7 @@ public class IntegrationTest extends AbstractServiceTest {
                     dto.getUsername() + " " + dto.getId() + " " + dto.getLastModified() + " " + dto.getName();
             System.out.println(entry);
         }
+        assertEquals(5, list.result().size());
 
         new DeleteFileService(lads, plain[0]).execute();
 
@@ -69,6 +74,24 @@ public class IntegrationTest extends AbstractServiceTest {
                     dto.getUsername() + " " + dto.getId() + " " + dto.getLastModified() + " " + dto.getName();
             System.out.println(entry);
         }
+        assertEquals(4, list.result().size());
+
+        System.out.println("\n------------------------\n");
+        new ExecuteFileService(lads, app[0], ARGS).execute();
+
+        System.out.println("\n------------------------\n");
+        ReadFileService readFileService = new ReadFileService(lads, app[0]);
+        readFileService.execute();
+        assertEquals(app[2], readFileService.result());
+        System.out.println(readFileService.result());
+
+        new CreateFileService(lads, plain[0], plain[1], plain[2]).execute();
+        new WriteFileService(lads, link[0], app[2]).execute();
+        System.out.println("\n------------------------\n");
+        readFileService = new ReadFileService(lads, link[0]);
+        readFileService.execute();
+        assertEquals(app[2], readFileService.result());
+        System.out.println(readFileService.result());
 
     }
 }
