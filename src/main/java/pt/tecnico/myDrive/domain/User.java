@@ -69,10 +69,6 @@ public class User extends User_Base {
 	}
 
 	protected void initUser(Manager manager, String username, String password, String name, String umask) {
-		if(password.length() < 8) {
-			throw new PasswordTooSmallException();
-		}
-
 		this.setUsername(username);
 		this.setManager(manager);
 		this.setUmask(umask);
@@ -161,6 +157,14 @@ public class User extends User_Base {
 				throw new InvalidHomeDirectoryException(home.getName());
 			}
 		}
+	}
+
+	@Override
+	public void setPassword(String password) {
+		if(password.length() < 8) {
+			throw new PasswordTooSmallException();
+		}
+		super.setPassword(password);
 	}
 
 	@Override
