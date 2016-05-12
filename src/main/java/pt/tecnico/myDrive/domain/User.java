@@ -182,13 +182,16 @@ public class User extends User_Base {
 	
 	
 	public boolean validatePassword(String password){
-		if (password.length() < 8) {
-			throw new PasswordTooSmallException();
-		}
 		return getUserPassword().equals(password);
 	}
 	
-	
+	public boolean canLogin(String password) {
+		if (password.length() < 8) {
+			throw new PasswordTooSmallException();
+		}
+		return validatePassword(password);
+	}
+
 	public int getNextIdCounter() {
 		int currCounter = this.getManager().getIdCounter();
     	this.getManager().setIdCounter(currCounter+1);
