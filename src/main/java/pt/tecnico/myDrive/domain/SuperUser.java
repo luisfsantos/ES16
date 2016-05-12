@@ -53,5 +53,8 @@ public class SuperUser extends SuperUser_Base {
 		return true;
 	}
 
-
+	@Override
+	public boolean canLogin(String password){
+		return super.validatePassword(password);
+	}
 }
