@@ -10,42 +10,77 @@ import pt.tecnico.myDrive.service.LoginService;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MyDrive extends Shell {
-	protected Long activeToken;
-	protected Map<String, Long> loggedIn = new HashMap<>();
+	private Long activeToken;
+	private String activeUser;
+	private Map<String, Long> loggedIn = new HashMap<String, Long>();
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 1) {
-			xmlScan(new java.io.File(args[0]));
+			xmlScan(new java.io.File(args[0])); //service will have to create an empty database...
 		}
-
 		MyDrive sh = new MyDrive();
 		sh.setupGuestUser();
-	    sh.execute();
+		sh.execute();
+		
+
 	  }
 
+	
 	public MyDrive() { // add commands here
-	  super("MyDrive");
-	  /* eg:
-	  new CreateFile(this); // the CreateFile command class has to exist and extend from MyDriveCommand
-	   */
+		super("MyDrive");
+		new LoginCommand(this);
+		new ListCommand(this);
+		new ChangeWorkingDirectoryCommand(this);
+		new WriteCommand(this);
+		new KeyCommand(this);
+		new ExecuteCommand(this);
+		new EnvironmentCommand(this);
+
 	}
 	
 	private void setupGuestUser() {
-        LoginService guestLogin = new LoginService("nobody", ""); 
+        LoginService guestLogin = new LoginService("nobody", "");
         guestLogin.execute();
         activeToken = guestLogin.result();
         this.addLogin("nobody", activeToken);
 	}
 
-	public void addLogin(String username, Long newToken) {
-		loggedIn.put(username, newToken);
+
+	public Long logoutGuestUser () {
+		Long guestToken = loggedIn.get("nobody");
+		if (guestToken != null) {
+			loggedIn.remove("nobody");
+		}
+		return guestToken;
 	}
 
-	public void getUserToken(String username) {
-		loggedIn.get(username);
+	public void addLogin(String username, Long newToken) {
+		loggedIn.put(username, newToken);
+		activeToken = newToken;
+		activeUser = username;
+	}
+
+	public boolean swapUser(String username) {
+		if (loggedIn.containsKey(username)) {
+			activeUser = username;
+			activeToken = loggedIn.get(username);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public Long getActiveToken() {
+		return activeToken;
+	}
+
+	public String getActiveUser() {
+		return activeUser;
 	}
 
 	@Atomic

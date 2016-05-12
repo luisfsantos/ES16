@@ -10,6 +10,6 @@ public class InvalidWriteException extends MyDriveException{
 
     @Override
     public String getMessage() {
-        return "Can not write in this filetype";
+        return "Cannot write in directory";
     }
 }
