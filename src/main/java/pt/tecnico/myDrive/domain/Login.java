@@ -28,9 +28,6 @@ public class Login extends Login_Base {
     
 
 	private void validateAccount(String username, String password) {
-		if ( password.length() < 8 && username.equals("Super User")) {
-			throw new PasswordTooSmallException();
-		}
     	User user = Manager.getInstance().fetchUser(username, password);
     	if ( user == null ) {
     		throw new InvalidUsernameOrPasswordException();
