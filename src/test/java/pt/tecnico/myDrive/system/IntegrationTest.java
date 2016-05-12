@@ -93,5 +93,7 @@ public class IntegrationTest extends AbstractServiceTest {
         assertEquals(app[2], readFileService.result());
         System.out.println(readFileService.result());
 
+        //FIXME add mock tests for execution and environment variables
+
     }
 }
