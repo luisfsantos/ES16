@@ -173,7 +173,7 @@ public class User extends User_Base {
 		throw new AccessDeniedToGetPasswordException();
 	}
 
-
+	protected String getUserPassword() {return super.getPassword();}
 
 	@Override
 	public Set <Login> getLoginSet(){
