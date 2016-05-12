@@ -172,7 +172,9 @@ public class User extends User_Base {
 	public String getPassword() {
 		throw new AccessDeniedToGetPasswordException();
 	}
-	
+
+
+
 	@Override
 	public Set <Login> getLoginSet(){
 		throw new AccessDeniedToManipulateLoginException();
@@ -180,7 +182,10 @@ public class User extends User_Base {
 	
 	
 	public boolean validatePassword(String password){
-		return super.getPassword().equals(password);
+		if (password.length() < 8) {
+			throw new PasswordTooSmallException();
+		}
+		return getUserPassword().equals(password);
 	}
 	
 	
