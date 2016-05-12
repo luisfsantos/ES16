@@ -10,11 +10,6 @@ public class GuestUser extends GuestUser_Base {
     }
     
     @Override
-    public String getPassword() {
-    	return null;
-    }
-    
-    @Override
 	public boolean hasPermission(File file, Mask mask){
 		return false;
 	}
@@ -47,5 +42,10 @@ public class GuestUser extends GuestUser_Base {
 	@Override
 	public boolean isValidUserSession(DateTime recent){
 		return true;
+	}
+
+	@Override
+	public boolean validatePassword(String password){
+		return getUserPassword().equals(password);
 	}
 }
