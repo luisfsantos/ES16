@@ -1,14 +1,15 @@
 package pt.tecnico.myDrive.integration;
 
 
+import mockit.Expectations;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
-import pt.tecnico.myDrive.domain.Directory;
-import pt.tecnico.myDrive.domain.Login;
-import pt.tecnico.myDrive.domain.Manager;
-import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
 import pt.tecnico.myDrive.service.dto.VariableDto;
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 public class IntegrationTest extends AbstractServiceTest {
 
     private Long rootToken;
+    private ExecuteFileService executeFileService;
     private Directory home;
     private Directory rootHome;
     private String name = "newFile";
@@ -75,17 +77,34 @@ public class IntegrationTest extends AbstractServiceTest {
             +"</dir>"
             +"</myDrive>";
 
+    private final String linkMockStr = "linkMock";
+    private final String contentMockStr = "mocktest";
+    private final String pathTranslated = "/home/pfMock";
+    private final String pathEnvVar = "/$DAVID";
+    private final String EXTENSION = "app";
+    private final String APP = "execApp";
+    private PlainFile pfile;
+    private Link linkMock;
+    private User testUser;
+    private App testApp;
+    private App appResult;
+
+
     @Override
     protected void populate() {
         Manager m = Manager.getInstance();
-        new User(m, username);
+        testUser = new User(m, username);
         Login l = new Login("root", "***");
         root = l.getCurrentUser();
         rootToken = l.getToken();
-
         home = (Directory) m.getRootDirectory().getFileByName("home");
-        rootHome = (Directory) home.lookup("root", root);
-        new Directory("myhome", root, rootHome);
+        rootHome = (Directory) home.lookup(username, root);
+        testApp = new App("testing."+EXTENSION, root, home, APP_METHOD);
+        appResult = new App(APP, root, home, APP_METHOD);
+        testApp.setPermissions("--------");
+        pfile = new PlainFile("pfMock", root, home, "test");
+        pfile.setPermissions("rwxdrwxd");
+        linkMock = new Link(linkMockStr, testUser, rootHome, pathEnvVar);
         try {
             doc = new SAXBuilder().build(new StringReader(xml));
         } catch (JDOMException e) {
@@ -128,7 +147,7 @@ public class IntegrationTest extends AbstractServiceTest {
                     dto.getUsername() + " " + dto.getId() + " " + dto.getLastModified() + " " + dto.getName();
             System.out.println(entry);
         }
-        assertEquals(5, list.result().size());
+        assertEquals(6, list.result().size());
 
         new DeleteFileService(lads, plain[0]).execute();
 
@@ -139,7 +158,7 @@ public class IntegrationTest extends AbstractServiceTest {
                     dto.getUsername() + " " + dto.getId() + " " + dto.getLastModified() + " " + dto.getName();
             System.out.println(entry);
         }
-        assertEquals(4, list.result().size());
+        assertEquals(5, list.result().size());
 
         System.out.println("\n------------------------\n");
         new ExecuteFileService(lads, app[0], ARGS).execute();
@@ -158,6 +177,12 @@ public class IntegrationTest extends AbstractServiceTest {
         assertEquals(app[2], readFileService.result());
         System.out.println(readFileService.result());
 
+        new Expectations(linkMock){{
+                linkMock.decodeEnvPath(); result = pathTranslated; times=1;
+        }};
+        WriteFileService writeFileService = new WriteFileService(lads, linkMockStr, contentMockStr);
+        writeFileService.execute();
+        assertEquals("write not executed successfully", contentMockStr, pfile.read(root));
 
 
     }
