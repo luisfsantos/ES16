@@ -29,6 +29,8 @@ public class MyDrive extends Shell {
 		new ExecuteCommand(this);
 		new EnvironmentCommand(this);
 		new ImportCommand(this);
+		new QuitCommand(this);
+
 	}
 	
 	private void setupGuestUser() {
