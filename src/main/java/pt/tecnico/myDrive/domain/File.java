@@ -171,5 +171,13 @@ public abstract class File extends File_Base {
 	public String lsName() {
 		return super.getName();
 	}
+
+	public String getExtension() {
+		return this.getName().substring(this.getName().lastIndexOf(".") + 1);
+	}
+
+	public boolean hasExtension() {
+		return this.getName().lastIndexOf(".") >= 0;
+	}
 }
 

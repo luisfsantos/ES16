@@ -272,4 +272,9 @@ public class User extends User_Base {
 		}
 		return true;
 	}
+
+	//Mocked method for testing executeAssociation
+	public File getDefaultApp(String extension) {
+		throw new AccessDeniedException("execute", "file");
+	}
 }

@@ -107,9 +107,18 @@ public class PlainFile extends PlainFile_Base {
 			}
 		}
 		else {
-			throw new AccessDeniedException("execute", this.getName()); 
+            if (hasExtension()) {
+                String extension = this.getExtension();
+                String [] arg = { this.getName() };
+                user.getDefaultApp(extension).execute(user, arg);
+            } else {
+                throw new AccessDeniedException("execute", this.getName());
+            }
+
 		}
 	}
+
+    
 	
 }
 

@@ -7,7 +7,10 @@ public class Hello {
     }
 
     public static void hello(String[] args) {
-        System.out.println("hello: " + args[0] + " " + args[1] + "!");
+        System.out.println("hello there:");
+        for (String s: args) {
+            System.out.println(s + "!");
+        }
     }
 
     public static void helloEmpty(String[] args) {
