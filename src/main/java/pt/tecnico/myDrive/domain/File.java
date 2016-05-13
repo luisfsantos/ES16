@@ -168,6 +168,10 @@ public abstract class File extends File_Base {
 		throw new IsNotDirectoryException(getName());
 	}
 
+	public String lsName() {
+		return super.getName();
+	}
+
 	public String getExtension() {
 		return this.getName().substring(this.getName().lastIndexOf(".") + 1);
 	}
