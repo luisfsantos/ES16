@@ -71,21 +71,6 @@ public class Login extends Login_Base {
 		getEnvironmentVariable(name).setValue(value);
 	}
 
-	public void addEnvironmentVariable(String name, String value) {
-		if (name == null || name.equals("")) {
-			throw new InvalidEnvironmentVarNameException("null or emptyString");
-		}
-		if (value == null) {
-			throw new InvalidEnvironmentVarValueException("null");
-		}
-		if (hasEnvironmentVariable(name)) {
-			getEnvironmentVariable(name).setValue(value);
-		} else {
-			EnvironmentVariable environmentVariable = new EnvironmentVariable(this, name, value);
-			super.addEnvironmentVariable(environmentVariable);
-		}
-	}
-
 	public boolean hasEnvironmentVariable(String name) {
 		try {
 			getEnvironmentVariable(name);
