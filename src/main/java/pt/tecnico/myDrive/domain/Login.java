@@ -2,8 +2,6 @@ package pt.tecnico.myDrive.domain;
 
 import java.math.BigInteger;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.joda.time.DateTime;
 
 import pt.tecnico.myDrive.exception.*;

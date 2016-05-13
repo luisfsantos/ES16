@@ -1,6 +1,5 @@
 package pt.tecnico.myDrive.service;
 
-import org.joda.time.DateTime;
 import pt.tecnico.myDrive.domain.File;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.CannotRemoveDirectoryException;

@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.joda.time.DateTime;
-
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
@@ -19,7 +17,6 @@ import java.util.Set;
 public class Manager extends Manager_Base {
 	static final Logger log = LogManager.getRootLogger();
 	
-	// manager use Singleton design pattern
     public static Manager getInstance() {
     	Manager manager = FenixFramework.getDomainRoot().getManager();
     	if (manager != null) {
@@ -145,16 +142,6 @@ public class Manager extends Manager_Base {
 		throw new AccessDeniedException("get user set", "Manager");
 	}
 	
-	/*
-	 FIXME 
-	@Override
-	public SuperUser getSuperUser() {
-		throw new AccessDeniedException("get Super User", "Manager");
-	}
-	
-	FIXME
-	get/SetSuperUser/GuestUser
- 	*/
     
 	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
 		for(Element userNode : myDriveElement.getChildren("user")) {

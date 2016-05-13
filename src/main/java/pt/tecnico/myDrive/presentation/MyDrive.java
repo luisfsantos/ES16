@@ -10,9 +10,7 @@ import pt.tecnico.myDrive.service.LoginService;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MyDrive extends Shell {
 	private Long activeToken;
@@ -21,7 +19,7 @@ public class MyDrive extends Shell {
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 1) {
-			xmlScan(new java.io.File(args[0])); //service will have to create an empty database...
+			xmlScan(new java.io.File(args[0])); 
 		}
 		MyDrive sh = new MyDrive();
 		sh.setupGuestUser();
@@ -31,7 +29,7 @@ public class MyDrive extends Shell {
 	  }
 
 	
-	public MyDrive() { // add commands here
+	public MyDrive() { 
 		super("MyDrive");
 		new LoginCommand(this);
 		new ListCommand(this);
