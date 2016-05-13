@@ -1,6 +1,9 @@
 package pt.tecnico.myDrive.integration;
 
 
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.Directory;
 import pt.tecnico.myDrive.domain.Login;
@@ -9,6 +12,9 @@ import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
 import pt.tecnico.myDrive.service.dto.VariableDto;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,6 +31,49 @@ public class IntegrationTest extends AbstractServiceTest {
     private final String[] plain = {"plain", "plain", "plain"};
     private final String[] link = {"link", "link", "plain"};
     private final String[] app = {"app", "app", APP_METHOD};
+    private Document doc;
+    private final String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            +"<myDrive>"
+            +"<user username=\"jtb\">"
+            +"  <password>fermento</password>"
+            +"  <name>Joaquim Teófilo Braga</name>"
+            +"  <home>/home/jtb</home>"
+            +"  <mask>rwxdr-x-</mask>"
+            +"</user>"
+            +"<plain id=\"3\">"
+            +"  <path>/home/jtb</path>"
+            +"  <name>profile</name>"
+            +"  <owner>jtb</owner>"
+            +"  <perm>rw-dr---</perm>"
+            +"  <contents>Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República.</contents>"
+            +"</plain>"
+            +"<dir id=\"4\">"
+            +"  <path>/home/jtb</path>"
+            +"  <name>documents</name>"
+            +"  <owner>jtb</owner>"
+            +"  <perm>rwxdrwxd</perm>"
+            +"</dir>"
+            +"<link id=\"5\">"
+            +"  <path>/home/jtb</path>"
+            +"  <name>doc</name>"
+            +"  <owner>jtb</owner>"
+            +"  <perm>r-xdr-x-</perm>"
+            +"  <value>/home/jtb/documents</value>"
+            +"</link>"
+            +"<plain id=\"8\">"
+            +"  <path>/home/jtb/documents</path>"
+            +"  <name>file</name>"
+            +"  <owner>jtb</owner>"
+            +"  <perm>rwxdr-x-</perm>"
+            +"  <contents>Pri</contents>"
+            +"</plain>"
+            +"<dir id=\"7\">"
+            +"  <path>/home/jtb</path>"
+            +"  <owner>jtb</owner>"
+            +"  <name>bin</name>"
+            +"  <perm>rwxd--x-</perm>"
+            +"</dir>"
+            +"</myDrive>";
 
     @Override
     protected void populate() {
@@ -37,10 +86,19 @@ public class IntegrationTest extends AbstractServiceTest {
         home = (Directory) m.getRootDirectory().getFileByName("home");
         rootHome = (Directory) home.lookup("root", root);
         new Directory("myhome", root, rootHome);
+        try {
+            doc = new SAXBuilder().build(new StringReader(xml));
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void success() {
+
+        new ImportService(doc).execute();
 
         LoginService login= new LoginService(username, username);
         login.execute();
@@ -53,8 +111,6 @@ public class IntegrationTest extends AbstractServiceTest {
                 System.out.println(var.getName() + " = " + var.getValue());
         }
         assertEquals(1, variable.result().size());
-
-        //FIXME import service test
 
         new ChangeDirectoryService(lads, "/home").execute();
 
@@ -102,7 +158,7 @@ public class IntegrationTest extends AbstractServiceTest {
         assertEquals(app[2], readFileService.result());
         System.out.println(readFileService.result());
 
-        //FIXME add mock tests for execution and environment variables
+
 
     }
 }
