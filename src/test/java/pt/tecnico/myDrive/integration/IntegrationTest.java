@@ -8,6 +8,7 @@ import pt.tecnico.myDrive.domain.Manager;
 import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
+import pt.tecnico.myDrive.service.dto.VariableDto;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,6 +45,14 @@ public class IntegrationTest extends AbstractServiceTest {
         LoginService login= new LoginService(username, username);
         login.execute();
         Long lads = login.result();
+
+        System.out.println("\n------------------------\n");
+        AddVariableService variable = new AddVariableService(lads, "Add Variable", "Service");
+        variable.execute();
+        for (VariableDto var: variable.result()) {
+                System.out.println(var.getName() + " = " + var.getValue());
+        }
+        assertEquals(1, variable.result().size());
 
         //FIXME import service test
 
