@@ -40,6 +40,7 @@ public class MyDrive extends Shell {
 		new KeyCommand(this);
 		new ExecuteCommand(this);
 		new EnvironmentCommand(this);
+		new QuitCommand(this);
 
 	}
 	
