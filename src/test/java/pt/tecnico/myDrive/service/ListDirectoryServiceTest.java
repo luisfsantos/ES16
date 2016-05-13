@@ -24,11 +24,11 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		Manager manager = Manager.getInstance();
 		super.populate();
 
-		User thunder = new User(manager,"Thor","pass","kami","rwxdrwxd");  //creates /home/Thor
-		User lies = new User(manager,"Loki","pass","badkami","-wxd-wx-");
-		this.login = new Login("Thor","pass");
-		this.loginBad = new Login("Loki","pass");
-		this.emptyLogin = new Login("Loki","pass");
+		User thunder = new User(manager,"Thor","passpass","kami","rwxdrwxd");  //creates /home/Thor
+		User lies = new User(manager,"Loki","passpass","badkami","-wxd-wx-");
+		this.login = new Login("Thor","passpass");
+		this.loginBad = new Login("Loki","passpass");
+		this.emptyLogin = new Login("Loki","passpass");
 		Directory emptyDir = new Directory("nada",thunder,emptyLogin.getCurrentDir());
 		emptyLogin.setCurrentDir(emptyDir);
 

@@ -4,6 +4,8 @@ import org.jdom2.Element;
 
 import pt.tecnico.myDrive.exception.*;
 
+import pt.tecnico.myDrive.exception.ImportDocumentException;
+
 import org.joda.time.DateTime;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
@@ -158,6 +160,14 @@ public class User extends User_Base {
 	}
 
 	@Override
+	public void setPassword(String password) {
+		if(password.length() < 8) {
+			throw new PasswordTooSmallException();
+		}
+		super.setPassword(password);
+	}
+
+	@Override
 	public void addLogin(Login login){
 		throw new AccessDeniedToManipulateLoginException();
 	}
@@ -166,7 +176,7 @@ public class User extends User_Base {
 	public String getPassword() {
 		throw new AccessDeniedToGetPasswordException();
 	}
-	
+
 	@Override
 	public Set <Login> getLoginSet(){
 		throw new AccessDeniedToManipulateLoginException();
@@ -177,7 +187,13 @@ public class User extends User_Base {
 		return super.getPassword().equals(password);
 	}
 	
-	
+	public boolean canLogin(String password) {
+		if (password.length() < 8) {
+			throw new PasswordTooSmallException();
+		}
+		return validatePassword(password);
+	}
+
 	public int getNextIdCounter() {
 		int currCounter = this.getManager().getIdCounter();
     	this.getManager().setIdCounter(currCounter+1);

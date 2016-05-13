@@ -28,7 +28,7 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 	protected void populate() {
 		Manager m = Manager.getInstance();
 		super.populate();
-		new User(m, "lads");
+		new User(m, "ladslads");
 		
 		rootLogin = new Login("root", "***");
 		root = rootLogin.getCurrentUser();
@@ -44,7 +44,7 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 		new Link("link", root, rootHome, "/home");
 		new Link("link1025", root, rootHome, "/home/root/./"+ name1024);
 		new Link("recursivelink", root, rootHome, "/home/root/recursivelink");
-		new Directory("newDirectory", new User(m, "foo"), (Directory) home.lookup("foo", root));
+		new Directory("newDirectory", new User(m, "foofoofoo"), (Directory) home.lookup("foofoofoo", root));
 	}
 
 	// 1
@@ -66,8 +66,8 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 	// 4
 	@Test (expected = AccessDeniedException.class)
 	public void noExecutionPermission() {
-		Login l = new Login("lads", "lads");
-		l.setCurrentDir((Directory) home.lookup("foo", root));
+		Login l = new Login("ladslads", "ladslads");
+		l.setCurrentDir((Directory) home.lookup("foofoofoo", root));
 		
 		ChangeDirectoryService service = new ChangeDirectoryService(l.getToken(), "newDirectory");
 		service.execute();
@@ -76,8 +76,8 @@ public class ChangeDirectoryServiceTest extends TokenValidationServiceTest {
 	// 5
 	@Test
 	public void executionPermissionOnRootNotParent() {
-		Login l = new Login("lads", "lads");
-		l.setCurrentDir((Directory) home.lookup("foo", root));
+		Login l = new Login("ladslads", "ladslads");
+		l.setCurrentDir((Directory) home.lookup("foofoofoo", root));
 		
 		ChangeDirectoryService service = new ChangeDirectoryService(l.getToken(), "/home");
 		service.execute();
