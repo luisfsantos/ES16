@@ -167,5 +167,9 @@ public abstract class File extends File_Base {
 	public Map<String, File> getDirContentMap(User user) {
 		throw new IsNotDirectoryException(getName());
 	}
+
+	public String lsName() {
+		return super.getName();
+	}
 }
 

@@ -30,6 +30,11 @@ public class Link extends Link_Base {
     }
 
 	@Override
+	public String lsName() {
+		return getName()+"->"+viewContent();
+	}
+
+	@Override
 	public String getType() {
 		return "Link";
 	}
