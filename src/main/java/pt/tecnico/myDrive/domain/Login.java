@@ -86,7 +86,7 @@ public class Login extends Login_Base {
 		}
 		throw new EnvironmentVarDoesNotExistException(name);
 	}
-    
+
     void refreshLoginActivity() {
     	super.setLastActivity(new DateTime());
     }

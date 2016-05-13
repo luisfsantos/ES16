@@ -1,14 +1,15 @@
 package pt.tecnico.myDrive.service;
 
-import mockit.Mocked;
-import mockit.Verifications;
+import mockit.*;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.AssociationDoesNotExist;
 import pt.tecnico.myDrive.exception.CannotExecuteException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistInDirectoryException;
 
 public class ExecuteFileServiceTest extends LinkCommonTest {
     private final String INVALID = "invalid path";
+    private ExecuteFileService service;
     private final String[] ARGS = {"Hello", "World!"};
     private final String[] ARGS_EMPTY = {};
     private final String APP = "execApp";
@@ -161,6 +162,95 @@ public class ExecuteFileServiceTest extends LinkCommonTest {
         new Verifications() {{
             Hello.hello(ARGS); times = 1;
         }};
+    }
+
+    /*
+        Mock Tests for Execute Association
+     */
+
+    @Test
+    public void successRunPlainFileWithAssociation () {
+        String EXTENSION = "plain";
+        PlainFile testPlain = new PlainFile("testing."+EXTENSION, root, home, "test");
+        testPlain.setPermissions("--------");
+        App app = new App(APP, root, home, APP_METHOD);
+
+        new MockUp<ExecuteFileService>() {
+            @Mock
+            void dispatch() { testPlain.execute(testUser, ARGS); }
+        };
+
+        new Expectations(testUser) {{
+            testUser.getDefaultApp(EXTENSION); result = app;
+        }};
+
+        service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
+        service.execute();
+
+    }
+
+    @Test
+    public void successRunAppFileWithAssociation () {
+        String EXTENSION = "app";
+        App testApp = new App("testing."+EXTENSION, root, home, APP_METHOD);
+        testApp.setPermissions("--------");
+        App app = new App(APP, root, home, APP_METHOD);
+
+        new MockUp<ExecuteFileService>() {
+            @Mock
+            void dispatch() { testApp.execute(testUser, ARGS); }
+        };
+
+        new Expectations(testUser) {{
+            testUser.getDefaultApp(EXTENSION); result = app;
+        }};
+
+        service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
+        service.execute();
+
+    }
+
+    //should ignore the extention as it adds nothing to a link
+    @Test
+    public void successRunLinkFileWithAssociation (@Mocked Hello helloMock) {
+        String EXTENSION = "link";
+        Link testLink = new Link("testing."+EXTENSION, root, home, APP);
+        testLink.setPermissions("--------");
+        App app = new App(APP, root, home, APP_METHOD);
+
+        new MockUp<ExecuteFileService>() {
+            @Mock
+            void dispatch() { testLink.execute(testUser, ARGS); }
+        };
+
+        service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
+        service.execute();
+
+        new Verifications() {{
+            Hello.hello(ARGS); times = 1;
+        }};
+
+    }
+
+    @Test (expected = AssociationDoesNotExist.class)
+    public void insuccessRunPlainFileWithAssociation () {
+        String EXTENSION = "plain";
+        PlainFile testPlain = new PlainFile("testing."+EXTENSION, root, home, "test");
+        testPlain.setPermissions("--------");
+        App app = new App(APP, root, home, APP_METHOD);
+
+        new MockUp<ExecuteFileService>() {
+            @Mock
+            void dispatch() { testPlain.execute(testUser, ARGS); }
+        };
+
+        new Expectations(testUser) {{
+            testUser.getDefaultApp(EXTENSION); result = new AssociationDoesNotExist(EXTENSION);
+        }};
+
+        service = new ExecuteFileService(testUserToken, "testing."+EXTENSION, ARGS);
+        service.execute();
+
     }
 
 }

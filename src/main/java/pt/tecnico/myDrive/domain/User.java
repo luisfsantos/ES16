@@ -2,13 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
 
-import pt.tecnico.myDrive.exception.AccessDeniedToGetPasswordException;
-import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
-import pt.tecnico.myDrive.exception.EmptyUsernameException;
-import pt.tecnico.myDrive.exception.InvalidHomeDirectoryException;
-import pt.tecnico.myDrive.exception.InvalidPermissionException;
-import pt.tecnico.myDrive.exception.InvalidUsernameException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
+import pt.tecnico.myDrive.exception.*;
 
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 
@@ -166,6 +160,14 @@ public class User extends User_Base {
 	}
 
 	@Override
+	public void setPassword(String password) {
+		if(password.length() < 8) {
+			throw new PasswordTooSmallException();
+		}
+		super.setPassword(password);
+	}
+
+	@Override
 	public void addLogin(Login login){
 		throw new AccessDeniedToManipulateLoginException();
 	}
@@ -174,7 +176,7 @@ public class User extends User_Base {
 	public String getPassword() {
 		throw new AccessDeniedToGetPasswordException();
 	}
-	
+
 	@Override
 	public Set <Login> getLoginSet(){
 		throw new AccessDeniedToManipulateLoginException();
@@ -185,7 +187,13 @@ public class User extends User_Base {
 		return super.getPassword().equals(password);
 	}
 	
-	
+	public boolean canLogin(String password) {
+		if (password.length() < 8) {
+			throw new PasswordTooSmallException();
+		}
+		return validatePassword(password);
+	}
+
 	public int getNextIdCounter() {
 		int currCounter = this.getManager().getIdCounter();
     	this.getManager().setIdCounter(currCounter+1);
@@ -263,5 +271,10 @@ public class User extends User_Base {
 			return false;
 		}
 		return true;
+	}
+
+	//Mocked method for testing executeAssociation
+	public File getDefaultApp(String extension) {
+		throw new AccessDeniedException("execute", "file");
 	}
 }

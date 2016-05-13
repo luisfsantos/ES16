@@ -13,8 +13,8 @@ public class GuestUser extends GuestUser_Base {
     public String getPassword() {
     	return null;
     }
-    
-    
+
+
     @Override
     protected boolean allHasPermission(File file, Mask mask){
 		switch(mask){
@@ -55,5 +55,10 @@ public class GuestUser extends GuestUser_Base {
 	@Override
 	public boolean isValidUserSession(DateTime recent){
 		return true;
+	}
+
+	@Override
+	public boolean canLogin(String password){
+		return super.validatePassword(password);
 	}
 }

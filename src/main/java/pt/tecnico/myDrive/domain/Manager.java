@@ -90,11 +90,11 @@ public class Manager extends Manager_Base {
     
 
 	public User fetchUser(String username, String password) {
-		if (username.equals("root") && super.getSuperUser().validatePassword(password)){
+		if (username.equals("root") && super.getSuperUser().canLogin(password)){
 			return super.getSuperUser();
 		}
     	for (User user: super.getUserSet()) {
-    		if (user.getUsername().equals(username) && user.validatePassword(password))
+    		if (user.getUsername().equals(username) && user.canLogin(password))
     			return user;
     	}
     	return null;

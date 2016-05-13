@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
+import pt.tecnico.myDrive.exception.PasswordTooSmallException;
 import pt.tecnico.myDrive.exception.UserCannotBeModified;
 
 public class SuperUser extends SuperUser_Base {
@@ -50,5 +51,10 @@ public class SuperUser extends SuperUser_Base {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean canLogin(String password){
+		return super.validatePassword(password);
 	}
 }
