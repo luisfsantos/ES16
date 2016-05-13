@@ -2,8 +2,6 @@ package pt.tecnico.myDrive.domain;
 
 import java.math.BigInteger;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.joda.time.DateTime;
 
 import pt.tecnico.myDrive.exception.*;
@@ -61,20 +59,14 @@ public class Login extends Login_Base {
     	}
 	}
 
-
-	public void addEnvironmentVariable(String name, String value) {
-		if (name == null || name.equals("")) {
-			throw new InvalidEnvironmentVarNameException("null");
+	public void changeEnvironmentVariable(String name, String value) {
+		if (name.equals("")) {
+			throw new InvalidEnvironmentVarNameException("empty String");
 		}
 		if (value == null) {
 			throw new InvalidEnvironmentVarValueException("null");
 		}
-		if (hasEnvironmentVariable(name)) {
-			getEnvironmentVariable(name).setValue(value);
-		} else {
-			EnvironmentVariable environmentVariable = new EnvironmentVariable(this, name, value);
-			super.addEnvironmentVariable(environmentVariable);
-		}
+		getEnvironmentVariable(name).setValue(value);
 	}
 
 	public boolean hasEnvironmentVariable(String name) {

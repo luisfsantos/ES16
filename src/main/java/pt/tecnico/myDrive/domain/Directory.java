@@ -181,7 +181,7 @@ public class Directory extends Directory_Base {
 			fileMap.put(".", this);
 			fileMap.put("..", getParent());
 			for (File f : super.getFileSet()) {
-				fileMap.put(f.getName(), f);
+				fileMap.put(f.lsName(), f);
 			}
 
 			return fileMap;

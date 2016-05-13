@@ -95,7 +95,7 @@ public class ListDirectoryServiceTest extends TokenValidationServiceTest{
 		assertEquals("Name of file is application","application",result.get(2).getName());
 		assertEquals("Name of file is ficheiro","ficheiro",result.get(3).getName());
 		assertEquals("Name of file is pasta","pasta",result.get(4).getName());
-		assertEquals("Name of file is zelda","zelda",result.get(5).getName());
+		assertEquals("Name of file is zelda","zelda->/root",result.get(5).getName());
 
 	}
 
