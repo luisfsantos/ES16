@@ -32,6 +32,7 @@ public class ListDirectoryService extends TokenValidationService {
         Set<Map.Entry<String, File>> dirContentSet = dirContentMap.entrySet();
 
         for (Map.Entry<String, File> f : dirContentSet) {
+
             FileDto newDto = new FileDto(f.getValue().getType(), f.getValue().getPermissions(), f.getValue().getSize(),
                     f.getValue().getOwnerUsername(), f.getValue().getId(),
                     f.getValue().getLastModified().toString("dd-MM-YYYY-HH:mm:ss"), f.getKey());
