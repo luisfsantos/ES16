@@ -14,9 +14,17 @@ public class GuestUser extends GuestUser_Base {
     	return null;
     }
     
+    
     @Override
-	public boolean hasPermission(File file, Mask mask){
-		return false;
+    protected boolean allHasPermission(File file, Mask mask){
+		switch(mask){
+			case READ:
+				return mask.getValue() == file.getPermissions().charAt(4);
+			case EXEC:
+				return mask.getValue() == file.getPermissions().charAt(6);
+			default:
+				return false;
+		}
 	}
     
     @Override

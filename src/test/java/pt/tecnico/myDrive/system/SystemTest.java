@@ -13,16 +13,13 @@ public class SystemTest extends AbstractServiceTest {
 
     protected void populate() {
         sh = new MyDrive();
-        sh.xmlScan(new java.io.File("src/main/resources/drive.xml")); //remove this xmlscan
     }
 
     @Test
     public void success() {
-        //fixme use this import to populate
-        //execute of Import command must be public
-        //new ImportCommand(sh).execute(new String[]{"drive.xml"});
+        new ImportCommand(sh).execute(new String[]{"drive.xml"});
         new LoginCommand(sh).execute(new String[]{"mja", "Peyrelongue"}); //requires 2 logins for KeyCommand
-        new LoginCommand(sh).execute(new String[]{"jtb", "fernandes"});
+        new LoginCommand(sh).execute(new String[]{"jtb", "fer"});
         new ListCommand(sh).execute(new String[]{"."});
         new WriteCommand(sh).execute(new String[]{"profile","i am plainfile content"});
         new ChangeWorkingDirectoryCommand(sh).execute(new String[]{"bin"});

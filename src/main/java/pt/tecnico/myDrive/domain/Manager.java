@@ -4,11 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.joda.time.DateTime;
-
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.AccessDeniedException;
 import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.InvalidIdCounter;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
@@ -19,7 +18,6 @@ import java.util.Set;
 public class Manager extends Manager_Base {
 	static final Logger log = LogManager.getRootLogger();
 	
-	// manager use Singleton design pattern
     public static Manager getInstance() {
     	Manager manager = FenixFramework.getDomainRoot().getManager();
     	if (manager != null) {
@@ -145,37 +143,26 @@ public class Manager extends Manager_Base {
 		throw new AccessDeniedException("get user set", "Manager");
 	}
 	
-	/*
-	 FIXME 
-	@Override
-	public SuperUser getSuperUser() {
-		throw new AccessDeniedException("get Super User", "Manager");
-	}
-	
-	FIXME
-	get/SetSuperUser/GuestUser
- 	*/
-    
-	public void xmlImport(Element myDriveElement) throws UnsupportedEncodingException{
-		for(Element userNode : myDriveElement.getChildren("user")) {
-			new User(this, userNode);
-		}
 
-		for (Element dirNode: myDriveElement.getChildren("dir")){
-			new Directory(this,dirNode);
-		}
+	public void xmlImport(Element myDriveElement) {
+		try {
+			for(Element userNode : myDriveElement.getChildren("user"))
+				new User(this, userNode);
 
+			for (Element dirNode: myDriveElement.getChildren("dir"))
+				new Directory(this,dirNode);
 
-		for (Element plainNode : myDriveElement.getChildren("plain")) {
-			new PlainFile(this,plainNode);
-		}
+			for (Element plainNode : myDriveElement.getChildren("plain"))
+				new PlainFile(this,plainNode);
 
-		for (Element linkNode: myDriveElement.getChildren("link")){
-			new Link(this,linkNode);
-		}
+			for (Element linkNode: myDriveElement.getChildren("link"))
+				new Link(this,linkNode);
 
-		for (Element appNode: myDriveElement.getChildren("app")){
-			new App(this,appNode);
+			for (Element appNode: myDriveElement.getChildren("app"))
+				new App(this,appNode);
+
+		} catch (UnsupportedEncodingException e) {
+			throw new ImportDocumentException(e.getMessage());
 		}
 	}
 	

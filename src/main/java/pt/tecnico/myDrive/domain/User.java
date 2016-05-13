@@ -213,7 +213,7 @@ public class User extends User_Base {
 		}
 	}
 
-	private boolean allHasPermission(File file, Mask mask){
+	protected boolean allHasPermission(File file, Mask mask){
 		switch(mask){
 			case READ:
 				return mask.getValue() == file.getPermissions().charAt(4);
