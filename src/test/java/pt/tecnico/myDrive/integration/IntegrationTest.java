@@ -1,4 +1,4 @@
-package pt.tecnico.myDrive.system;
+package pt.tecnico.myDrive.integration;
 
 
 import org.junit.Test;
