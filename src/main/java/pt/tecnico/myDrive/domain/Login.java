@@ -2,12 +2,9 @@ package pt.tecnico.myDrive.domain;
 
 import java.math.BigInteger;
 import java.util.Random;
-
 import org.joda.time.DateTime;
 
-import pt.tecnico.myDrive.exception.AccessDeniedToManipulateLoginException;
-import pt.tecnico.myDrive.exception.InvalidUsernameOrPasswordException;
-import pt.tecnico.myDrive.exception.PasswordTooSmallException;
+import pt.tecnico.myDrive.exception.*;
 
 public class Login extends Login_Base {
     
@@ -61,7 +58,35 @@ public class Login extends Login_Base {
     		throw new AccessDeniedToManipulateLoginException();
     	}
 	}
-    
+
+	public void changeEnvironmentVariable(String name, String value) {
+		if (name.equals("")) {
+			throw new InvalidEnvironmentVarNameException("empty String");
+		}
+		if (value == null) {
+			throw new InvalidEnvironmentVarValueException("null");
+		}
+		getEnvironmentVariable(name).setValue(value);
+	}
+
+	public boolean hasEnvironmentVariable(String name) {
+		try {
+			getEnvironmentVariable(name);
+		} catch (EnvironmentVarDoesNotExistException e) {
+			return false;
+		}
+		return true;
+	}
+
+	public EnvironmentVariable getEnvironmentVariable(String name) {
+		for (EnvironmentVariable e : getEnvironmentVariableSet()) {
+			if (e.getName().equals(name)) {
+				return e;
+			}
+		}
+		throw new EnvironmentVarDoesNotExistException(name);
+	}
+
     void refreshLoginActivity() {
     	super.setLastActivity(new DateTime());
     }

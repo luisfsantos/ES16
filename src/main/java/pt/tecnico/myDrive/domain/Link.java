@@ -4,7 +4,6 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 
 public class Link extends Link_Base {
 
@@ -28,6 +27,11 @@ public class Link extends Link_Base {
     	int psize_resolved = psize + this.getName().length() + 1;
     	return this.getParent().lookup(this.viewContent().concat("/" + path), user, psize_resolved);
     }
+
+	@Override
+	public String lsName() {
+		return getName()+"->"+viewContent();
+	}
 
 	@Override
 	public String getType() {

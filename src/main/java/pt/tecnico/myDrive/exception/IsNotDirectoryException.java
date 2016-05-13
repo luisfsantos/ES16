@@ -1,12 +1,12 @@
 package pt.tecnico.myDrive.exception;
 
-public class IsNotDirOrLinkException extends MyDriveException {
+public class IsNotDirectoryException extends MyDriveException {
 
     private static final long serialVersionUID = 1L;
 
     private String fileName;
 
-    public IsNotDirOrLinkException(String fileName) {
+    public IsNotDirectoryException(String fileName) {
         this.fileName = fileName;
     }
 
@@ -16,7 +16,7 @@ public class IsNotDirOrLinkException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return getFileName() + " is not a Directory or a Link";
+        return "\""+getFileName() + "\" is not a Directory";
     }
 }
 

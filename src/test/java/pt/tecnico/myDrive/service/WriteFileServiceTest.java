@@ -188,7 +188,7 @@ public class WriteFileServiceTest extends LinkCommonTest {
 	}
 
 	//Test 19
-	@Test(expected = FileDoesntExistsInDirectoryException.class)
+	@Test(expected = FileDoesNotExistInDirectoryException.class)
 	public void insuccessWriteLinkToNotExistingPlain(){
 		WriteFileService service = new WriteFileService(token, "linktoNE", "batata");
 		service.execute();
@@ -217,18 +217,6 @@ public class WriteFileServiceTest extends LinkCommonTest {
 		service.execute();
 	}
 
-	/*
-	@Test
-	public void verifyEnvLink() {
-		Link link = (Link) home.lookup("validlink", root);
-
-		WriteFileService service = new WriteFileService(token, link.getName(), contentMockStr);
-		service.execute();
-
-		new Verifications(){{
-			link.decodeEnvPath(pathEnvVar);
-		}};
-	}*/
 }
 
 
