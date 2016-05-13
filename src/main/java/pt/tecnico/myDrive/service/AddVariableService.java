@@ -28,13 +28,13 @@ public class AddVariableService extends TokenValidationService {
 		super.dispatch();
 		
 		if ( varName != null && !session.hasEnvironmentVariable(varName) ) {
-			session.addEnvironmentVariable(varName, value); 				// new var
+			new EnvironmentVariable(session, varName, value); 				// new var
 		}
 		if ( varName == null && value != null ) {
 			throw new InvalidEnvironmentVarNameException(varName);			// exception
 		}	
 		if (session.hasEnvironmentVariable(varName) && value != null ) {
-			session.addEnvironmentVariable(varName, value);					// set new value
+			session.changeEnvironmentVariable(varName, value);					// set new value
 		}
 
 		Set<EnvironmentVariable> environmentVariables = session.getEnvironmentVariableSet();
