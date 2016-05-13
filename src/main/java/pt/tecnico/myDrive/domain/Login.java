@@ -61,10 +61,19 @@ public class Login extends Login_Base {
     	}
 	}
 
+	public void changeEnvironmentVariable(String name, String value) {
+		if (name.equals("")) {
+			throw new InvalidEnvironmentVarNameException("empty String");
+		}
+		if (value == null) {
+			throw new InvalidEnvironmentVarValueException("null");
+		}
+		getEnvironmentVariable(name).setValue(value);
+	}
 
 	public void addEnvironmentVariable(String name, String value) {
 		if (name == null || name.equals("")) {
-			throw new InvalidEnvironmentVarNameException("null");
+			throw new InvalidEnvironmentVarNameException("null or emptyString");
 		}
 		if (value == null) {
 			throw new InvalidEnvironmentVarValueException("null");
