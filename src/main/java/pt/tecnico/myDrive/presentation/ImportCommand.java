@@ -12,7 +12,7 @@ public class ImportCommand extends MyDriveCommand {
     }
 
     @Override
-    void execute(String[] args) {
+    public void execute(String[] args) {
         if (args.length < 1) {
             println("Wrong arguments!!!\nUSAGE: import pathToFile or resourceFile");
             return;
