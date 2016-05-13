@@ -1,6 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
 import pt.tecnico.myDrive.exception.InvalidEnvironmentVarNameException;
+import pt.tecnico.myDrive.exception.InvalidEnvironmentVarValueException;
 
 public class EnvironmentVariable extends EnvironmentVariable_Base {
     
@@ -14,5 +15,13 @@ public class EnvironmentVariable extends EnvironmentVariable_Base {
 		if (name.equals("")) {
 			throw new InvalidEnvironmentVarNameException("empty String");
 		}
+		super.setName(name);
+	}
+
+	public void setValue(String value) {
+		if (value == null) {
+			throw new InvalidEnvironmentVarValueException("null");
+		}
+		super.setValue(value);
 	}
 }
